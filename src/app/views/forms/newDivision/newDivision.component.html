@@ -1,0 +1,24 @@
+<form cForm class="row g-3">
+  <c-col [md]="6">
+  <label cLabel for="inputEmail4">Division name</label>
+  <input cFormControl id="inputEmail4" type="email" />
+  </c-col>
+
+
+  <c-col [md]="6">
+    <label cLabel for="inputState">Parent</label>
+    <select cSelect id="inputState">
+      <option>Choose parent division</option>
+      <option value="1">Parent 1</option>
+    </select>
+  </c-col>
+
+  <c-col [md]="6">
+    <label cLabel for="formFile">Stamp:</label>
+    <input cFormControl id="formFile" type="file" />
+  </c-col>
+
+  <c-col [xs]="12">
+    <p-button label="Create division" type="submit" ></p-button>
+  </c-col>
+  </form>

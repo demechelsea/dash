@@ -1,0 +1,91 @@
+<p-messages styles="position: absolute; z-index: 1; right: 1em; margin: -1em 0;" [value]="msgs"></p-messages>
+<div *ngIf="newDiv">
+  <div>
+    <form #addDivForm="ngForm" (ngSubmit)="addAuditUniverse(addDivForm)">
+      <div class="row">
+        <div class="col mb-4">
+          <label for="integer" class="block mb-2"> Name: </label>
+          <input pInputText id="integer" pKeyFilter="int" ngModel name="name"
+            [style]="{'width':'630px','height':'45px'}" required minlength="10" />
+        </div>
+        <div class="col mb-4">
+          <label for="integer" class=" block mb-2"> Description: </label>
+          <input pInputText id="integer" pKeyFilter="int" ngModel name="description"
+            [style]="{'width':'630px','height':'45px'}" required minlength="3" />
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <label for="integer" class="block mb-2">Year:</label>
+          <input pInputText id="integer" pKeyFilter="int" ngModel name="year"
+            [style]="{'width':'630px','height':'45px'}" required minlength="3" />
+        </div>
+        <div class="col mb-4">
+          <label for="integer" class=" block mb-2">Status:</label>
+          <input pInputText id="integer" pKeyFilter="int" ngModel name="status"
+            [style]="{'width':'630px','height':'45px'}" required minlength="3" />
+        </div>
+      </div>
+
+      <div class="row mb-4">
+          <div class="col">
+            <label for="hex" class=" block mb-2"> Audit universe: </label>
+            <p-dropdown [options]="auditUniverses" name="auditUniverse" optionLabel="auditUniverse" [filter]="true" ngModel
+              [(ngModel)]="selectedUniverseInfo" filterBy="auditUniverse" [showClear]="true" placeholder="Choose audit universe"
+              styleClass="p-password" [style]="{'width':'630px','height':'45px'}">
+              <ng-template pTemplate="selectedItem">
+                <div class="flex align-items-center gap-2" *ngIf="selectedUniverseInfo">
+                  <div>{{selectedUniverseInfo.name}}</div>
+                </div>
+              </ng-template> 
+              <ng-template let-universe pTemplate="item">
+                <div class="flex align-items-center gap-2">
+                  <div>{{universe?.name}}</div>
+                </div>
+              </ng-template>
+            </p-dropdown>
+          </div>
+        <div class="col">
+          <label for="integer" class="block m-4">Risk Scores:</label>
+          <p-button (click)="show()" icon="pi pi-info-circle" label="Choose"></p-button>
+        </div>
+      </div>
+      <p-button label="Create annual plan" [disabled]="addDivForm.invalid!" type="submit"></p-button>
+    </form>
+  </div>
+</div>
+
+
+<div *ngIf="update">
+  <form #updateDivForm="ngForm" (ngSubmit)="updateAuditUniverses(updateDivForm)">
+    <input type="hidden" name="id" ngModel [(ngModel)]="idY">
+
+    <div class="row mb-4">
+      <div class="col">
+        <label for="integer" class=" block mb-2"> Name:</label>
+        <input pInputText id="integer" pKeyFilter="int" ngModel [(ngModel)]="universeInfo.name" name="name"
+          [style]="{'width':'630px','height':'45px'}" required minlength="3" readonly />
+      </div>
+      <div class="col">
+        <label for="integer" class=" block mb-2"> Description: </label>
+        <input pInputText id="integer" pKeyFilter="int" ngModel [(ngModel)]="universeInfo.description"
+          name="description" [style]="{'width':'630px','height':'45px'}" required minlength="3" readonly />
+      </div>
+    </div>
+
+    <div class="row mb-4">
+      <div class="col">
+        <label for="integer" class=" block mb-2">Type:</label>
+        <input pInputText id="integer" pKeyFilter="int" ngModel [(ngModel)]="universeInfo.type" name="type"
+          [style]="{'width':'630px','height':'45px'}" required minlength="3" />
+      </div>
+      <div class="col">
+        <label for="integer" class=" block mb-2">Status:</label>
+        <input pInputText id="integer" pKeyFilter="int" ngModel [(ngModel)]="universeInfo.status" name="status"
+          [style]="{'width':'630px','height':'45px'}" required minlength="3" />
+      </div>
+    </div>
+    <p-button label="Update Account" [disabled]="updateDivForm.invalid!" type="submit"></p-button>
+  </form>
+</div>

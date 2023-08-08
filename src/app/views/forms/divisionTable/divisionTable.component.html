@@ -1,0 +1,33 @@
+<div class="card">
+  <h5>Division Table</h5>
+  <p-table  selectionMode="single"  dataKey="id" [tableStyle]="{'min-width': '50rem'}"
+      [rows]="10" [paginator]="true" stateStorage="session" stateKey="statedemo-session">
+      <ng-template pTemplate="header">
+          <tr>
+              <th pSortableColumn="name" style="width:2%">ID </th>
+              <th pSortableColumn="representative.name" style="width:24.5%">Name <p-sortIcon field="representative.name"></p-sortIcon></th>
+              <th pSortableColumn="status" style="width:24.5%">Parent <p-sortIcon field="status"></p-sortIcon></th>
+              <th pSortableColumn="status" style="width:24.5%">Action</th>
+          </tr>
+          <tr>
+              <th></th>
+              <th>
+                  <input pInputText type="text"  placeholder="Search by name" class="w-full">
+              </th>
+              <th>
+                  <input pInputText type="text"  placeholder="Search by Parent" class="w-full">
+              </th>
+              <th>
+                <p-button label="Show" ></p-button>
+                <p-button label="Update" ></p-button>
+              </th>
+          </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+          <tr>
+              <td colspan="4">No found.</td>
+          </tr>
+      </ng-template>
+  </p-table>
+</div>
+

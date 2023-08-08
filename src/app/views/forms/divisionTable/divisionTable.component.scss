@@ -1,0 +1,24 @@
+:host ::ng-deep .accordion-custom {
+    .accordion-button {
+      background-color: var(--cui-dark);
+      color: var(--cui-white);
+    }
+  }
+  
+  button{
+    margin: 0.5em;
+    width: 4.5em;
+    color: black;
+  }
+
+  h5{
+    padding: 0.5em;
+  }
+  
+  th input{
+    padding: 0.5em;
+  }
+  
+  p-button{
+    padding: 0.5em;
+  }
