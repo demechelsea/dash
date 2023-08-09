@@ -39,10 +39,9 @@ export type ChartOptions = {
 })
 export class DashComponent implements OnInit {
   @ViewChild('chart') chart: ChartComponent;
-  @ViewChild('lineChartContainer', { read: ViewContainerRef })
   public chartOptions: Partial<ChartOptions> = {};
 
-  selectedWeek: WeeklyDTO = { startDate: '', endDate: '' };
+  selectedWeek: WeeklyDTO;
   dailyHistoryData: DailyHistoryDTO[];
 
   ngOnInit() {
@@ -58,11 +57,12 @@ export class DashComponent implements OnInit {
     );
 
     this.chartOptions = {
+      ...this.chartOptions,
       series: [
         {
           name: 'Elapsed Time',
           type: 'column',
-          data: [15840, 18180, 14904, 24126, 8172, 14868, 7236],
+          data: [108940, 18180, 14904, 24126, 8172, 14868, 7236],
         },
       ],
       chart: {
@@ -145,11 +145,11 @@ export class DashComponent implements OnInit {
     const week = moment(this.selectedWeek.startDate);
     const startDate = week.startOf('week').format('YYYYMMDD');
     const endDate = week.endOf('week').format('YYYYMMDD');
-    const formattedSelectedWeek = { startDate, endDate };
+    this.selectedWeek.startDate = startDate;
+    this.selectedWeek.endDate = endDate;
     this.dashboardService
-      .getDailyHistory(formattedSelectedWeek)
-      .subscribe((data) => {
-        console.log('dddd', data);
+      .getDailyHistory(this.selectedWeek).subscribe((data) => {
+        console.log('response: ', data);
         this.dailyHistoryData = data;
         this.updateChart();
       });
@@ -170,19 +170,19 @@ export class DashComponent implements OnInit {
       const { cobDay, elapsedTime } = data;
       const [hours, minutes, seconds] = elapsedTime.split(':').map(Number);
       const elapsedTimeInSeconds = hours * 3600 + minutes * 60 + seconds;
-      console.log('kkkkkk', elapsedTimeInSeconds);
 
       days[cobDay as keyof typeof days] = elapsedTimeInSeconds;
-      console.log(days);
     }
-    console.log('yyyyy', Object.values(days));
+    console.log('chartOptions.series 1:', this.chartOptions.series);
 
     this.chartOptions.series = [
       {
         name: 'Elapsed Time',
-        data: Object.values(days),
+        type: 'column',
+        data:Object.values(days),
       },
     ];
-    console.log('xxxx', this.chartOptions.series);
+    this.chart?.updateSeries(this.chartOptions.series);
+    console.log('chartOptions.series 2:', this.chartOptions.series);
   }
 }

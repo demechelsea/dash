@@ -40,7 +40,9 @@ export type ChartOptions = {
 })
 export class ChartComponents implements OnInit {
   @ViewChild('chart') chart: ChartComponent;
-  public chartOptions: Partial<ChartOptions> = {};
+  public chartOptions: Partial<ChartOptions> = {
+    series: [],
+  };
 
   public stageNames: string[] = [];
 
@@ -54,6 +56,7 @@ export class ChartComponents implements OnInit {
     private dashboardService: DashboardService
   ) {
     this.chartOptions = {
+      ...this.chartOptions,
       chart: {
         height: 400,
         type: 'line',
@@ -137,8 +140,8 @@ export class ChartComponents implements OnInit {
         this.stageNames = response.map((stage) => stage.name);
         this.updateStageData();
       },
-      (error: HttpErrorResponse) => {
-        console.log(error);
+      (error: any) => {
+        console.error('Error:', error);
       }
     );
   }
