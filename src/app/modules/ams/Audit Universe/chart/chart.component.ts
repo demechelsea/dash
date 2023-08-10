@@ -1,10 +1,10 @@
-import { HttpErrorResponse } from '@angular/common/http';
 import {
   Component,
   ViewChild,
-  AfterViewInit,
   OnInit,
   ChangeDetectorRef,
+  Input,
+  SimpleChanges,
 } from '@angular/core';
 import {
   ChartComponent,
@@ -16,21 +16,17 @@ import {
   ApexStroke,
   ApexGrid,
   ApexYAxis,
-  ApexTooltip,
 } from 'ng-apexcharts';
-import { DashboardService } from 'src/app/services/dashboard/dashboard.service';
-import { StageDTO } from 'src/app/views/models/stages';
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
   chart: ApexChart;
   xaxis: ApexXAxis;
-  yaxis: ApexYAxis | ApexYAxis[];
+  yaxis: ApexYAxis;
   dataLabels: ApexDataLabels;
   grid: ApexGrid;
   stroke: ApexStroke;
   title: ApexTitleSubtitle;
-  tooltip: ApexTooltip;
 };
 
 @Component({
@@ -39,29 +35,38 @@ export type ChartOptions = {
   styleUrls: ['./chart.component.scss'],
 })
 export class ChartComponents implements OnInit {
+  @Input() data: any;
+
   @ViewChild('chart') chart: ChartComponent;
-  public chartOptions: Partial<ChartOptions> = {
-    series: [],
-  };
+  public chartOptions: Partial<ChartOptions> = {};
 
   public stageNames: string[] = [];
 
-  ngOnInit(): void {
-    this.getDashboards();
-    this.updateStageData();
-  }
-
-  constructor(
-    private cdr: ChangeDetectorRef,
-    private dashboardService: DashboardService
-  ) {
+  constructor(private cdr: ChangeDetectorRef) {
     this.chartOptions = {
-      ...this.chartOptions,
-      chart: {
-        height: 400,
-        type: 'line',
-        zoom: {
-          enabled: false,
+      series: [],
+      xaxis: {
+        type: 'numeric',
+        title: {
+          text: 'Elapsed Time',
+        },
+        labels: {
+          formatter: (value: any) => {
+            const hours = Math.floor(value / 3600);
+            const minutes = Math.floor((value % 3600) / 60);
+            const seconds = Math.floor(value % 60);
+            return `${hours}h ${minutes}m ${seconds}s`;
+          },
+        },
+      },
+      yaxis: {
+        title: {
+          text: 'Stages',
+        },
+        labels: {
+          formatter: (value: any, index: number) => {
+            return this.stageNames[index];
+          },
         },
       },
       dataLabels: {
@@ -76,73 +81,53 @@ export class ChartComponents implements OnInit {
           opacity: 0.5,
         },
       },
-      xaxis: {
-        title: {
-          text: 'Time',
-        },
-        tickPlacement: 'between',
-        labels: {
-          formatter: (value: any) => {
-            if (value === 0) {
-              return '0';
-            } else {
-              const hours = Math.floor(value / 3600);
-              const minutes = Math.floor((value % 3600) / 60);
-              const seconds = Math.floor(value % 60);
-              return `${hours}h   ${minutes}m   ${seconds}s`;
-            }
-          },
+      chart: {
+        height: 400,
+        type: 'line',
+        zoom: {
+          enabled: false,
         },
       },
-      yaxis: [
-        {
-          title: {
-            text: 'Stages',
-          },
-          min: 0,
-          forceNiceScale: true,
-          labels: {
-            formatter: (value) => {
-              if (value === 0) {
-                return '0';
-              } else {
-                return this.stageNames[value - 1];
-              }
-            },
-          },
-        },
-      ],
     };
   }
 
-  updateStageData() {
-    const stageTimes = [900, 180, 104, 226, 82];
-    const seriesData = [];
-    seriesData.push({ x: 0, y: 0 });
-    let cumulativeTime = 0;
-    for (let i = 0; i < stageTimes.length; i++) {
-      cumulativeTime += stageTimes[i];
-      seriesData.push({ x: cumulativeTime, y: i + 1 });
-    }
-    this.chartOptions.series = [
-      {
-        name: 'Stage',
-        data: seriesData,
-      },
-    ];
-    this.chart?.updateOptions(this.chartOptions);
-    this.cdr.detectChanges();
-  }
+  ngOnInit(): void {}
 
-  public getDashboards(): void {
-    this.dashboardService.getAllStageNames().subscribe(
-      (response: StageDTO[]) => {
-        this.stageNames = response.map((stage) => stage.name);
-        this.updateStageData();
-      },
-      (error: any) => {
-        console.error('Error:', error);
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['data']) {
+      const newData = changes['data'].currentValue;
+      if (newData) {
+        this.stageNames = newData.map((item: any) => item.stage.name);
+        const elapsedTimeValues = newData.map((list: any) => list.elapsedTime);
+        const elapsedTimeInSeconds = elapsedTimeValues.map((time: string) => {
+          const [hours, minutes, seconds] = time.split(':').map(Number);
+          return hours * 3600 + minutes * 60 + seconds;
+        });
+        console.log("elapsed", elapsedTimeInSeconds);
+  
+        // Calculate the cumulative elapsed time for each stage
+        const cumulativeElapsedTimeInSeconds = elapsedTimeInSeconds.reduce(
+          (acc: number[], cur: number) => [
+            ...acc,
+            cur + (acc.length > 0 ? acc[acc.length - 1] : 0),
+          ],
+          []
+        );
+        
+        
+        
+        this.chartOptions.series = [
+          {
+            name: 'Time',
+            type: 'line',
+            data: cumulativeElapsedTimeInSeconds,
+          },
+        ];
+        this.chart?.updateSeries(this.chartOptions.series);
+        this.cdr.detectChanges();
       }
-    );
+    }
   }
+  
+  
 }

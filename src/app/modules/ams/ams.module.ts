@@ -17,6 +17,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { DynamicDialogModule } from 'primeng/dynamicdialog';
 import { DashComponent } from './/Audit Universe/dash/dash.component';
 import { ChartComponents } from './/Audit Universe/chart/chart.component';
+import { UnusualChartComponents } from './/Audit Universe/unusualBar/unusualBar.component';
 import { NgApexchartsModule } from "ng-apexcharts";
 
 @NgModule({
@@ -28,7 +29,8 @@ import { NgApexchartsModule } from "ng-apexcharts";
     NewAnnualPlanComponent,
     RiskScoreComponent,
     DashComponent,
-    ChartComponents
+    ChartComponents,
+    UnusualChartComponents
   ],
   imports: [
     NgApexchartsModule,

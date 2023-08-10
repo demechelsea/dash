@@ -30,6 +30,10 @@ export const navItems: INavData[] = [
         name: 'Chart',
         url: '/ams/chart',
       },
+      {
+        name: 'Unusual',
+        url: '/ams/unUsual',
+      },
     ],
   },
   {

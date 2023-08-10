@@ -9,7 +9,7 @@
           <div id="chart">
             <div class="week-picker-container">
               <label for="week-picker">Select a week:</label>
-              <input type="week" id="week-picker" [(ngModel)]="selectedWeek" (change)="onWeekChange($event)" />
+              <input type="week" id="week-picker" [(ngModel)]="selectedWeekString" (change)="onWeekChange($event)" />
               <button class="apply-button" (click)="onApply()">Apply</button>
             </div>
             <apx-chart [series]="chartOptions.series!" [chart]="chartOptions.chart!" [yaxis]="chartOptions.yaxis!"
@@ -27,34 +27,24 @@
         Stage line Chart for each Day
       </c-card-header>
       <c-card-body>
-        <app-line></app-line>
+        <app-line [data]="chartData"></app-line>
+      </c-card-body>
+    </c-card>
+  </c-col>
+</c-row>
+ <c-row>
+  <c-col>
+    <c-card class="mb-4">
+      <c-card-header>
+        Unusual bar graph
+      </c-card-header>
+      <c-card-body>
+        <app-unusualBarChart></app-unusualBarChart>
       </c-card-body>
     </c-card>
   </c-col>
 </c-row>
 <!-- <c-row>
-  <c-col xs="12" lg="6">
-    <c-card class="mb-4">
-      <c-card-header>
-        Doughnut Chart
-      </c-card-header>
-      <c-card-body>
-        <c-chart type="doughnut" [data]="chartDoughnutData"></c-chart>
-      </c-card-body>
-    </c-card>
-  </c-col>
-  <c-col xs="12" lg="6">
-    <c-card class="mb-4">
-      <c-card-header>
-        Pie Chart
-      </c-card-header>
-      <c-card-body>
-        <c-chart type="pie" [data]="chartPieData"></c-chart>
-      </c-card-body>
-    </c-card>
-  </c-col>
-</c-row>
-<c-row>
   <c-col xs="12" lg="6">
     <c-card class="mb-4">
       <c-card-header>

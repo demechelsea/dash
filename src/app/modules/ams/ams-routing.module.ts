@@ -9,6 +9,7 @@ import { DashComponent } from './Audit Universe/dash/dash.component';
 import { ChartComponent } from 'ng-apexcharts';
 import { ChartsComponent } from 'src/app/views/charts/charts.component';
 import { ChartComponents } from './Audit Universe/chart/chart.component';
+import { UnusualChartComponents } from './Audit Universe/unusualBar/unusualBar.component';
 
 const routes: Routes = [
   {
@@ -67,6 +68,13 @@ const routes: Routes = [
       {
         path: 'chart',
         component: ChartComponents,
+        data: {
+          title: 'chart',
+        },
+      },
+      {
+        path: 'unUsual',
+        component: UnusualChartComponents,
         data: {
           title: 'chart',
         },

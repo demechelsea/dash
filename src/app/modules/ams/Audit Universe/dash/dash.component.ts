@@ -1,6 +1,8 @@
 import {
+  ChangeDetectorRef,
   Component,
   OnInit,
+  SimpleChanges,
   ViewChild,
   ViewContainerRef,
 } from '@angular/core';
@@ -19,6 +21,7 @@ import {
 import { WeeklyDTO } from 'src/app/views/models/weekly report';
 import { DailyHistoryDTO } from 'src/app/views/models/dailyHistory';
 import { DashboardService } from 'src/app/services/dashboard/dashboard.service';
+import { SpecificDay } from 'src/app/views/models/specificDay';
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -38,18 +41,49 @@ export type ChartOptions = {
   styleUrls: ['./dash.component.scss'],
 })
 export class DashComponent implements OnInit {
+  chartData: any;
+
   @ViewChild('chart') chart: ChartComponent;
   public chartOptions: Partial<ChartOptions> = {};
 
   selectedWeek: WeeklyDTO;
   dailyHistoryData: DailyHistoryDTO[];
+  selectedWeekString: string;
 
   ngOnInit() {
-    this.selectedWeek = { startDate: '20230731', endDate: '20230806' };
-    this.onApply();
+    const today = moment();
+    const startOfLastWeek = today
+      .subtract(1, 'weeks')
+      .startOf('week')
+      .add(1, 'days');
+    const endOfLastWeek = moment(startOfLastWeek).add(6, 'days');
+    const startDate = startOfLastWeek.format('YYYYMMDD');
+    const endDate = endOfLastWeek.format('YYYYMMDD');
+
+    this.selectedWeek = { startDate, endDate };
+    console.log(this.selectedWeek);
+
+    this.dashboardService
+      .getDailyHistory(this.selectedWeek)
+      .subscribe((data) => {
+        this.dailyHistoryData = data;
+        this.updateChart();
+      });
+
+    const lastMonday = startOfLastWeek.format('YYYYMMDD');
+    const specificDay: SpecificDay = { date: lastMonday };
+    this.dashboardService
+      .getDailyStageHistory(specificDay)
+      .subscribe((data) => {
+        this.chartData = data;
+        this.cdr.detectChanges();
+      });
   }
 
-  constructor(private dashboardService: DashboardService) {
+  constructor(
+    private dashboardService: DashboardService,
+    private cdr: ChangeDetectorRef
+  ) {
     const today = moment();
     const startOfWeek = today.startOf('week').add(1, 'days');
     const dates = Array.from({ length: 7 }, (_, i) =>
@@ -58,14 +92,21 @@ export class DashComponent implements OnInit {
 
     this.chartOptions = {
       ...this.chartOptions,
-      series: [
-        {
-          name: 'Elapsed Time',
-          type: 'column',
-          data: [108940, 18180, 14904, 24126, 8172, 14868, 7236],
-        },
-      ],
+      series: [],
       chart: {
+        events: {
+          dataPointSelection: (event, chartContext, { dataPointIndex }) => {
+            const selectedUtcDate =
+              this.dailyHistoryData[dataPointIndex].utcDate;
+            const specificDay: SpecificDay = { date: selectedUtcDate };
+            this.dashboardService
+              .getDailyStageHistory(specificDay)
+              .subscribe((data) => {
+                this.chartData = data;
+                this.cdr.detectChanges();
+              });
+          },
+        },
         height: 350,
         type: 'bar',
       },
@@ -75,6 +116,45 @@ export class DashComponent implements OnInit {
       dataLabels: {
         enabled: true,
         enabledOnSeries: [1],
+      },
+      tooltip: {
+        theme: 'dark',
+        enabled: true,
+        y: {
+          formatter: function (value) {
+            return value.toString();
+          },
+        },
+        custom: ({ series, seriesIndex, dataPointIndex, w }) => {
+          const data = this.dailyHistoryData[dataPointIndex];
+          const utcDate = data.utcDate;
+          const year = utcDate.substring(0, 4);
+          const month = utcDate.substring(4, 6);
+          const day = utcDate.substring(6, 8);
+          const date = new Date(`${year}-${month}-${day}`);
+          const monthNames = [
+            'Jan',
+            'Feb',
+            'Mar',
+            'Apr',
+            'May',
+            'Jun',
+            'Jul',
+            'Aug',
+            'Sep',
+            'Oct',
+            'Nov',
+            'Dec',
+          ];
+          const formattedDate = `${day} ${monthNames[date.getMonth()]} ${year}`;
+          return `<div style="background-color: #333; color: #fff; padding: 10px; border-radius: 5px;">
+                    <div>Uploaded By: ${data.uploadedBy}</div>
+                    <div>Start Time: ${data.startTime}</div>
+                    <div>End Time: ${data.endTime}</div>
+                    <div>Upload Date Time: ${data.uploadDateTime}</div>
+                    <div>UTC Date: ${formattedDate}</div>
+                  </div>`;
+        },
       },
       labels: dates,
       xaxis: {
@@ -126,6 +206,7 @@ export class DashComponent implements OnInit {
   }
 
   onWeekChange(event: any) {
+    this.selectedWeekString = event.target.value;
     const weekString = event.target.value;
     const [year, week] = weekString.split('-W');
     const startDate = moment()
@@ -148,8 +229,8 @@ export class DashComponent implements OnInit {
     this.selectedWeek.startDate = startDate;
     this.selectedWeek.endDate = endDate;
     this.dashboardService
-      .getDailyHistory(this.selectedWeek).subscribe((data) => {
-        console.log('response: ', data);
+      .getDailyHistory(this.selectedWeek)
+      .subscribe((data) => {
         this.dailyHistoryData = data;
         this.updateChart();
       });
@@ -173,16 +254,13 @@ export class DashComponent implements OnInit {
 
       days[cobDay as keyof typeof days] = elapsedTimeInSeconds;
     }
-    console.log('chartOptions.series 1:', this.chartOptions.series);
-
     this.chartOptions.series = [
       {
         name: 'Elapsed Time',
         type: 'column',
-        data:Object.values(days),
+        data: Object.values(days),
       },
     ];
     this.chart?.updateSeries(this.chartOptions.series);
-    console.log('chartOptions.series 2:', this.chartOptions.series);
   }
 }
