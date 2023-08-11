@@ -59,10 +59,7 @@ export class DashComponent implements OnInit {
     const endOfLastWeek = moment(startOfLastWeek).add(6, 'days');
     const startDate = startOfLastWeek.format('YYYYMMDD');
     const endDate = endOfLastWeek.format('YYYYMMDD');
-
     this.selectedWeek = { startDate, endDate };
-    console.log(this.selectedWeek);
-
     this.dashboardService
       .getDailyHistory(this.selectedWeek)
       .subscribe((data) => {

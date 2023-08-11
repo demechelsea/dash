@@ -36,6 +36,7 @@ export type ChartOptions = {
 })
 export class ChartComponents implements OnInit {
   @Input() data: any;
+  public cumulativeElapsedTimeInSeconds: number[] = [];
 
   @ViewChild('chart') chart: ChartComponent;
   public chartOptions: Partial<ChartOptions> = {};
@@ -51,7 +52,7 @@ export class ChartComponents implements OnInit {
           text: 'Elapsed Time',
         },
         labels: {
-          formatter: (value: any) => {
+          formatter: function (value: any) {
             const hours = Math.floor(value / 3600);
             const minutes = Math.floor((value % 3600) / 60);
             const seconds = Math.floor(value % 60);
@@ -64,8 +65,10 @@ export class ChartComponents implements OnInit {
           text: 'Stages',
         },
         labels: {
+          minWidth: 50,
           formatter: (value: any, index: number) => {
-            return this.stageNames[index];
+            if (index === 0) return '';
+            return this.stageNames[index - 1];
           },
         },
       },
@@ -98,29 +101,34 @@ export class ChartComponents implements OnInit {
       const newData = changes['data'].currentValue;
       if (newData) {
         this.stageNames = newData.map((item: any) => item.stage.name);
+        if (this.chartOptions.xaxis) {
+          this.chartOptions.xaxis.tickAmount = this.stageNames.length;
+        }
+        this.chart?.updateOptions(this.chartOptions);
         const elapsedTimeValues = newData.map((list: any) => list.elapsedTime);
         const elapsedTimeInSeconds = elapsedTimeValues.map((time: string) => {
           const [hours, minutes, seconds] = time.split(':').map(Number);
           return hours * 3600 + minutes * 60 + seconds;
         });
-        console.log("elapsed", elapsedTimeInSeconds);
-  
-        // Calculate the cumulative elapsed time for each stage
-        const cumulativeElapsedTimeInSeconds = elapsedTimeInSeconds.reduce(
+
+        this.cumulativeElapsedTimeInSeconds = elapsedTimeInSeconds.reduce(
           (acc: number[], cur: number) => [
             ...acc,
             cur + (acc.length > 0 ? acc[acc.length - 1] : 0),
           ],
           []
         );
-        
-        
-        
         this.chartOptions.series = [
           {
             name: 'Time',
             type: 'line',
-            data: cumulativeElapsedTimeInSeconds,
+            data: [
+              [0, 0],
+              ...this.cumulativeElapsedTimeInSeconds.map((value, index) => [
+                value,
+                index + 1,
+              ]),
+            ],
           },
         ];
         this.chart?.updateSeries(this.chartOptions.series);
@@ -128,6 +136,4 @@ export class ChartComponents implements OnInit {
       }
     }
   }
-  
-  
 }
