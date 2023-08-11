@@ -17,6 +17,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { DynamicDialogModule } from 'primeng/dynamicdialog';
 import { DashComponent } from './/Audit Universe/dash/dash.component';
 import { ChartComponents } from './/Audit Universe/chart/chart.component';
+import { COBHistoryComponent } from './/Audit Universe/cobHistory/cobHistory.component';
 import { UnusualChartComponents } from './/Audit Universe/unusualBar/unusualBar.component';
 import { NgApexchartsModule } from "ng-apexcharts";
 
@@ -30,7 +31,8 @@ import { NgApexchartsModule } from "ng-apexcharts";
     RiskScoreComponent,
     DashComponent,
     ChartComponents,
-    UnusualChartComponents
+    UnusualChartComponents,
+    COBHistoryComponent
   ],
   imports: [
     NgApexchartsModule,

@@ -18,7 +18,7 @@ export class DashboardService {
         Authorization: `Bearer ${localStorage.getItem('access_token')}`,
       }),
     };
-    this.apiServiceUrl = 'http://10.1.125.58:8088';
+    this.apiServiceUrl = 'http://10.1.11.44:8088';
   }
 
   constructor(private http: HttpClient) {}
@@ -43,6 +43,14 @@ export class DashboardService {
     this.init();
     return this.http.post<any>(
       `${this.apiServiceUrl}/CMS/JT/getStageJTSummaryForSpecificDay`, specificDay,
+      this.httpOptions
+    );
+  }
+
+  public getCOBHistory(): Observable<any> {
+    this.init();
+    return this.http.get<any>(
+      `${this.apiServiceUrl}/CMS/JT/getCOBHistory`,
       this.httpOptions
     );
   }

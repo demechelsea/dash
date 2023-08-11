@@ -2,9 +2,7 @@ import {
   ChangeDetectorRef,
   Component,
   OnInit,
-  SimpleChanges,
   ViewChild,
-  ViewContainerRef,
 } from '@angular/core';
 import * as moment from 'moment';
 import {
@@ -20,8 +18,10 @@ import {
 
 import { WeeklyDTO } from 'src/app/views/models/weekly report';
 import { DailyHistoryDTO } from 'src/app/views/models/dailyHistory';
+import { COBHistoryDTO } from 'src/app/views/models/COBHistory';
 import { DashboardService } from 'src/app/services/dashboard/dashboard.service';
 import { SpecificDay } from 'src/app/views/models/specificDay';
+import { Subscription } from 'rxjs';
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -43,14 +43,25 @@ export type ChartOptions = {
 export class DashComponent implements OnInit {
   chartData: any;
 
+  private subscriptions = new Subscription();
+
   @ViewChild('chart') chart: ChartComponent;
   public chartOptions: Partial<ChartOptions> = {};
 
   selectedWeek: WeeklyDTO;
   dailyHistoryData: DailyHistoryDTO[];
+  COBHistory: COBHistoryDTO[];
   selectedWeekString: string;
 
   ngOnInit() {
+    this.subscriptions.add(
+      this.dashboardService
+        .getCOBHistory()
+        .subscribe((data) => {
+          console.log(data)
+          this.COBHistory = data;
+        })
+    );
     const today = moment();
     const startOfLastWeek = today
       .subtract(1, 'weeks')
@@ -60,21 +71,24 @@ export class DashComponent implements OnInit {
     const startDate = startOfLastWeek.format('YYYYMMDD');
     const endDate = endOfLastWeek.format('YYYYMMDD');
     this.selectedWeek = { startDate, endDate };
-    this.dashboardService
-      .getDailyHistory(this.selectedWeek)
-      .subscribe((data) => {
-        this.dailyHistoryData = data;
-        this.updateChart();
-      });
-
+    this.subscriptions.add(
+      this.dashboardService
+        .getDailyHistory(this.selectedWeek)
+        .subscribe((data) => {
+          this.dailyHistoryData = data;
+          this.updateChart();
+        })
+    );
     const lastMonday = startOfLastWeek.format('YYYYMMDD');
     const specificDay: SpecificDay = { date: lastMonday };
-    this.dashboardService
-      .getDailyStageHistory(specificDay)
-      .subscribe((data) => {
-        this.chartData = data;
-        this.cdr.detectChanges();
-      });
+    this.subscriptions.add(
+      this.dashboardService
+        .getDailyStageHistory(specificDay)
+        .subscribe((data) => {
+          this.chartData = data;
+          this.cdr.detectChanges();
+        })
+    );
   }
 
   constructor(
@@ -96,12 +110,14 @@ export class DashComponent implements OnInit {
             const selectedUtcDate =
               this.dailyHistoryData[dataPointIndex].utcDate;
             const specificDay: SpecificDay = { date: selectedUtcDate };
-            this.dashboardService
-              .getDailyStageHistory(specificDay)
-              .subscribe((data) => {
-                this.chartData = data;
-                this.cdr.detectChanges();
-              });
+            this.subscriptions.add(
+              this.dashboardService
+                .getDailyStageHistory(specificDay)
+                .subscribe((data) => {
+                  this.chartData = data;
+                  this.cdr.detectChanges();
+                })
+            );
           },
         },
         height: 350,
@@ -193,7 +209,7 @@ export class DashComponent implements OnInit {
             formatter: function (value) {
               const hours = Math.floor(value / 3600);
               const minutes = Math.floor((value % 3600) / 60);
-              const seconds = value % 60;
+              const seconds = Math.floor(value % 60);
               return `${hours}h ${minutes}m ${seconds}s`;
             },
           },
@@ -201,6 +217,7 @@ export class DashComponent implements OnInit {
       ],
     };
   }
+
 
   onWeekChange(event: any) {
     this.selectedWeekString = event.target.value;
@@ -221,16 +238,29 @@ export class DashComponent implements OnInit {
 
   onApply() {
     const week = moment(this.selectedWeek.startDate);
-    const startDate = week.startOf('week').format('YYYYMMDD');
+    const startDate = week.startOf('week').add(1, 'days').format('YYYYMMDD');
     const endDate = week.endOf('week').format('YYYYMMDD');
     this.selectedWeek.startDate = startDate;
     this.selectedWeek.endDate = endDate;
-    this.dashboardService
-      .getDailyHistory(this.selectedWeek)
-      .subscribe((data) => {
-        this.dailyHistoryData = data;
-        this.updateChart();
-      });
+    this.subscriptions.add(
+      this.dashboardService
+        .getDailyHistory(this.selectedWeek)
+        .subscribe((data) => {
+          this.dailyHistoryData = data;
+          this.updateChart();
+        })
+    );
+
+    const specificDay: SpecificDay = { date: startDate };
+
+    this.subscriptions.add(
+      this.dashboardService
+        .getDailyStageHistory(specificDay)
+        .subscribe((data) => {
+          this.chartData = data;
+          this.cdr.detectChanges();
+        })
+    );
   }
 
   updateChart() {
@@ -259,5 +289,9 @@ export class DashComponent implements OnInit {
       },
     ];
     this.chart?.updateSeries(this.chartOptions.series);
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe();
   }
 }

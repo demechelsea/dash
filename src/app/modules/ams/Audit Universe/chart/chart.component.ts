@@ -103,7 +103,7 @@ export class ChartComponents implements OnInit {
         this.stageNames = newData.map((item: any) => item.stage.name);
         if (this.chartOptions.xaxis) {
           this.chartOptions.xaxis.tickAmount = this.stageNames.length;
-        }
+        } 
         this.chart?.updateOptions(this.chartOptions);
         const elapsedTimeValues = newData.map((list: any) => list.elapsedTime);
         const elapsedTimeInSeconds = elapsedTimeValues.map((time: string) => {

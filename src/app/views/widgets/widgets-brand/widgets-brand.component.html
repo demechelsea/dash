@@ -10,7 +10,6 @@
       <ng-container *ngIf="withCharts">
         <c-chart
           #chart="cChart"
-          [data]="widget.data"
           [options]="chartOptions"
           class="position-absolute w-100 h-100"
           type="line"
@@ -20,3 +19,5 @@
     </c-widget-stat-d>
   </c-col>
 </c-row>
+
+
