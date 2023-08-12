@@ -15,8 +15,8 @@ import { InputTextModule } from 'primeng/inputtext';
 import { MessagesModule } from 'primeng/messages';
 import { DropdownModule } from 'primeng/dropdown';
 import { DynamicDialogModule } from 'primeng/dynamicdialog';
-import { DashComponent } from './/Audit Universe/dash/dash.component';
-import { ChartComponents } from './/Audit Universe/chart/chart.component';
+import { WeeklyElpasedTimeComponent } from './Audit Universe/weeklyElpasedTime/weeklyElpasedTime.component';
+import { StageLineGraphComponent } from './Audit Universe/stageLineGraph/stageLineGraph.component';
 import { COBHistoryComponent } from './/Audit Universe/cobHistory/cobHistory.component';
 import { UnusualChartComponents } from './/Audit Universe/unusualBar/unusualBar.component';
 import { NgApexchartsModule } from "ng-apexcharts";
@@ -29,8 +29,8 @@ import { NgApexchartsModule } from "ng-apexcharts";
     AnnualPlanComponent,
     NewAnnualPlanComponent,
     RiskScoreComponent,
-    DashComponent,
-    ChartComponents,
+    WeeklyElpasedTimeComponent,
+    StageLineGraphComponent,
     UnusualChartComponents,
     COBHistoryComponent
   ],

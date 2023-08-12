@@ -31,10 +31,10 @@ export type ChartOptions = {
 
 @Component({
   selector: 'app-line',
-  templateUrl: './chart.component.html',
-  styleUrls: ['./chart.component.scss'],
+  templateUrl: './stageLineGraph.component.html',
+  styleUrls: ['./stageLineGraph.component.scss'],
 })
-export class ChartComponents implements OnInit {
+export class StageLineGraphComponent implements OnInit {
   @Input() data: any;
   public cumulativeElapsedTimeInSeconds: number[] = [];
 

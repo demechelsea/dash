@@ -37,10 +37,10 @@ export type ChartOptions = {
 };
 @Component({
   selector: 'app-dash',
-  templateUrl: './dash.component.html',
-  styleUrls: ['./dash.component.scss'],
+  templateUrl: './weeklyElpasedTime.component.html',
+  styleUrls: ['./weeklyElpasedTime.component.scss'],
 })
-export class DashComponent implements OnInit {
+export class WeeklyElpasedTimeComponent implements OnInit {
   chartData: any;
 
   private subscriptions = new Subscription();

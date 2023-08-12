@@ -5,10 +5,10 @@ import { AuditUniverseComponent } from './Audit Universe/audit-universe/audit-un
 import { NewAuditUniverseComponent } from './Audit Universe/new-audit-universe/newAccount.component';
 import { AnnualPlanComponent } from './Annual plan/annual-plan/annual-plan.component';
 import { NewAnnualPlanComponent } from './Annual plan/new-annual-plan/newAnnualPlan.component';
-import { DashComponent } from './Audit Universe/dash/dash.component';
+import { DashComponent } from './Audit Universe/weeklyElpasedTime/weeklyElpasedTime.component';
 import { ChartComponent } from 'ng-apexcharts';
 import { ChartsComponent } from 'src/app/views/charts/charts.component';
-import { ChartComponents } from './Audit Universe/chart/chart.component';
+import { ChartComponents } from './Audit Universe/stageLineGraph/stageLineGraph.component';
 import { UnusualChartComponents } from './Audit Universe/unusualBar/unusualBar.component';
 
 const routes: Routes = [
