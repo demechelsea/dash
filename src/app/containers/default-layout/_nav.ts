@@ -15,6 +15,14 @@ export const navItems: INavData[] = [
         url: '/ams/newAuditUniverse',
       },
       {
+        name: 'Audit Object Table',
+        url: '/ams/audit-object',
+      },
+      {
+        name: 'Create new audit Object',
+        url: '/ams/newAuditObject',
+      },
+      {
         name: 'Annual Plan Table',
         url: '/ams/annual-plan',
       },

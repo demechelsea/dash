@@ -27,7 +27,7 @@
             [style]="{'width':'630px','height':'45px'}" required minlength="3" />
         </div>
       </div>
-      <p-button label="Create Account" [disabled]="addDivForm.invalid!" type="submit"></p-button>
+      <p-button label="Create audit universe" [disabled]="addDivForm.invalid!" type="submit"></p-button>
     </form>
   </div>
 </div>
@@ -40,7 +40,7 @@
     <div class="row mb-4">
       <div class="col">
         <label for="integer" class=" block mb-2"> Name:</label>
-        <input pInputText id="integer" pKeyFilter="int" ngModel [(ngModel)]="universeInfo.name" name="name"
+        <input pInputText id="integer"  ngModel [(ngModel)]="universeInfo.name" name="name"
           [style]="{'width':'630px','height':'45px'}" required minlength="3" readonly />
       </div>
       <div class="col">
@@ -62,6 +62,6 @@
           [style]="{'width':'630px','height':'45px'}" required minlength="3" />
       </div>
     </div>
-    <p-button label="Update Account" [disabled]="updateDivForm.invalid!" type="submit"></p-button>
+    <p-button label="Update audit universe" [disabled]="updateDivForm.invalid!" type="submit"></p-button>
   </form>
 </div>

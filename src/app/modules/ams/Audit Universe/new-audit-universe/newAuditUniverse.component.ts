@@ -3,26 +3,21 @@ import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ConfirmationService, Message, MessageService } from 'primeng/api';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { AuditUniverseService } from 'src/app/services/auidit-universe/audit-universe.service';
 import { AuditUniverseDTO } from 'src/app/views/models/auditUniverse';
-import { AnnualPlanComponent } from '../annual-plan/annual-plan.component';
-import { RiskScoreComponent } from '../risk-score/risk-score.component';
 
 @Component({
-  selector: 'new-audit-universe',
-  templateUrl: './newAnnualPlan.component.html',
-  styleUrls: ['./newAnnualPlan.component.scss'],
-  providers: [MessageService, ConfirmationService,DialogService],
+  selector: 'newAuditUniverse',
+  templateUrl: './newAuditUniverse.component.html',
+  styleUrls: ['./newAuditUniverse.component.scss'],
+  providers: [MessageService, ConfirmationService],
 })
-export class NewAnnualPlanComponent {
-  public auditUniverses: AuditUniverseDTO[] = [];
+export class NewAuditUniverseComponent {
+  public auditUniverse: AuditUniverseDTO[] = [];
   public auditUniverseR: AuditUniverseDTO[] = [];
   public universeInfo: AuditUniverseDTO;
   selectedUniverseInfo: AuditUniverseDTO;
 
-  ref: DynamicDialogRef | undefined;
-  
   states: any[] = [
     { name: 'Active', value: 'Active' },
     { name: 'Inactive', value: 'Inactive' },
@@ -40,8 +35,7 @@ export class NewAnnualPlanComponent {
     private router: Router,
     private messageService: MessageService,
     private auditUniverseService: AuditUniverseService,
-    private activatedRoute: ActivatedRoute,
-    public dialogService: DialogService
+    private activatedRoute: ActivatedRoute
   ) {}
 
   ngOnInit() {
@@ -55,21 +49,6 @@ export class NewAnnualPlanComponent {
         this.newDiv = false;
       }
     }
-  }
-
-  show() {
-    this.ref = this.dialogService.open(RiskScoreComponent, { header: 'Risk score', width: '50%',});
-}
-
-  public getAuditUniverses(): void {
-    this.auditUniverseService.getAuditUniverse().subscribe(
-      (response: any) => {
-        this.auditUniverses = response.result;
-      },
-      (error: HttpErrorResponse) =>{
-        console.log(error)
-      }
-      );
   }
 
   public addAuditUniverse(addDivForm: NgForm): void {
@@ -135,8 +114,8 @@ export class NewAnnualPlanComponent {
     sendAcc.id = id;
     this.auditUniverseService.getAuditUniverseInfo(sendAcc).subscribe(
       (response: any) => {
-        this.auditUniverseR = [response];
-        this.universeInfo = response;
+        this.auditUniverseR = [response.result];
+        this.universeInfo = response.result;
         this.selectedUniverseInfo = this.universeInfo;
       },
       (error: HttpErrorResponse) => {
@@ -149,5 +128,21 @@ export class NewAnnualPlanComponent {
       }
     );
     return this.auditUniverseR;
+  }
+
+  public getAuditUniverses(): void {
+    this.auditUniverseService.getAuditUniverse().subscribe(
+      (response: AuditUniverseDTO[]) => {
+        this.auditUniverse = response;
+      },
+      (error: HttpErrorResponse) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Faild',
+          detail: error.message,
+        });
+        setTimeout(() => {}, 1000);
+      }
+    );
   }
 }

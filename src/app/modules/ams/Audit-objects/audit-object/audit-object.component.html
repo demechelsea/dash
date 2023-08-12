@@ -1,0 +1,57 @@
+<div class="card">
+    <h5>Audit Object</h5>
+    <p-table #dt1 [value]="auditObject" selectionMode="single" dataKey="id" [tableStyle]="{'min-width': '50rem'}"
+        [rows]="5" [rowsPerPageOptions]="[5,10,15,20]" [paginator]="true" stateStorage="session"
+        stateKey="statedemo-session">
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="id" style="width:2%">ID </th>
+                <th pSortableColumn="name" style="width:24.5%">Name<p-sortIcon field="name"></p-sortIcon></th>
+                <th pSortableColumn="description" style="width:24.5%">Description <p-sortIcon
+                        field="description"></p-sortIcon></th>
+                <th pSortableColumn="type" style="width:24.5%">Audit type</th>
+                <th pSortableColumn="status" style="width:24.5%">Audit universe</th>
+                <th scope="col" style="width:32%">Actions</th>
+            </tr>
+            <tr>
+                <th scope="col"></th>
+                <th scope="col"> <input pInputText type="text"
+                        (input)="dt1.filter($any($event.target)?.value, 'name', 'contains')"
+                        [value]="$any(dt1.filters['name'])?.value" placeholder="Search by Name" class="p-column-filter">
+                </th>
+                <th scope="col"> <input pInputText type="text"
+                        (input)="dt1.filter($any($event.target)?.value, 'description', 'contains')"
+                        [value]="$any(dt1.filters['description'])?.value" placeholder="Search by Description"
+                        class="p-column-filter"></th>
+                <th scope="col"> <input pInputText type="text"
+                        (input)="dt1.filter($any($event.target)?.value, 'auditType', 'contains')"
+                        [value]="$any(dt1.filters['type'])?.value" placeholder="Search by Type" class="p-column-filter">
+                </th>
+                <th scope="col"> <input pInputText type="text"
+                    (input)="dt1.filter($any($event.target)?.value, 'auditUniverse.name', 'contains')"
+                    [value]="$any(dt1.filters['type'])?.value" placeholder="Search by Type" class="p-column-filter">
+            </th>
+                <th scope="col"></th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-auditObject>
+            <tr [pSelectableRow]="auditObject">
+                <td style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" tooltipPosition="top">
+                    {{auditObject?.id}}</td>
+                <td>{{auditObject?.name}}</td>
+                <td>{{auditObject?.description}}</td>
+                <td>{{auditObject?.auditType}}</td>
+                <td>{{auditObject?.auditUniverse?.name}}</td>
+                <td>
+                    <button pButton (click)="updateAuditObject(auditObject.id)" [ngClass]="{updateBlue: true}"
+                        class="p-button-sm" label="Update"></button>
+                </td>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td colspan="5">No found.</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>

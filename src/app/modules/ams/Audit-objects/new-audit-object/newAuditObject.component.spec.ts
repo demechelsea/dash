@@ -5,16 +5,16 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ButtonModule, CardModule, FormModule, GridModule } from '@coreui/angular';
 import { IconSetService } from '@coreui/icons-angular';
 import { iconSubset } from '../../../../icons/icon-subset';
-import { NewAccountComponent } from './newAccount.component';
+import { NewAuditObjectComponent } from './newAuditObject.component';
 
-describe('FormControlsComponent', () => {
-  let component: NewAccountComponent;
-  let fixture: ComponentFixture<NewAccountComponent>;
+describe('NewAuditObjectComponent', () => {
+  let component: NewAuditObjectComponent;
+  let fixture: ComponentFixture<NewAuditObjectComponent>;
   let iconSetService: IconSetService;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [NewAccountComponent],
+      declarations: [NewAuditObjectComponent],
       imports: [CardModule, GridModule, FormsModule, FormModule, ButtonModule, RouterTestingModule],
       providers: [IconSetService]
     })
@@ -25,7 +25,7 @@ describe('FormControlsComponent', () => {
     iconSetService = TestBed.inject(IconSetService);
     iconSetService.icons = { ...iconSubset };
 
-    fixture = TestBed.createComponent(NewAccountComponent);
+    fixture = TestBed.createComponent(NewAuditObjectComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
