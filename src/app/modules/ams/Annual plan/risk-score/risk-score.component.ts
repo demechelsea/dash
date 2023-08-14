@@ -1,147 +1,73 @@
-import { HttpErrorResponse } from '@angular/common/http';
-import { Component } from '@angular/core';
-import { NgForm } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ConfirmationService, Message, MessageService } from 'primeng/api';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { Component, EventEmitter, Inject, Optional, Output } from '@angular/core';
+import { SelectItem } from 'primeng/api';
 import { RiskItemService } from 'src/app/services/risk-item/risk-item.service';
-import { AuditUniverseDTO } from 'src/app/views/models/auditUniverse';
 import { RiskItemDTO } from 'src/app/views/models/riskItemDTO';
-import { AnnualPlanComponent } from '../annual-plan/annual-plan.component';
+import { DynamicDialogRef, DynamicDialogConfig } from 'primeng/dynamicdialog';
+
 
 @Component({
   selector: 'new-audit-universe',
   templateUrl: './risk-score.component.html',
   styleUrls: ['./risk-score.component.scss'],
-  providers: [MessageService, ConfirmationService, DialogService],
 })
 export class RiskScoreComponent {
-  public auditUniverses: AuditUniverseDTO[] = [];
-  public auditUniverseR: AuditUniverseDTO[] = [];
+  riskScores: (RiskItemDTO & { selectedLikelihood: number | null; selectedImpact: number | null })[];
+  savedRiskScores: { riskItem: any | null; frequency: number | null; impact: number | null }[] = [];
 
-  riskScores: RiskItemDTO[];
+  newDiv: boolean = true;
 
-  public universeInfo: AuditUniverseDTO;
-  selectedUniverseInfo: AuditUniverseDTO;
-
-  selectedLikelihood: number;
-  selectedImpact: number;
-
-  route?: ActivatedRoute;
-  update: Boolean = false;
-  newDiv: Boolean = true;
-  public idY: number;
-  uploadedFiles: any[] = [];
-  msgs: Message[] = [];
-
-  created: boolean = false;
+  @Output() onSave = new EventEmitter<void>();
 
   constructor(
-    private router: Router,
-    private messageService: MessageService,
+    public ref: DynamicDialogRef,
     private riskItemService: RiskItemService,
-    private activatedRoute: ActivatedRoute,
-    public dialogService: DialogService
+    public config: DynamicDialogConfig
   ) {}
 
   ngOnInit() {
     this.getRiskItems();
-    // var x = this.activatedRoute.snapshot.paramMap.get('id');
-    // if (x !== null) {
-    //   this.idY = +x;
-    //   if (this.idY) {
-    //     this.getAuditUniverseInfo(this.idY);
-    //     this.update = true;
-    //     this.newDiv = false;
-    //   }
-    // }
+    if (this.config.data?.savedRiskScores) {
+      this.savedRiskScores = this.config.data.savedRiskScores;
+      this.riskScores.forEach((riskScore) => {
+        const savedRiskScore = this.savedRiskScores.find(
+          (item) => item.riskItem === riskScore.id
+        );
+        if (savedRiskScore) {
+          riskScore.selectedLikelihood = savedRiskScore.frequency;
+          riskScore.selectedImpact = savedRiskScore.impact;
+        }
+      });
+    }
   }
+
+  options: SelectItem[] = [
+    { label: '1', value: 1 },
+    { label: '2', value: 2 },
+    { label: '3', value: 3 },
+  ];
 
   public getRiskItems(): void {
     this.riskItemService.getRiskItems().subscribe(
       (response: any) => {
-        this.riskScores = response.result;
+        this.riskScores = response.result.map((riskScore: RiskItemDTO) => ({
+          ...riskScore,
+          selectedLikelihood: null,
+          selectedImpact: null
+        }));
       },
-      (error: HttpErrorResponse) => {
+      (error: any) => {
         console.log(error);
       }
     );
   }
 
-  // public addAuditUniverse(addDivForm: NgForm): void {
-  //   this.auditUniverseService.addAuditUniverse(addDivForm.value).subscribe(
-  //     (response: any) => {
-  //       this.getRiskItems();
-  //       if (response.status) {
-  //         this.messageService.add({
-  //           severity: 'success',
-  //           summary: 'Success',
-  //           detail: 'Audit universe created successfully',
-  //         });
-  //         setTimeout(() => {
-  //           this.messageService.clear();
-  //           this.router.navigate(['ams/audit-universe']);
-  //         }, 1000);
-  //         this.getRiskItems();
-  //       } else {
-  //         this.messageService.add({
-  //           severity: 'error',
-  //           summary: 'Failed',
-  //           detail: 'Failed to create audit universe',
-  //         });
-  //         setTimeout(() => {
-  //           this.messageService.clear();
-  //         }, 1000);
-  //       }
-  //     },
-  //     (error: any) => {}
-  //   );
-  // }
-
-  // public updateAuditUniverses(updateDivForm: NgForm): void {
-  //   this.auditUniverseService
-  //     .updateAuditUniverse(updateDivForm.value)
-  //     .subscribe(
-  //       (response: any) => {
-  //         this.messageService.add({
-  //           severity: 'success',
-  //           summary: 'Success',
-  //           detail: 'Audit universe updated successfully',
-  //         });
-  //         setTimeout(() => {
-  //           this.router.navigate(['ams/audit-universe']);
-  //         }, 1000);
-  //         this.getRiskItems();
-  //       },
-  //       (error: HttpErrorResponse) => {
-  //         this.messageService.add({
-  //           severity: 'error',
-  //           summary: 'Failed',
-  //           detail: 'Audit universe update failed',
-  //         });
-  //         setTimeout(() => {}, 1000);
-  //       }
-  //     );
-  // }
-
-  // public getAuditUniverseInfo(id: number): AuditUniverseDTO[] {
-  //   let sendAcc = new AuditUniverseDTO();
-  //   sendAcc.id = id;
-  //   this.auditUniverseService.getAuditUniverseInfo(sendAcc).subscribe(
-  //     (response: any) => {
-  //       this.auditUniverseR = [response.result];
-  //       this.universeInfo = response.result;
-  //       this.selectedUniverseInfo = this.universeInfo;
-  //     },
-  //     (error: HttpErrorResponse) => {
-  //       this.messageService.add({
-  //         severity: 'error',
-  //         summary: 'Faild',
-  //         detail: error.message,
-  //       });
-  //       setTimeout(() => {}, 1000);
-  //     }
-  //   );
-  //   return this.auditUniverseR;
-  // }
+  saveRiskScores() {
+    this.savedRiskScores = this.riskScores.map(riskScore => ({
+      riskItem: riskScore.id,
+      frequency: riskScore.selectedLikelihood,
+      impact: riskScore.selectedImpact,
+    }));
+    console.log('Saved risk scores:', this.savedRiskScores);
+    this.ref.close(this.savedRiskScores);  }
+  
 }

@@ -1,4 +1,3 @@
-<p-messages styles="position: absolute; z-index: 1; right: 1em; margin: -1em 0;" [value]="msgs"></p-messages>
 <div *ngIf="newDiv">
   <form #addDivForm="ngForm">
     <div class="flex flex-col justify-around flex-wrap m-16">
@@ -18,55 +17,15 @@
           <p>{{ i + 1 }}. {{ riskScore.name }}</p>
         </div>
         <div class="column">
-          <p-dropdown [options]="[1, 2, 3]" name="likelihood" optionLabel="likelihood" ngModel
-            [(ngModel)]="selectedLikelihood">
-            <ng-template pTemplate="selectedItem">
-              <div class="flex align-items-center gap-2" *ngIf="selectedLikelihood">
-                <div>{{selectedLikelihood}}</div>
-              </div>
-            </ng-template>
-            <ng-template let-universe pTemplate="item">
-              <div class="flex align-items-center gap-2">
-                <div>{{universe}}</div>
-              </div>
-            </ng-template>
-          </p-dropdown>
+          <p-dropdown [options]="options" [(ngModel)]="riskScore.selectedLikelihood" optionLabel="label"></p-dropdown>
         </div>
         <div class="column">
-          <p-dropdown [options]="[1, 2, 3]" name="impact" optionLabel="impact" ngModel [(ngModel)]="selectedImpact">
-            <ng-template pTemplate="selectedItem">
-              <div class="flex align-items-center gap-2" *ngIf="selectedImpact">
-                <div>{{selectedImpact}}</div>
-              </div>
-            </ng-template>
-            <ng-template let-universe pTemplate="item">
-              <div class="flex align-items-center gap-2">
-                <div>{{universe}}</div>
-              </div>
-            </ng-template>
-          </p-dropdown>
+          <p-dropdown [options]="options" name="impact" optionLabel="label" [(ngModel)]="riskScore.selectedImpact"></p-dropdown>
         </div>
-
       </div>
     </div>
-
     <div class="save-button">
-      <p-button class="flex flex-row items-end w-full m-16" label="Save" [disabled]="addDivForm.invalid!"
-        type="submit"></p-button>
+      <p-button label="Save" (click)="saveRiskScores()" type="button"></p-button>
     </div>
   </form>
 </div>
-
-
-
-<div *ngIf="update">
-  <div>
-    <form #addDivForm="ngForm">
-      <div class="flex flex-row justify-around flex-wrap m-16">
-        <div *ngFor="let riskScore of riskScores" class="flex flex-col">
-          <h3>{{ riskScore.name }}</h3>
-        </div>
-      </div>
-      <p-button label="Save" [disabled]="addDivForm.invalid!" type="submit"></p-button>
-    </form>
-  </div>

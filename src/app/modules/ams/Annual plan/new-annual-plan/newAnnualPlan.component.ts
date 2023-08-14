@@ -6,7 +6,6 @@ import { ConfirmationService, Message, MessageService } from 'primeng/api';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { AuditUniverseService } from 'src/app/services/auidit-universe/audit-universe.service';
 import { AuditUniverseDTO } from 'src/app/views/models/auditUniverse';
-import { AnnualPlanComponent } from '../annual-plan/annual-plan.component';
 import { RiskScoreComponent } from '../risk-score/risk-score.component';
 
 @Component({
@@ -22,6 +21,7 @@ export class NewAnnualPlanComponent {
   selectedUniverseInfo: AuditUniverseDTO;
 
   ref: DynamicDialogRef | undefined;
+  savedRiskScores: { riskItem: any | null; frequency: number | null; impact: number | null }[] = [];
   
   states: any[] = [
     { name: 'Active', value: 'Active' },
@@ -58,8 +58,23 @@ export class NewAnnualPlanComponent {
   }
 
   show() {
-    this.ref = this.dialogService.open(RiskScoreComponent, { header: 'Risk score', width: '50%',});
-}
+    this.ref = this.dialogService.open(RiskScoreComponent, {
+      header: 'Risk score',
+      width: '50%',
+      data: { savedRiskScores: this.savedRiskScores },
+    });
+    this.ref.onClose.subscribe((savedRiskScores) => {
+      if (savedRiskScores) {
+        this.savedRiskScores = savedRiskScores;
+      }
+    });
+  }
+  
+
+  onSave(savedRiskScores: { riskItem: any | null; frequency: number | null; impact: number | null }[]) {
+    this.savedRiskScores = savedRiskScores;
+    this.ref?.close();
+  }
 
   public getAuditUniverses(): void {
     this.auditUniverseService.getAuditUniverse().subscribe(

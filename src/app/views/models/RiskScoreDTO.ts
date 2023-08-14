@@ -2,7 +2,7 @@ import { AnnualPlanDTO } from "./annualPlan";
 import { BaseModel } from "./base";
 
 export interface RistScoreDTO extends BaseModel {
-    riskItem: number;
+    riskItem: number ;
     annualPlan: AnnualPlanDTO;
     frequency: number;
     impact: number;
