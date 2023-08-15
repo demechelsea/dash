@@ -12,6 +12,8 @@ import { AuditObjectComponent } from './Audit-objects/audit-object/audit-object.
 import { NewAuditObjectComponent } from './Audit-objects/new-audit-object/newAuditObject.component';
 import { NewAuditableAreaComponent } from './Auditable-area/new-auditable-area/newAuditableArea.component';
 import { AuditableAreaComponent } from './Auditable-area/auditable-area/auditable-area.component';
+import { NewCheckListComponent } from './Checklist/new-checklist/newChecklist.component';
+import { CheckListComponent } from './Checklist/checklist/checkList.component';
 
 const routes: Routes = [
   {
@@ -73,21 +75,21 @@ const routes: Routes = [
 
       {
         path: 'checklist',
-        component: AuditUniverseComponent,
+        component: CheckListComponent,
         data: {
           title: 'Checklist Table',
         },
       },
       {
         path: 'newCkeckList',
-        component: NewAuditUniverseComponent,
+        component: NewCheckListComponent,
         data: {
           title: 'New Checklist',
         },
       },
       {
         path: 'newCkeckList/:id',
-        component: NewAuditUniverseComponent,
+        component: NewCheckListComponent,
         data: {
           title: 'Update Checklist',
         },

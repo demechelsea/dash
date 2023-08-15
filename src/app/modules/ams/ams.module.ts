@@ -9,6 +9,10 @@ import { RiskScoreComponent } from './Annual plan/risk-score/risk-score.componen
 import { NewAuditUniverseComponent } from './Audit Universe/new-audit-universe/newAuditUniverse.component';
 import { AuditableAreaComponent } from './Auditable-area/auditable-area/auditable-area.component';
 import { NewAuditableAreaComponent } from './Auditable-area/new-auditable-area/newAuditableArea.component';
+import { NewCheckListComponent } from './Checklist/new-checklist/newChecklist.component';
+import { CheckListComponent } from './Checklist/checklist/checkList.component';
+
+
 import { AmsRoutingModule } from './ams-routing.module';
 import {ButtonModule} from 'primeng/button';
 import {TableModule} from 'primeng/table';
@@ -41,7 +45,9 @@ import { NgApexchartsModule } from "ng-apexcharts";
     AuditObjectComponent,
     NewAuditObjectComponent,
     AuditableAreaComponent,
-    NewAuditableAreaComponent
+    NewAuditableAreaComponent,
+    NewCheckListComponent,
+    CheckListComponent
   ],
   imports: [
     NgApexchartsModule,

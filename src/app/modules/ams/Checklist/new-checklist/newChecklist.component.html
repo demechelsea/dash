@@ -1,0 +1,105 @@
+<p-messages styles="position: absolute; z-index: 1; right: 1em; margin: -1em 0;" [value]="msgs"></p-messages>
+<div *ngIf="newDiv">
+  <div>
+    <form #addDivForm="ngForm" (ngSubmit)="addChecklist(addDivForm)">
+      <div class="row">
+        <div class="col mb-4">
+          <label for="integer" class="block mb-2"> Name: </label>
+          <input pInputText id="integer" pKeyFilter="int" ngModel name="name"
+            [style]="{'width':'630px','height':'45px'}" required minlength="10" />
+        </div>
+        <div class="col">
+          <label for="hex" class=" block mb-2"> Audit object: </label>
+          <p-dropdown  [required]="true" [options]="auditObjects" name="auditObjectDTO" optionLabel="name" [filter]="true" ngModel
+            [(ngModel)]="selectedAuditObjectInfo" filterBy="auditObjectDTO" [showClear]="true" placeholder="Choose audit object"
+            styleClass="p-password" [style]="{'width':'630px','height':'45px'}">
+            <ng-template pTemplate="selectedItem">
+              <div class="flex align-items-center gap-2" *ngIf="selectedAuditObjectInfo">
+                <div>{{selectedAuditObjectInfo.name}}</div>
+              </div>
+            </ng-template> 
+            <ng-template let-auditableObject pTemplate="item">
+              <div class="flex align-items-center gap-2">
+                <div>{{auditableObject?.name}}</div>
+              </div>
+            </ng-template>
+          </p-dropdown>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col mb-4">
+          <label for="hex" class=" block mb-2"> Auditable area: </label>
+          <p-dropdown  [required]="true" [options]="auditableArea" name="auditableAreaDTO" optionLabel="name" [filter]="true" ngModel
+            [(ngModel)]="selectedAuditableArea" filterBy="auditableAreaDTO" [showClear]="true" placeholder="Choose auditable area"
+            styleClass="p-password" [style]="{'width':'630px','height':'45px'}">
+            <ng-template pTemplate="selectedItem">
+              <div class="flex align-items-center gap-2" *ngIf="selectedAuditableArea">
+                <div>{{selectedAuditableArea.name}}</div>
+              </div>
+            </ng-template> 
+            <ng-template let-auditableAreaDTO pTemplate="item">
+              <div class="flex align-items-center gap-2">
+                <div>{{auditableAreaDTO?.name}}</div>
+              </div>
+            </ng-template>
+          </p-dropdown>
+        </div>
+        <div class="col mb-4">
+        </div>
+      </div>
+      <p-button label="Create auditable area" [disabled]="addDivForm.invalid!" type="submit"></p-button>
+    </form>
+  </div>
+</div>
+
+
+<div *ngIf="update">
+  <form #updateDivForm="ngForm" (ngSubmit)="updateChecklist(updateDivForm)">
+    <input type="hidden" name="id" ngModel [(ngModel)]="idY">
+
+    <div class="row mb-4">
+      <div class="col">
+        <label for="integer" class=" block mb-2"> Name:</label>
+        <input pInputText id="integer" ngModel [(ngModel)]="auditObjectInfo.name" name="name"
+          [style]="{'width':'630px','height':'45px'}" required minlength="3" />
+      </div>
+      <div class="col">
+        <label for="hex" class=" block mb-2"> Audit object: </label>
+        <p-dropdown  [required]="true" [options]="auditObjects" name="name" optionLabel="name" [filter]="true" ngModel
+          [(ngModel)]="selectedAuditObjectInfo.name" filterBy="name" [showClear]="true" placeholder="Choose audit object"
+          styleClass="p-password" [style]="{'width':'630px','height':'45px'}">
+          <ng-template pTemplate="selectedItem">
+            <div class="flex align-items-center gap-2" *ngIf="selectedAuditObjectInfo?.name">
+              <div>{{selectedAuditObjectInfo.name}}</div>
+            </div>
+          </ng-template> 
+          <ng-template let-auditObject pTemplate="item">
+            <div class="flex align-items-center gap-2">
+              <div>{{auditObject?.name}}</div>
+            </div>
+          </ng-template>
+        </p-dropdown>
+      </div>
+    </div>
+    <div class="row mb-4">
+      <div class="col">
+        <label for="hex" class=" block mb-2"> Auditable area: </label>
+        <p-dropdown  [required]="true" [options]="auditableArea" name="auditUniverse" optionLabel="name" [filter]="true" ngModel
+          [(ngModel)]="selectedAuditableArea.name" filterBy="name" [showClear]="true" placeholder="Choose auditable area"
+          styleClass="p-password" [style]="{'width':'630px','height':'45px'}">
+          <ng-template pTemplate="selectedItem">
+            <div class="flex align-items-center gap-2" *ngIf="selectedAuditableArea?.name">
+              <div>{{selectedAuditableArea.name}}</div>
+            </div>
+          </ng-template> 
+          <ng-template let-auditableArea pTemplate="item">
+            <div class="flex align-items-center gap-2">
+              <div>{{auditableArea?.name}}</div>
+            </div>
+          </ng-template>
+        </p-dropdown>
+      </div>
+    </div>
+    <p-button label="Update auditable area" [disabled]="updateDivForm.invalid!" type="submit"></p-button>
+  </form>
+</div>

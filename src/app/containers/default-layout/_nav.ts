@@ -44,6 +44,15 @@ export const navItems: INavData[] = [
         url: '/ams/newAuditableArea',
       },
 
+      {
+        name: 'Checklist Table',
+        url: '/ams/checklist',
+      },
+      {
+        name: 'Create new checklist',
+        url: '/ams/newCkeckList',
+      },
+
 
       {
         name: 'Dash',

@@ -42,7 +42,6 @@ export class NewAuditObjectComponent {
   ) {}
 
   ngOnInit() {
-    this.getAuditObjects();
     var x = this.activatedRoute.snapshot.paramMap.get('id');
     if (x !== null) {
       this.idY = +x;
@@ -65,7 +64,6 @@ export class NewAuditObjectComponent {
   public addAuditObject(addDivForm: NgForm): void {
     this.auditObjectService.addAuditObject(addDivForm.value).subscribe(
       (response: any) => {
-        this.getAuditObjects();
         if (response.status) {
           this.messageService.add({
             severity: 'success',
@@ -76,7 +74,6 @@ export class NewAuditObjectComponent {
             this.messageService.clear();
             this.router.navigate(['ams/audit-object']);
           }, 1000);
-          this.getAuditObjects();
         } else {
           this.messageService.add({
             severity: 'error',
@@ -108,7 +105,7 @@ export class NewAuditObjectComponent {
           setTimeout(() => {
             this.router.navigate(['ams/audit-object']);
           }, 1000);
-          this.getAuditObjects();
+          this.getAuditUniverses();
         },
         (error: HttpErrorResponse) => {
           this.messageService.add({
@@ -142,7 +139,7 @@ export class NewAuditObjectComponent {
     return this.auditObjectR;
   }
 
-  public getAuditObjects(): void {
+  public getAuditUniverses(): void {
     this.auditUniverseService.getAuditUniverse().subscribe(
       (response: any) => {
         this.auditUniverses = response.result;
