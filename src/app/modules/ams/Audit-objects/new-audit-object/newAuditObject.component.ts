@@ -54,6 +54,14 @@ export class NewAuditObjectComponent {
     }
   }
 
+  onSubmit(auditObjectForm: NgForm) {
+    if (this.update) {
+      this.updateAuditObjects(auditObjectForm);
+    } else {
+      this.addAuditObject(auditObjectForm);
+    }
+  }
+
   public addAuditObject(addDivForm: NgForm): void {
     this.auditObjectService.addAuditObject(addDivForm.value).subscribe(
       (response: any) => {
@@ -87,6 +95,7 @@ export class NewAuditObjectComponent {
   
 
   public updateAuditObjects(updateDivForm: NgForm): void {
+    alert("pppp")
     this.auditObjectService
       .updateAuditObject(updateDivForm.value)
       .subscribe(

@@ -10,6 +10,8 @@ import { WeeklyElpasedTimeComponent } from './Dashboards/weeklyElpasedTime/weekl
 import { StageLineGraphComponent } from './Dashboards/stageLineGraph/stageLineGraph.component';
 import { AuditObjectComponent } from './Audit-objects/audit-object/audit-object.component';
 import { NewAuditObjectComponent } from './Audit-objects/new-audit-object/newAuditObject.component';
+import { NewAuditableAreaComponent } from './Auditable-area/new-auditable-area/newAuditableArea.component';
+import { AuditableAreaComponent } from './Auditable-area/auditable-area/auditable-area.component';
 
 const routes: Routes = [
   {
@@ -44,6 +46,8 @@ const routes: Routes = [
           title: 'Update Audit Object',
         },
       },
+
+
       {
         path: 'audit-universe',
         component: AuditUniverseComponent,
@@ -65,6 +69,76 @@ const routes: Routes = [
           title: 'Update Audit Universe',
         },
       },
+
+
+      {
+        path: 'checklist',
+        component: AuditUniverseComponent,
+        data: {
+          title: 'Checklist Table',
+        },
+      },
+      {
+        path: 'newCkeckList',
+        component: NewAuditUniverseComponent,
+        data: {
+          title: 'New Checklist',
+        },
+      },
+      {
+        path: 'newCkeckList/:id',
+        component: NewAuditUniverseComponent,
+        data: {
+          title: 'Update Checklist',
+        },
+      },
+
+
+      {
+        path: 'newAuditableArea',
+        component: NewAuditableAreaComponent,
+        data: {
+          title: 'New Auditable Area',
+        },
+      },
+      {
+        path: 'auditable-area',
+        component: AuditableAreaComponent,
+        data: {
+          title: 'Auditable Area Table',
+        },
+      },
+      {
+        path: 'newAuditableArea/:id',
+        component: NewAuditableAreaComponent,
+        data: {
+          title: 'Update Auditable Area',
+        },
+      },
+
+      {
+        path: 'newCkeckList',
+        component: NewAuditableAreaComponent,
+        data: {
+          title: 'New Checklist',
+        },
+      },
+      {
+        path: 'checklist',
+        component: AuditableAreaComponent,
+        data: {
+          title: 'Checklist Table',
+        },
+      },
+      {
+        path: 'newCkeckList/:id',
+        component: NewAuditableAreaComponent,
+        data: {
+          title: 'Update Checklist',
+        },
+      },
+
+
       {
         path: 'annual-plan',
         component: AnnualPlanComponent,
@@ -79,6 +153,15 @@ const routes: Routes = [
           title: 'New Annual Plan',
         },
       },
+      {
+        path: 'newAnnualPlan/:id',
+        component: NewAnnualPlanComponent,
+        data: {
+          title: 'Update Annual Plan',
+        },
+      },
+
+
       {
         path: 'dash',
         component: WeeklyElpasedTimeComponent,

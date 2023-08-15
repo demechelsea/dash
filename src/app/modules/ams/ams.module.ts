@@ -7,6 +7,8 @@ import { AuditObjectComponent } from './Audit-objects/audit-object/audit-object.
 import { NewAuditObjectComponent } from './Audit-objects/new-audit-object/newAuditObject.component';
 import { RiskScoreComponent } from './Annual plan/risk-score/risk-score.component';
 import { NewAuditUniverseComponent } from './Audit Universe/new-audit-universe/newAuditUniverse.component';
+import { AuditableAreaComponent } from './Auditable-area/auditable-area/auditable-area.component';
+import { NewAuditableAreaComponent } from './Auditable-area/new-auditable-area/newAuditableArea.component';
 import { AmsRoutingModule } from './ams-routing.module';
 import {ButtonModule} from 'primeng/button';
 import {TableModule} from 'primeng/table';
@@ -37,7 +39,9 @@ import { NgApexchartsModule } from "ng-apexcharts";
     UnusualChartComponents,
     COBHistoryComponent,
     AuditObjectComponent,
-    NewAuditObjectComponent
+    NewAuditObjectComponent,
+    AuditableAreaComponent,
+    NewAuditableAreaComponent
   ],
   imports: [
     NgApexchartsModule,

@@ -1,6 +1,6 @@
 import { BaseModel } from "./base";
 
-export interface AuditableAreasDTO extends BaseModel {
+export class AuditableAreasDTO extends BaseModel {
     name: string;
     description: string;
 }

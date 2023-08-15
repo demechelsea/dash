@@ -29,23 +29,23 @@ export class AnnualPlanService {
     );
   }
 
-  public getAnnualPlanInfo(auditUniverse: AnnualPlanDTO): Observable<any>{
+  public getAnnualPlanInfo(annualPlan: AnnualPlanDTO): Observable<any>{
     this.init();
-    return this.http.post<any>(`${this.apiServiceUrl}/ams/annualPlan/findById`,auditUniverse, this.httpOptions)
+    return this.http.post<any>(`${this.apiServiceUrl}/ams/annualPlan/findById`,annualPlan, this.httpOptions)
   }
 
-  public addAnnualPlan(auditUniverse: AnnualPlanDTO): Observable<any> {
+  public addAnnualPlan(annualPlan: AnnualPlanDTO): Observable<any> {
     this.init();
     return this.http.post(
       `${this.apiServiceUrl}/ams/annualPlan/register`,
-      auditUniverse,
+      annualPlan,
       this.httpOptions
     );
   }
 
-  public updateAnnualPlan(auditUniverse: AnnualPlanDTO): Observable<any>{
+  public updateAnnualPlan(annualPlan: AnnualPlanDTO): Observable<any>{
     this.init();
-    return this.http.post(`${this.apiServiceUrl}/ams/annualPlan/update`, auditUniverse, this.httpOptions)
+    return this.http.post(`${this.apiServiceUrl}/ams/annualPlan/update`, annualPlan, this.httpOptions)
   }
 }
 

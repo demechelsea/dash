@@ -14,6 +14,8 @@ export const navItems: INavData[] = [
         name: 'Create new audit universe',
         url: '/ams/newAuditUniverse',
       },
+
+
       {
         name: 'Audit Object Table',
         url: '/ams/audit-object',
@@ -22,6 +24,8 @@ export const navItems: INavData[] = [
         name: 'Create new audit Object',
         url: '/ams/newAuditObject',
       },
+
+
       {
         name: 'Annual Plan Table',
         url: '/ams/annual-plan',
@@ -30,6 +34,17 @@ export const navItems: INavData[] = [
         name: 'Create new annual plan',
         url: '/ams/newAnnualPlan',
       },
+
+      {
+        name: 'Auditable Area Table',
+        url: '/ams/auditable-area',
+      },
+      {
+        name: 'Create new auditable area',
+        url: '/ams/newAuditableArea',
+      },
+
+
       {
         name: 'Dash',
         url: '/ams/dash',
