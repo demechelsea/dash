@@ -4,9 +4,10 @@ import { NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ConfirmationService, Message, MessageService } from 'primeng/api';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { AuditUniverseService } from 'src/app/services/auidit-universe/audit-universe.service';
+import { AnnualPlanService } from 'src/app/services/annual-plan/annual-plan.service';
 import { AuditUniverseDTO } from 'src/app/views/models/auditUniverse';
 import { RiskScoreComponent } from '../risk-score/risk-score.component';
+import { AnnualPlanDTO } from 'src/app/views/models/annualPlan';
 
 @Component({
   selector: 'new-audit-universe',
@@ -39,13 +40,13 @@ export class NewAnnualPlanComponent {
   constructor(
     private router: Router,
     private messageService: MessageService,
-    private auditUniverseService: AuditUniverseService,
+    private annualPlanService: AnnualPlanService,
     private activatedRoute: ActivatedRoute,
     public dialogService: DialogService
   ) {}
 
   ngOnInit() {
-    this.getAuditUniverses();
+    this.getAnnualPlans();
     var x = this.activatedRoute.snapshot.paramMap.get('id');
     if (x !== null) {
       this.idY = +x;
@@ -56,6 +57,7 @@ export class NewAnnualPlanComponent {
       }
     }
   }
+
 
   show() {
     this.ref = this.dialogService.open(RiskScoreComponent, {
@@ -70,14 +72,14 @@ export class NewAnnualPlanComponent {
     });
   }
   
-
   onSave(savedRiskScores: { riskItem: any | null; frequency: number | null; impact: number | null }[]) {
     this.savedRiskScores = savedRiskScores;
+    console.log("Saved risk scores:", this.savedRiskScores);
     this.ref?.close();
   }
 
-  public getAuditUniverses(): void {
-    this.auditUniverseService.getAuditUniverse().subscribe(
+  public getAnnualPlans(): void {
+    this.annualPlanService.getAnnualPlans().subscribe(
       (response: any) => {
         this.auditUniverses = response.result;
       },
@@ -88,25 +90,38 @@ export class NewAnnualPlanComponent {
   }
 
   public addAuditUniverse(addDivForm: NgForm): void {
-    this.auditUniverseService.addAuditUniverse(addDivForm.value).subscribe(
+    const annualPlanData: AnnualPlanDTO = {
+      ...addDivForm.value,
+      riskScores: this.savedRiskScores.map(riskScore => ({
+        riskItem: { id: riskScore.riskItem },
+        frequency: riskScore.frequency,
+        impact: riskScore.impact,
+        total: null,
+      }))
+    };
+    console.log("Annual plan data:", annualPlanData);
+    
+    this.annualPlanService.addAnnualPlan(annualPlanData).subscribe(
       (response: any) => {
-        this.getAuditUniverses();
+        console.log("Response:", response);
+        
+        this.getAnnualPlans();
         if (response.status) {
           this.messageService.add({
             severity: 'success',
             summary: 'Success',
-            detail: 'Audit universe created successfully',
+            detail: 'Annual plan created successfully',
           });
           setTimeout(() => {
             this.messageService.clear();
-            this.router.navigate(['ams/audit-universe']);
+            this.router.navigate(['ams/annual-plan']);
           }, 1000);
-          this.getAuditUniverses();
+          this.getAnnualPlans();
         } else {
           this.messageService.add({
             severity: 'error',
             summary: 'Failed',
-            detail: 'Failed to create audit universe',
+            detail: 'Failed to create annual plan',
           });
           setTimeout(() => {
             this.messageService.clear();
@@ -118,10 +133,11 @@ export class NewAnnualPlanComponent {
   }
   
   
+  
 
-  public updateAuditUniverses(updateDivForm: NgForm): void {
-    this.auditUniverseService
-      .updateAuditUniverse(updateDivForm.value)
+  public updateAnnualPlan(updateDivForm: NgForm): void {
+    this.annualPlanService
+      .updateAnnualPlan(updateDivForm.value)
       .subscribe(
         (response: any) => {
           this.messageService.add({
@@ -132,7 +148,7 @@ export class NewAnnualPlanComponent {
           setTimeout(() => {
             this.router.navigate(['ams/audit-universe']);
           }, 1000);
-          this.getAuditUniverses();
+          this.getAnnualPlans();
         },
         (error: HttpErrorResponse) => {
           this.messageService.add({
@@ -146,9 +162,9 @@ export class NewAnnualPlanComponent {
   }
 
   public getAuditUniverseInfo(id: number): AuditUniverseDTO[] {
-    let sendAcc = new AuditUniverseDTO();
+    let sendAcc = new AnnualPlanDTO();
     sendAcc.id = id;
-    this.auditUniverseService.getAuditUniverseInfo(sendAcc).subscribe(
+    this.annualPlanService.getAnnualPlanInfo(sendAcc).subscribe(
       (response: any) => {
         this.auditUniverseR = [response];
         this.universeInfo = response;

@@ -17,15 +17,16 @@
           <p>{{ i + 1 }}. {{ riskScore.name }}</p>
         </div>
         <div class="column">
-          <p-dropdown [options]="options" [(ngModel)]="riskScore.selectedLikelihood" optionLabel="label"></p-dropdown>
+          <p-dropdown name="selectedLikelihood" [options]="options" [(ngModel)]="riskScore.selectedLikelihood"></p-dropdown>
         </div>
         <div class="column">
-          <p-dropdown [options]="options" name="impact" optionLabel="label" [(ngModel)]="riskScore.selectedImpact"></p-dropdown>
+          <p-dropdown  name="selectedImpact" [options]="options" [(ngModel)]="riskScore.selectedImpact"></p-dropdown>
         </div>
       </div>
     </div>
     <div class="save-button">
       <p-button label="Save" (click)="saveRiskScores()" type="button"></p-button>
+
     </div>
   </form>
 </div>

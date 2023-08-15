@@ -2,7 +2,7 @@ import { RistScoreDTO } from "./RiskScoreDTO";
 import { AuditUniverseDTO } from "./auditUniverse";
 import { BaseModel } from "./base";
 
-export interface AnnualPlanDTO extends BaseModel {
+export class AnnualPlanDTO extends BaseModel {
     name: string;
     description: string;
     year: string;

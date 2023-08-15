@@ -1,7 +1,9 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { AnnualPlanService } from 'src/app/services/annual-plan/annual-plan.service';
 import { AuditUniverseService } from 'src/app/services/auidit-universe/audit-universe.service';
+import { AnnualPlanDTO } from 'src/app/views/models/annualPlan';
 import { AuditUniverseDTO } from 'src/app/views/models/auditUniverse';
 
 
@@ -12,14 +14,15 @@ import { AuditUniverseDTO } from 'src/app/views/models/auditUniverse';
 })
 export class AnnualPlanComponent {
 
-  public auditUniverse: AuditUniverseDTO[] = [];
+  public annualPlan: AnnualPlanDTO[] = [];
+  public risk: AnnualPlanDTO[] = [];
 
   public accounts: AuditUniverseDTO[] = [];
   public auditUniverseR: AuditUniverseDTO[] = [];
   public universeInfo: AuditUniverseDTO;
   selectedUniverseInfo: AuditUniverseDTO;
 
-  constructor(private auditUniverseService: AuditUniverseService,private router:Router) { }
+  constructor( private annualPlanService: AnnualPlanService,private auditUniverseService: AuditUniverseService,private router:Router) { }
 
 
   ngOnInit(){
@@ -27,9 +30,9 @@ export class AnnualPlanComponent {
   }
 
   public getAuditUniverses(): void {
-    this.auditUniverseService.getAuditUniverse().subscribe(
+    this.annualPlanService.getAnnualPlans().subscribe(
       (response: any) => {
-        this.auditUniverse = response.result;
+        this.annualPlan = response.result;
         console.log(response)
       },
       (error: HttpErrorResponse) =>{

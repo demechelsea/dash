@@ -3,6 +3,7 @@ import { SelectItem } from 'primeng/api';
 import { RiskItemService } from 'src/app/services/risk-item/risk-item.service';
 import { RiskItemDTO } from 'src/app/views/models/riskItemDTO';
 import { DynamicDialogRef, DynamicDialogConfig } from 'primeng/dynamicdialog';
+import { HttpErrorResponse } from '@angular/common/http';
 
 
 @Component({
@@ -16,7 +17,7 @@ export class RiskScoreComponent {
 
   newDiv: boolean = true;
 
-  @Output() onSave = new EventEmitter<void>();
+  @Output() onSave = new EventEmitter<{ riskItem: any | null; frequency: number | null; impact: number | null }[]>();
 
   constructor(
     public ref: DynamicDialogRef,
@@ -25,9 +26,8 @@ export class RiskScoreComponent {
   ) {}
 
   ngOnInit() {
-    this.getRiskItems();
-    if (this.config.data?.savedRiskScores) {
-      this.savedRiskScores = this.config.data.savedRiskScores;
+     this.getRiskItems();
+    if (this.savedRiskScores && this.riskScores) {
       this.riskScores.forEach((riskScore) => {
         const savedRiskScore = this.savedRiskScores.find(
           (item) => item.riskItem === riskScore.id
@@ -39,35 +39,37 @@ export class RiskScoreComponent {
       });
     }
   }
-
+  
   options: SelectItem[] = [
     { label: '1', value: 1 },
     { label: '2', value: 2 },
     { label: '3', value: 3 },
   ];
 
-  public getRiskItems(): void {
+  getRiskItems() {
     this.riskItemService.getRiskItems().subscribe(
       (response: any) => {
         this.riskScores = response.result.map((riskScore: RiskItemDTO) => ({
           ...riskScore,
           selectedLikelihood: null,
-          selectedImpact: null
+          selectedImpact: null,
         }));
       },
-      (error: any) => {
+      (error: HttpErrorResponse) => {
         console.log(error);
       }
     );
   }
+  
 
   saveRiskScores() {
-    this.savedRiskScores = this.riskScores.map(riskScore => ({
+    this.savedRiskScores = this.riskScores.map((riskScore) => ({
       riskItem: riskScore.id,
-      frequency: riskScore.selectedLikelihood,
-      impact: riskScore.selectedImpact,
+      frequency: riskScore.selectedLikelihood || 1,
+      impact: riskScore.selectedImpact || 1,
     }));
     console.log('Saved risk scores:', this.savedRiskScores);
-    this.ref.close(this.savedRiskScores);  }
+    this.ref.close(this.savedRiskScores);
+  }
   
 }
