@@ -33,6 +33,7 @@ import {
   SharedModule,
   SidebarModule,
   TabsModule,
+  ToastModule,
   UtilitiesModule
 } from '@coreui/angular';
 
@@ -79,6 +80,7 @@ const routes: Routes = [
     CardModule,
     NgScrollbarModule,
     HttpClientModule ,
+    ToastModule,
     RouterModule.forRoot(routes)
   ],
   providers: [

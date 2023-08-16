@@ -49,7 +49,6 @@ const routes: Routes = [
         },
       },
 
-
       {
         path: 'audit-universe',
         component: AuditUniverseComponent,
@@ -71,7 +70,6 @@ const routes: Routes = [
           title: 'Update Audit Universe',
         },
       },
-
 
       {
         path: 'checklist',
@@ -95,26 +93,11 @@ const routes: Routes = [
         },
       },
 
-
-      {
-        path: 'newAuditableArea',
-        component: NewAuditableAreaComponent,
-        data: {
-          title: 'New Auditable Area',
-        },
-      },
       {
         path: 'auditable-area',
         component: AuditableAreaComponent,
         data: {
           title: 'Auditable Area Table',
-        },
-      },
-      {
-        path: 'newAuditableArea/:id',
-        component: NewAuditableAreaComponent,
-        data: {
-          title: 'Update Auditable Area',
         },
       },
 
@@ -140,7 +123,6 @@ const routes: Routes = [
         },
       },
 
-
       {
         path: 'annual-plan',
         component: AnnualPlanComponent,
@@ -162,7 +144,6 @@ const routes: Routes = [
           title: 'Update Annual Plan',
         },
       },
-
 
       {
         path: 'dash',

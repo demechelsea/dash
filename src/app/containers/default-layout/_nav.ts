@@ -36,12 +36,8 @@ export const navItems: INavData[] = [
       },
 
       {
-        name: 'Auditable Area Table',
+        name: 'Auditable Area',
         url: '/ams/auditable-area',
-      },
-      {
-        name: 'Create new auditable area',
-        url: '/ams/newAuditableArea',
       },
 
       {

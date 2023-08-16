@@ -12,23 +12,44 @@ import { NewAuditableAreaComponent } from './Auditable-area/new-auditable-area/n
 import { NewCheckListComponent } from './Checklist/new-checklist/newChecklist.component';
 import { CheckListComponent } from './Checklist/checklist/checkList.component';
 
-
 import { AmsRoutingModule } from './ams-routing.module';
-import {ButtonModule} from 'primeng/button';
-import {TableModule} from 'primeng/table';
+import { ButtonModule } from 'primeng/button';
+import { TableModule } from 'primeng/table';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { AccordionModule, BadgeModule, BreadcrumbModule, CardModule, CollapseModule, GridModule, UtilitiesModule, SharedModule, ListGroupModule, PlaceholderModule, ProgressModule, SpinnerModule, TabsModule, NavModule, TooltipModule, CarouselModule, FormModule, PaginationModule, PopoverModule, ToastModule } from '@coreui/angular';
+import {
+  AccordionModule,
+  BadgeModule,
+  BreadcrumbModule,
+  CardModule,
+  CollapseModule,
+  GridModule,
+  UtilitiesModule,
+  SharedModule,
+  ListGroupModule,
+  PlaceholderModule,
+  ProgressModule,
+  SpinnerModule,
+  TabsModule,
+  NavModule,
+  TooltipModule,
+  CarouselModule,
+  FormModule,
+  PaginationModule,
+  PopoverModule,
+} from '@coreui/angular';
 import { IconModule } from '@coreui/icons-angular';
 import { InputTextModule } from 'primeng/inputtext';
 import { MessagesModule } from 'primeng/messages';
 import { DropdownModule } from 'primeng/dropdown';
-import { DynamicDialogModule } from 'primeng/dynamicdialog';
+import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog';
+import { ToastModule } from 'primeng/toast';
 
 import { COBHistoryComponent } from './Dashboards/cobHistory/cobHistory.component';
 import { WeeklyElpasedTimeComponent } from './Dashboards/weeklyElpasedTime/weeklyElpasedTime.component';
 import { StageLineGraphComponent } from './Dashboards/stageLineGraph/stageLineGraph.component';
 import { UnusualChartComponents } from './Dashboards/unusualBar/unusualBar.component';
-import { NgApexchartsModule } from "ng-apexcharts";
+import { NgApexchartsModule } from 'ng-apexcharts';
+import { ConfirmationService, MessageService } from 'primeng/api';
 
 @NgModule({
   declarations: [
@@ -47,7 +68,7 @@ import { NgApexchartsModule } from "ng-apexcharts";
     AuditableAreaComponent,
     NewAuditableAreaComponent,
     NewCheckListComponent,
-    CheckListComponent
+    CheckListComponent,
   ],
   imports: [
     NgApexchartsModule,
@@ -85,10 +106,9 @@ import { NgApexchartsModule } from "ng-apexcharts";
     PopoverModule,
     TableModule,
     InputTextModule,
-    ToastModule,
-    MessagesModule
-
+    MessagesModule,
+    ToastModule
   ],
-  //providers: [ConfirmationService, MessageService]
+  providers: [ConfirmationService, MessageService, DialogService],
 })
-export class AmsModule { }
+export class AmsModule {}

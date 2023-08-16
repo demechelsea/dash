@@ -1,10 +1,12 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ConfirmationService, Message, MessageService } from 'primeng/api';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { AuditableAreasService } from 'src/app/services/auditableArea/auditableArea.service';
 import { AuditableAreasDTO } from 'src/app/views/models/auditableAreas';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'newAuditObject',
@@ -12,10 +14,10 @@ import { AuditableAreasDTO } from 'src/app/views/models/auditableAreas';
   styleUrls: ['./newAuditableArea.component.scss'],
   providers: [MessageService, ConfirmationService],
 })
-export class NewAuditableAreaComponent {
+export class NewAuditableAreaComponent implements OnDestroy {
   public auditableArea: AuditableAreasDTO[] = [];
   public auditObjectR: AuditableAreasDTO[] = [];
-  public auditObjectInfo: AuditableAreasDTO;
+  public auditObjectInfo: AuditableAreasDTO = new AuditableAreasDTO();
   selectedAuditObjectInfo: AuditableAreasDTO;
 
   states: any[] = [
@@ -30,94 +32,84 @@ export class NewAuditableAreaComponent {
 
   created: boolean = false;
 
+  private subscriptions: Subscription[] = [];
+
   constructor(
-    private router: Router,
     private messageService: MessageService,
     private auditableAreaService: AuditableAreasService,
-    private activatedRoute: ActivatedRoute
+    private ref: DynamicDialogRef,
+    private config: DynamicDialogConfig
   ) {}
 
   ngOnInit() {
-    var x = this.activatedRoute.snapshot.paramMap.get('id');
-    if (x !== null) {
-      this.idY = +x;
-      if (this.idY) {
-        this.getAuditObjectInfo(this.idY);
-        this.update = true;
-        this.newDiv = false;
-      }
+    if (this.config.data?.auditableArea) {
+      this.auditObjectInfo = this.config.data.auditableArea;
+      this.update = true;
+      this.newDiv = false;
+    }
+    if (this.config.data?.auditableArea) {
+      this.auditObjectInfo = this.config.data.auditableArea;
+    }
+  }
+
+  public submitAuditableArea(auditableAreaForm: NgForm): void {
+    if (this.update) {
+      this.updateAuditableArea(auditableAreaForm);
+    } else {
+      this.addAuditableArea(auditableAreaForm);
     }
   }
 
   public addAuditableArea(addDivForm: NgForm): void {
-    this.auditableAreaService.addAuditableArea(addDivForm.value).subscribe(
-      (response: any) => {
-        if (response.status) {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Success',
-            detail: 'Auditable area created successfully',
-          });
-          setTimeout(() => {
-            this.messageService.clear();
-            this.router.navigate(['ams/auditable-area']);
-          }, 1000);
-        } else {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Failed',
-            detail: 'Failed to create auditable area',
-          });
-          setTimeout(() => {
-            this.messageService.clear();
-          }, 1000);
-        }
-      },
-      (error: any) => {}
+    this.subscriptions.push(
+      this.auditableAreaService
+        .addAuditableArea(addDivForm.value)
+        .subscribe((response: any) => {
+          this.messageService.clear();
+          this.ref.close(response.result);
+        })
     );
   }
 
   public updateAuditableArea(updateDivForm: NgForm): void {
-    this.auditableAreaService.updateAuditableAreas(updateDivForm.value).subscribe(
-      (response: any) => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Success',
-          detail: 'Auditable area updated successfully',
-        });
-        setTimeout(() => {
-          this.router.navigate(['ams/auditable-area']);
-        }, 1000);
-      },
-      (error: HttpErrorResponse) => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Failed',
-          detail: 'Auditable area update failed',
-        });
-        setTimeout(() => {}, 1000);
-      }
+    const auditableArea: AuditableAreasDTO = updateDivForm.value;
+    auditableArea.id = this.auditObjectInfo.id;
+    this.subscriptions.push(
+      this.auditableAreaService
+        .updateAuditableAreas(auditableArea)
+        .subscribe((response: any) => {
+          this.messageService.clear();
+          this.ref.close(response.result);
+        })
     );
   }
 
   public getAuditObjectInfo(id: number): AuditableAreasDTO[] {
     let sendAcc = new AuditableAreasDTO();
     sendAcc.id = id;
-    this.auditableAreaService.getAuditableAreaInfo(sendAcc).subscribe(
-      (response: any) => {
-        this.auditObjectR = [response.result];
-        this.auditObjectInfo = response.result;
-        this.selectedAuditObjectInfo = this.auditObjectInfo;
-      },
-      (error: HttpErrorResponse) => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Failed',
-          detail: error.message,
-        });
-        setTimeout(() => {}, 1000);
-      }
+    this.subscriptions.push(
+      this.auditableAreaService.getAuditableAreaInfo(sendAcc).subscribe(
+        (response: any) => {
+          this.auditObjectR = [response.result];
+          this.auditObjectInfo = response.result;
+          this.selectedAuditObjectInfo = this.auditObjectInfo;
+        },
+        (error: HttpErrorResponse) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Failed',
+            detail: error.message,
+          });
+          setTimeout(() => {}, 1000);
+        }
+      )
     );
     return this.auditObjectR;
+  }
+
+  ngOnDestroy() {
+    for (const subscription of this.subscriptions) {
+      subscription.unsubscribe();
+    }
   }
 }
