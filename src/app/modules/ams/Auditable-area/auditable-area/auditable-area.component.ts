@@ -25,7 +25,6 @@ export class AuditableAreaComponent implements OnDestroy {
 
   constructor(
     private auditableAreaService: AuditableAreasService,
-    private router: Router,
     private dialogService: DialogService,
     private messageService: MessageService
   ) {}
@@ -37,8 +36,8 @@ export class AuditableAreaComponent implements OnDestroy {
   createNewAuditableArea(): void {
     const ref = this.dialogService.open(NewAuditableAreaComponent, {
       header: 'Create a new auditable area',
-      width: '50%',
-      contentStyle: { 'max-height': '500px', overflow: 'auto' },
+      width: '40%',
+      contentStyle: { 'min-height': 'auto', overflow: 'auto' },
       baseZIndex: 10000,
     });
 
@@ -58,9 +57,9 @@ export class AuditableAreaComponent implements OnDestroy {
     const auditableArea = this.auditableArea.find((area) => area.id === id);
     const ref = this.dialogService.open(NewAuditableAreaComponent, {
       header: 'Update auditable area',
-      width: '50%',
+      width: '40%',
       data: { auditableArea },
-      contentStyle: { 'max-height': '500px', overflow: 'auto' },
+      contentStyle: { 'min-height': 'auto', overflow: 'auto' },
       baseZIndex: 10000,
     });
   

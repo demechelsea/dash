@@ -42,6 +42,7 @@ export class NewAuditObjectComponent {
   ) {}
 
   ngOnInit() {
+    this.getAuditUniverses();
     var x = this.activatedRoute.snapshot.paramMap.get('id');
     if (x !== null) {
       this.idY = +x;
@@ -61,7 +62,7 @@ export class NewAuditObjectComponent {
     }
   }
 
-  public addAuditObject(addDivForm: NgForm): void {
+  addAuditObject(addDivForm: NgForm): void {
     this.auditObjectService.addAuditObject(addDivForm.value).subscribe(
       (response: any) => {
         if (response.status) {
@@ -88,34 +89,30 @@ export class NewAuditObjectComponent {
       (error: any) => {}
     );
   }
-  
-  
 
   public updateAuditObjects(updateDivForm: NgForm): void {
-    alert("pppp")
-    this.auditObjectService
-      .updateAuditObject(updateDivForm.value)
-      .subscribe(
-        (response: any) => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Success',
-            detail: 'Audit object updated successfully',
-          });
-          setTimeout(() => {
-            this.router.navigate(['ams/audit-object']);
-          }, 1000);
-          this.getAuditUniverses();
-        },
-        (error: HttpErrorResponse) => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Failed',
-            detail: 'Audit object update failed',
-          });
-          setTimeout(() => {}, 1000);
-        }
-      );
+    alert('pppp');
+    this.auditObjectService.updateAuditObject(updateDivForm.value).subscribe(
+      (response: any) => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Audit object updated successfully',
+        });
+        setTimeout(() => {
+          this.router.navigate(['ams/audit-object']);
+        }, 1000);
+        this.getAuditUniverses();
+      },
+      (error: HttpErrorResponse) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Failed',
+          detail: 'Audit object update failed',
+        });
+        setTimeout(() => {}, 1000);
+      }
+    );
   }
 
   public getAuditObjectInfo(id: number): AuditObjectDTO[] {
@@ -144,9 +141,9 @@ export class NewAuditObjectComponent {
       (response: any) => {
         this.auditUniverses = response.result;
       },
-      (error: HttpErrorResponse) =>{
-        console.log(error)
+      (error: HttpErrorResponse) => {
+        console.log(error);
       }
-      );
+    );
   }
 }

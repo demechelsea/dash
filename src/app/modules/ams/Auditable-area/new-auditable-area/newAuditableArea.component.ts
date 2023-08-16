@@ -94,14 +94,6 @@ export class NewAuditableAreaComponent implements OnDestroy {
           this.auditObjectInfo = response.result;
           this.selectedAuditObjectInfo = this.auditObjectInfo;
         },
-        (error: HttpErrorResponse) => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Failed',
-            detail: error.message,
-          });
-          setTimeout(() => {}, 1000);
-        }
       )
     );
     return this.auditObjectR;

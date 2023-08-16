@@ -1,19 +1,19 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
-import { AuditableAreasService } from 'src/app/services/auditableArea/auditableArea.service';
+import { DialogService } from 'primeng/dynamicdialog';
 import { CheckListService } from 'src/app/services/check-list/check-list.service';
-import { AuditObjectDTO } from 'src/app/views/models/auditObject';
-import { AuditableAreasDTO } from 'src/app/views/models/auditableAreas';
 import { CkeckListItemDTO } from 'src/app/views/models/checkListItem';
+import { NewCheckListComponent } from '../new-checklist/newChecklist.component';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'audit-universe-table',
   templateUrl: './checkList.component.html',
   styleUrls: ['./checkList.component.scss'],
+  providers: [MessageService],
 })
 export class CheckListComponent {
-  public Checklists: CkeckListItemDTO[] = [];
+  public checklist: CkeckListItemDTO[] = [];
 
   public auditableAreaR: CkeckListItemDTO[] = [];
   public auditableAreaInfo: CkeckListItemDTO;
@@ -21,17 +21,38 @@ export class CheckListComponent {
 
   constructor(
     private checkListService: CheckListService,
-    private router: Router
+    private dialogService: DialogService,
+    private messageService: MessageService
   ) {}
 
   ngOnInit() {
     this.getCheckLists();
   }
 
+  createNewChecklist(): void {
+    const ref = this.dialogService.open(NewCheckListComponent, {
+      header: 'Create a new checklist',
+      width: '40%',
+      contentStyle: { 'min-height': 'auto', overflow: 'auto' },
+      baseZIndex: 10000,
+    });
+
+    ref.onClose.subscribe((checklist: CkeckListItemDTO) => {
+      if (checklist) {
+        this.checklist = [...this.checklist, checklist];
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Checklist created successfully',
+        });
+      }
+    });
+  }
+
   public getCheckLists(): void {
     this.checkListService.getChecklists().subscribe(
       (response: any) => {
-        this.Checklists = response.result;
+        this.checklist = response.result;
       },
       (error: HttpErrorResponse) => {
         console.log(error);
@@ -39,9 +60,27 @@ export class CheckListComponent {
     );
   }
 
-  updateAuditableObject(id: number): void {
-    this.getAuditableAreaInfo(id);
-    this.router.navigate(['ams/newAuditableArea', id]);
+  updateChecklist(id: number): void {
+    const checklist = this.checklist.find((check) => check.id === id);
+    const ref = this.dialogService.open(NewCheckListComponent, {
+      header: 'Update auditable area',
+      width: '40%',
+      data: { checklist },
+      contentStyle: {'min-height': 'auto', overflow: 'auto' },
+      baseZIndex: 10000,
+    });
+    ref.onClose.subscribe((updatedChecklist: CkeckListItemDTO) => {
+      if (updatedChecklist) {
+        this.checklist = this.checklist.map((area) =>
+          area.id === updatedChecklist.id ? updatedChecklist : area
+        );
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Checklist updated successfully',
+        });
+      }
+    });
   }
 
   public getAuditableAreaInfo(id: number): CkeckListItemDTO[] {

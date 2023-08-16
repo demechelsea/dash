@@ -1,6 +1,8 @@
+<p-toast position="top-right"></p-toast>
+<div class="but"><p-button  label="Create a new checklist" (click)="createNewChecklist()"></p-button></div>
 <div class="card">
     <h5>CheckList</h5>
-    <p-table #dt1 [value]="Checklists" selectionMode="single" dataKey="id" [tableStyle]="{'min-width': '50rem'}"
+    <p-table #dt1 [value]="checklist" selectionMode="single" dataKey="id" [tableStyle]="{'min-width': '50rem'}"
         [rows]="5" [rowsPerPageOptions]="[5,10,15,20]" [paginator]="true" stateStorage="session"
         stateKey="statedemo-session">
         <ng-template pTemplate="header">
@@ -34,14 +36,14 @@
             </tr>
         </ng-template>
         <ng-template pTemplate="body" let-checkList>
-            <tr [pSelectableRow]="checkList">
+            <tr [pSelectableRow]="checklist">
                 <td style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" tooltipPosition="top">
                     {{checkList?.id}}</td>
                 <td>{{checkList?.name}}</td>
                 <td>{{checkList?.auditObjectDTO?.name}}</td>
                 <td>{{checkList?.auditableAreaDTO?.name}}</td>
                 <td>
-                    <button pButton (click)="updateAuditableObject(checkList.id)" [ngClass]="{updateBlue: true}"
+                    <button pButton (click)="updateChecklist(checkList.id)" [ngClass]="{updateBlue: true}"
                         class="p-button-sm" label="Update"></button>
                 </td>
             </tr>

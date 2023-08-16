@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ConfirmationService, Message, MessageService } from 'primeng/api';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { AuditObjectService } from 'src/app/services/auditObject/auditObject.service';
 import { AuditableAreasService } from 'src/app/services/auditableArea/auditableArea.service';
 import { CheckListService } from 'src/app/services/check-list/check-list.service';
@@ -18,12 +19,15 @@ import { CkeckListItemDTO } from 'src/app/views/models/checkListItem';
 })
 export class NewCheckListComponent {
   public auditObjects: AuditObjectDTO[] = [];
-  public auditableArea: AuditableAreasDTO[] = [];
+  public auditableAreas: AuditableAreasDTO[] = [];
 
+  public checklist: AuditObjectDTO[] = [];
   public checklistR: CkeckListItemDTO[] = [];
-  public auditObjectInfo: AuditObjectDTO;
+  public checklistInfo: CkeckListItemDTO = new CkeckListItemDTO();
+
   selectedAuditObjectInfo: AuditObjectDTO;
   selectedAuditableArea: AuditableAreasDTO;
+  selectedChecklist: CkeckListItemDTO;
 
   states: any[] = [
     { name: 'Active', value: 'Active' },
@@ -38,25 +42,32 @@ export class NewCheckListComponent {
   created: boolean = false;
 
   constructor(
-    private router: Router,
     private messageService: MessageService,
     private auditableAreaService: AuditableAreasService,
     private auditObjectService: AuditObjectService,
     private checkListService: CheckListService,
-    private activatedRoute: ActivatedRoute
+    private ref: DynamicDialogRef,
+    private config: DynamicDialogConfig
   ) {}
 
   ngOnInit() {
     this.getAuditObjects();
     this.getAuditableArea();
-    var x = this.activatedRoute.snapshot.paramMap.get('id');
-    if (x !== null) {
-      this.idY = +x;
-      if (this.idY) {
-        this.getChecklistInfo(this.idY);
-        this.update = true;
-        this.newDiv = false;
-      }
+    if (this.config.data?.checklist) {
+      this.checklistInfo = this.config.data.checklist;
+      this.update = true;
+      this.newDiv = false;
+    }
+    if (this.config.data?.checklist) {
+      this.checklistInfo = this.config.data.checklist;
+    }
+  }
+
+  public submitChecklist(checklistForm: NgForm): void {
+    if (this.update) {
+      this.updateChecklist(checklistForm);
+    } else {
+      this.addChecklist(checklistForm);
     }
   }
 
@@ -65,76 +76,43 @@ export class NewCheckListComponent {
       (response: any) => {
         this.auditObjects = response.result;
       },
-      (error: HttpErrorResponse) =>{
-        console.log(error)
+      (error: HttpErrorResponse) => {
+        console.log(error);
       }
-      );
+    );
   }
 
   public getAuditableArea(): void {
     this.auditableAreaService.getAuditableAreas().subscribe(
       (response: any) => {
-        this.auditableArea = response.result;
+        this.auditableAreas = response.result;
       },
-      (error: HttpErrorResponse) =>{
-        console.log(error)
+      (error: HttpErrorResponse) => {
+        console.log(error);
       }
-      );
+    );
   }
 
   public addChecklist(addDivForm: NgForm): void {
-    console.log(addDivForm.value);
-    
-    this.checkListService.addCheckList(addDivForm.value).subscribe(
-      (response: any) => {
-        console.log("ooooooo", response);
+    this.checkListService
+      .addCheckList(addDivForm.value)
+      .subscribe((response: any) => {
+        console.log(response);
         
-        if (response.status) {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Success',
-            detail: 'Checklist created successfully',
-          });
-          setTimeout(() => {
-            this.messageService.clear();
-            this.router.navigate(['ams/checklist']);
-          }, 1000);
-        } else {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Failed',
-            detail: 'Failed to create Checklist',
-          });
-          setTimeout(() => {
-            this.messageService.clear();
-          }, 1000);
-        }
-      },
-      (error: any) => {}
-    );
+        this.messageService.clear();
+        this.ref.close(response.result);
+      });
   }
 
   public updateChecklist(updateDivForm: NgForm): void {
-    this.checkListService.updateCheckList(updateDivForm.value).subscribe(
-      (response: any) => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Success',
-          detail: 'Checklist updated successfully',
-        });
-        setTimeout(() => {
-          this.router.navigate(['ams/checklist']);
-        }, 1000);
-      },
-      (error: HttpErrorResponse) => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Failed',
-          detail: 'Checklist update failed',
-        });
-        setTimeout(() => {}, 1000);
-      }
-    );
+    const checkList: CkeckListItemDTO = updateDivForm.value;
+    checkList.id = this.checklistInfo.id;
+    this.checkListService
+      .updateCheckList(updateDivForm.value)
+      .subscribe((response: any) => {
+        this.messageService.clear();
+        this.ref.close(response.result);
+      });
   }
 
   public getChecklistInfo(id: number): CkeckListItemDTO[] {
@@ -143,17 +121,9 @@ export class NewCheckListComponent {
     this.checkListService.getCheckListInfo(sendAcc).subscribe(
       (response: any) => {
         this.checklistR = [response.result];
-        this.auditObjectInfo = response.result;
-        this.selectedAuditObjectInfo = this.auditObjectInfo;
+        this.checklistInfo = response.result;
+        this.selectedChecklist = this.checklistInfo;
       },
-      (error: HttpErrorResponse) => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Failed',
-          detail: error.message,
-        });
-        setTimeout(() => {}, 1000);
-      }
     );
     return this.checklistR;
   }
