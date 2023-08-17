@@ -1,3 +1,5 @@
+<p-toast position="top-right"></p-toast>
+<div class="but"><p-button label="Create a new audit object" (click)="createAuditObject()"></p-button></div>
 <div class="card">
     <h5>Audit Object</h5>
     <p-table #dt1 [value]="auditObject" selectionMode="single" dataKey="id" [tableStyle]="{'min-width': '50rem'}"

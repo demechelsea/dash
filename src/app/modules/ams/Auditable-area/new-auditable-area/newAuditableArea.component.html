@@ -13,8 +13,30 @@
           [style]="{'width':'300px','height':'45px'}" required minlength="3" />
       </div>
     </div>
+    <div class="row">
+      <div class="col mb-4">
+        <label for="hex" class="block mb-2"> Audit object: </label>
+        <p-dropdown [required]="true" [options]="auditObjects" name="auditObject" optionLabel="name" [filter]="true"
+          [(ngModel)]="auditAreaInfo.auditObject" filterBy="name" [showClear]="true" placeholder="Choose audit object"
+          styleClass="p-password" [style]="{'width':'300px','height':'45px'}" [disabled]="update">
+          <ng-template pTemplate="selectedItem">
+            <div *ngIf="auditAreaInfo?.auditObject">
+              <div>{{auditAreaInfo.auditObject.name}}</div>
+            </div>
+          </ng-template>
+          <ng-template let-auditableArea pTemplate="item">
+            <div>
+              <div>{{auditableArea.name}}</div>
+            </div>
+          </ng-template>
+        </p-dropdown>
+      </div>
+      <div class="col mb-4">
+      </div>
+    </div>
     <div style="margin-top: 15em;"></div>
     <div class="buttonDiv">
+      <p-button label="Cancel" (click)="closeDialog()"></p-button>
       <p-button *ngIf="!update" label="Create auditable area" [disabled]="auditableAreaForm.invalid!"
         type="submit"></p-button>
       <p-button *ngIf="update" label="Update auditable area" [disabled]="auditableAreaForm.invalid!"

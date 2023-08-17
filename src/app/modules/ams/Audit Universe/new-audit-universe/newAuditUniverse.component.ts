@@ -1,7 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-import { ConfirmationService, Message, MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Subscription } from 'rxjs';
 import { AuditUniverseService } from 'src/app/services/auidit-universe/audit-universe.service';
@@ -13,7 +12,7 @@ import { AuditUniverseDTO } from 'src/app/views/models/auditUniverse';
   styleUrls: ['./newAuditUniverse.component.scss'],
   providers: [MessageService, ConfirmationService],
 })
-export class NewAuditUniverseComponent {
+export class NewAuditUniverseComponent implements OnDestroy {
   public auditUniverse: AuditUniverseDTO[] = [];
   public auditUniverseR: AuditUniverseDTO[] = [];
   public universeInfo: AuditUniverseDTO = new AuditUniverseDTO();
@@ -21,14 +20,8 @@ export class NewAuditUniverseComponent {
 
   private subscriptions: Subscription[] = [];
 
-  route?: ActivatedRoute;
-  update: Boolean = false;
-  newDiv: Boolean = true;
-  public idY: number;
-  uploadedFiles: any[] = [];
-  msgs: Message[] = [];
-
-  created: boolean = false;
+  update: boolean = false;
+  newDiv: boolean = true;
 
   constructor(
     private messageService: MessageService,
@@ -48,7 +41,7 @@ export class NewAuditUniverseComponent {
     }
   }
 
-  public submitAuditableArea(auditableAreaForm: NgForm): void {
+  submitAuditableArea(auditableAreaForm: NgForm): void {
     if (this.update) {
       this.updateAuditUniverses(auditableAreaForm);
     } else {
@@ -56,7 +49,7 @@ export class NewAuditUniverseComponent {
     }
   }
 
-  public addAuditUniverse(addDivForm: NgForm): void {
+  addAuditUniverse(addDivForm: NgForm): void {
     this.subscriptions.push(
       this.auditUniverseService
         .addAuditUniverse(addDivForm.value)
@@ -67,7 +60,7 @@ export class NewAuditUniverseComponent {
     );
   }
 
-  public updateAuditUniverses(updateDivForm: NgForm): void {
+  updateAuditUniverses(updateDivForm: NgForm): void {
     const auditUnivere: AuditUniverseDTO = updateDivForm.value;
     auditUnivere.id = this.universeInfo.id;
     this.subscriptions.push(
@@ -80,7 +73,7 @@ export class NewAuditUniverseComponent {
     );
   }
 
-  public getAuditUniverseInfo(id: number): AuditUniverseDTO[] {
+  getAuditUniverseInfo(id: number): AuditUniverseDTO[] {
     let sendAcc = new AuditUniverseDTO();
     sendAcc.id = id;
     this.subscriptions.push(
@@ -101,8 +94,7 @@ export class NewAuditUniverseComponent {
     }
   }
 
-  public closeDialog(): void {
+  closeDialog(): void {
     this.ref.close();
   }
-  
 }

@@ -1,9 +1,11 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { MessageService } from 'primeng/api';
+import { DialogService } from 'primeng/dynamicdialog';
+import { Subscription } from 'rxjs';
 import { AuditObjectService } from 'src/app/services/auditObject/auditObject.service';
 import { AuditObjectDTO } from 'src/app/views/models/auditObject';
-import { AuditUniverseDTO } from 'src/app/views/models/auditUniverse';
+import { NewAuditObjectComponent } from '../new-audit-object/newAuditObject.component';
 
 @Component({
   selector: 'audit-universe-table',
@@ -13,52 +15,111 @@ import { AuditUniverseDTO } from 'src/app/views/models/auditUniverse';
 export class AuditObjectComponent {
   public auditObject: AuditObjectDTO[] = [];
 
-  public accounts: AuditUniverseDTO[] = [];
   public auditObjectR: AuditObjectDTO[] = [];
   public auditObjectInfo: AuditObjectDTO;
   selectedAuditObjectInfo: AuditObjectDTO;
 
+  private subscriptions: Subscription[] = [];
+
   constructor(
     private auditObjectService: AuditObjectService,
-    private router: Router
+    private dialogService: DialogService,
+    private messageService: MessageService
   ) {}
 
   ngOnInit() {
     this.getAuditObjects();
   }
 
-  public getAuditObjects(): void {
-    this.auditObjectService.getAuditObjects().subscribe(
-      (response: any) => {
-        this.auditObject = response.result;
-      },
-      (error: HttpErrorResponse) => {
-        console.log(error);
-      }
+  getAuditObjects(): void {
+    this.subscriptions.push(
+      this.auditObjectService.getAuditObjects().subscribe(
+        (response: any) => {
+          this.auditObject = response.result;
+        },
+        (error: HttpErrorResponse) => {
+          console.log(error);
+        }
+      )
     );
   }
 
+  createAuditObject(): void {
+    const ref = this.dialogService.open(NewAuditObjectComponent, {
+      header: 'Create a new audit object',
+      width: '40%',
+      contentStyle: { 'min-height': 'auto', overflow: 'auto' },
+      baseZIndex: 10000,
+    });
+
+    ref.onClose.subscribe((response: any) => {
+      if (response.status) {
+        this.getAuditObjects();
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: response.message,
+        });
+      } else {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Failed',
+          detail: response.message,
+        });
+      }
+    });
+  }
+
   updateAuditObject(id: number): void {
-    this.getAuditObjectInfo(id);
-    this.router.navigate(['ams/newAuditObject', id]);
+    const auditObject = this.auditObject.find((auditObj) => auditObj.id === id);
+    const ref = this.dialogService.open(NewAuditObjectComponent, {
+      header: 'Update auditable area',
+      width: '40%',
+      data: { auditObject },
+      contentStyle: { 'min-height': 'auto', overflow: 'auto' },
+      baseZIndex: 10000,
+    });
+    ref.onClose.subscribe((response: any) => {
+      if (response) {
+        this.auditObject = this.auditObject.map((auditObj) =>
+          auditObj.id === response.id ? response : auditObj
+        );
+        if (response.status) {
+          this.getAuditObjects();
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: response.message,
+          });
+        } else {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Failed',
+            detail: response.message,
+          });
+        }
+      }
+    });
   }
 
   public getAuditObjectInfo(id: number): AuditObjectDTO[] {
     let auditObj = new AuditObjectDTO();
     auditObj.id = id;
-    this.auditObjectService.getAuditObjectInfo(auditObj).subscribe(
-      (response: any) => {
-        console.log("rrr" , response);
-        
-        this.auditObjectR = [response.result];
-        this.auditObjectInfo = response.result;
-        this.selectedAuditObjectInfo = this.auditObjectInfo;
-      },
-      (error: HttpErrorResponse) => {
-        console.log(error);
-        setTimeout(() => {}, 1000);
-      }
-    );    
+    this.subscriptions.push(
+      this.auditObjectService
+        .getAuditObjectInfo(auditObj)
+        .subscribe((response: any) => {
+          this.auditObjectR = [response.result];
+          this.auditObjectInfo = response.result;
+          this.selectedAuditObjectInfo = this.auditObjectInfo;
+        })
+    );
     return this.auditObjectR;
+  }
+
+  ngOnDestroy() {
+    for (const subscription of this.subscriptions) {
+      subscription.unsubscribe();
+    }
   }
 }

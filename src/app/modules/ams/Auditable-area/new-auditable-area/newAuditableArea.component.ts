@@ -7,6 +7,8 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { AuditableAreasService } from 'src/app/services/auditableArea/auditableArea.service';
 import { AuditableAreasDTO } from 'src/app/views/models/auditableAreas';
 import { Subscription } from 'rxjs';
+import { AuditObjectDTO } from 'src/app/views/models/auditObject';
+import { AuditObjectService } from 'src/app/services/auditObject/auditObject.service';
 
 @Component({
   selector: 'newAuditObject',
@@ -15,33 +17,27 @@ import { Subscription } from 'rxjs';
   providers: [MessageService, ConfirmationService],
 })
 export class NewAuditableAreaComponent implements OnDestroy {
-  public auditableArea: AuditableAreasDTO[] = [];
+  public auditObjects: AuditObjectDTO[] = [];
+
   public auditObjectR: AuditableAreasDTO[] = [];
   public auditAreaInfo: AuditableAreasDTO = new AuditableAreasDTO();
   selectedAuditObjectInfo: AuditableAreasDTO;
 
-  states: any[] = [
-    { name: 'Active', value: 'Active' },
-    { name: 'Inactive', value: 'Inactive' },
-  ];
-  route?: ActivatedRoute;
-  update: Boolean = false;
-  newDiv: Boolean = true;
-  public idY: number;
-  msgs: Message[] = [];
-
-  created: boolean = false;
+  update: boolean = false;
+  newDiv: boolean = true;
 
   private subscriptions: Subscription[] = [];
 
   constructor(
     private messageService: MessageService,
     private auditableAreaService: AuditableAreasService,
+    private auditObjectService: AuditObjectService,
     private ref: DynamicDialogRef,
     private config: DynamicDialogConfig
   ) {}
 
   ngOnInit() {
+    this.getAuditObjects();
     if (this.config.data?.auditableArea) {
       this.auditAreaInfo = this.config.data.auditableArea;
       this.update = true;
@@ -58,6 +54,19 @@ export class NewAuditableAreaComponent implements OnDestroy {
     } else {
       this.addAuditableArea(auditableAreaForm);
     }
+  }
+
+  public getAuditObjects(): void {
+    this.auditObjectService.getAuditObjects().subscribe(
+      (response: any) => {
+        console.log("response.result", response.result);
+        
+        this.auditObjects = response.result;
+      },
+      (error: HttpErrorResponse) => {
+        console.log(error);
+      }
+    );
   }
 
   public addAuditableArea(addDivForm: NgForm): void {
@@ -103,5 +112,8 @@ export class NewAuditableAreaComponent implements OnDestroy {
     for (const subscription of this.subscriptions) {
       subscription.unsubscribe();
     }
+  }
+  public closeDialog(): void {
+    this.ref.close();
   }
 }

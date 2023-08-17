@@ -1,5 +1,5 @@
 <p-toast position="top-right"></p-toast>
-<div class="but"><p-button  label="Create a new auditable area" (click)="createNewAuditableArea()"></p-button></div>
+<div class="but"><p-button label="Create a new auditable area" (click)="createNewAuditableArea()"></p-button></div>
 <div class="card">
     <h5>Auditable area</h5>
     <p-table #dt1 [value]="auditableArea" selectionMode="single" dataKey="id" [tableStyle]="{'width': 'auto'}"
@@ -9,6 +9,8 @@
             <tr>
                 <th pSortableColumn="id" style="width:2%">ID </th>
                 <th pSortableColumn="name" style="width:24.5%">Name<p-sortIcon field="name"></p-sortIcon></th>
+                <th pSortableColumn="description" style="width:24.5%">Auditable area <p-sortIcon
+                        field="description"></p-sortIcon></th>
                 <th pSortableColumn="description" style="width:24.5%">Description <p-sortIcon
                         field="description"></p-sortIcon></th>
                 <th scope="col" style="width:32%">Actions</th>
@@ -19,6 +21,11 @@
                 <th scope="col"> <input pInputText type="text"
                         (input)="dt1.filter($any($event.target)?.value, 'name', 'contains')"
                         [value]="$any(dt1.filters['name'])?.value" placeholder="Search by Name" class="p-column-filter">
+                </th>
+                <th scope="col"> <input pInputText type="text"
+                        (input)="dt1.filter($any($event.target)?.value, 'auditObject.name', 'contains')"
+                        [value]="$any(dt1.filters['type'])?.value" placeholder="Search by auditable area"
+                        class="p-column-filter">
                 </th>
                 <th scope="col"> <input pInputText type="text"
                         (input)="dt1.filter($any($event.target)?.value, 'description', 'contains')"
@@ -32,6 +39,7 @@
                 <td style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" tooltipPosition="top">
                     {{auditableArea?.id}}</td>
                 <td>{{auditableArea?.name}}</td>
+                <td>{{auditableArea?.auditObject?.name}}</td>
                 <td>{{auditableArea?.description}}</td>
                 <td>
                     <button pButton (click)="updateAuditableObject(auditableArea.id)" [ngClass]="{updateBlue: true}"

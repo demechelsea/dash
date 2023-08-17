@@ -4,5 +4,5 @@ import { BaseModel } from './base';
 export class CkeckListItemDTO extends BaseModel {
   name: string;
   description: string;
-  auditableAreaDTO: AuditableAreasDTO;
+  auditableArea: AuditableAreasDTO;
 }

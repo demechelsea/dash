@@ -5,8 +5,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ConfirmationService, Message, MessageService } from 'primeng/api';
 import { AuditObjectService } from 'src/app/services/auditObject/auditObject.service';
 import { AuditUniverseService } from 'src/app/services/auidit-universe/audit-universe.service';
+import { AuditPlanService } from 'src/app/services/audit-type/audit-type.service';
 import { AuditObjectDTO } from 'src/app/views/models/auditObject';
 import { AuditUniverseDTO } from 'src/app/views/models/auditUniverse';
+import { AuditType } from 'src/app/views/models/auditType';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 @Component({
   selector: 'newAuditObject',
@@ -16,106 +19,90 @@ import { AuditUniverseDTO } from 'src/app/views/models/auditUniverse';
 })
 export class NewAuditObjectComponent {
   public auditUniverses: AuditUniverseDTO[] = [];
+  public auditTypes: AuditType[] = [];
+
   public auditObjectR: AuditObjectDTO[] = [];
-  public auditObjectInfo: AuditObjectDTO;
+  public auditObjectInfo: AuditObjectDTO = new AuditObjectDTO();
   selectedAuditObjectInfo: AuditObjectDTO;
 
-  states: any[] = [
-    { name: 'Active', value: 'Active' },
-    { name: 'Inactive', value: 'Inactive' },
-  ];
-  route?: ActivatedRoute;
-  update: Boolean = false;
-  newDiv: Boolean = true;
-  public idY: number;
-  uploadedFiles: any[] = [];
-  msgs: Message[] = [];
-
-  created: boolean = false;
+  update: boolean = false;
+  newDiv: boolean = true;
 
   constructor(
-    private router: Router,
     private messageService: MessageService,
     private auditObjectService: AuditObjectService,
     private auditUniverseService: AuditUniverseService,
-    private activatedRoute: ActivatedRoute
+    private auditTypeService: AuditPlanService,
+    private ref: DynamicDialogRef,
+    private config: DynamicDialogConfig
   ) {}
 
   ngOnInit() {
     this.getAuditUniverses();
-    var x = this.activatedRoute.snapshot.paramMap.get('id');
-    if (x !== null) {
-      this.idY = +x;
-      if (this.idY) {
-        this.getAuditObjectInfo(this.idY);
-        this.update = true;
-        this.newDiv = false;
-      }
+    this.getAuditTypes();
+    if (this.config.data?.auditObject) {
+      this.auditObjectInfo = this.config.data.auditObject;
+      this.update = true;
+      this.newDiv = false;
+    }
+    if (this.config.data?.auditObject) {
+      this.auditObjectInfo = this.config.data.auditObject;
     }
   }
 
-  onSubmit(auditObjectForm: NgForm) {
+  getAuditUniverses(): void {
+    this.auditUniverseService.getAuditUniverse().subscribe(
+      (response: any) => {
+        this.auditUniverses = response.result;
+      },
+      (error: HttpErrorResponse) => {
+        console.log(error);
+      }
+    );
+  }
+
+  getAuditTypes(): void {
+    this.auditTypeService.getAuditTypes().subscribe(
+      (response: any) => {
+        console.log("ttt" , response);
+        
+        this.auditTypes = response.result;
+      },
+      (error: HttpErrorResponse) => {
+        console.log(error);
+      }
+    );
+  }
+
+  submitAuditObject(checklistForm: NgForm): void {
     if (this.update) {
-      this.updateAuditObjects(auditObjectForm);
+      this.updateAuditObjects(checklistForm);
     } else {
-      this.addAuditObject(auditObjectForm);
+      this.addAuditObject(checklistForm);
     }
   }
 
   addAuditObject(addDivForm: NgForm): void {
-    this.auditObjectService.addAuditObject(addDivForm.value).subscribe(
-      (response: any) => {
-        if (response.status) {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Success',
-            detail: 'Audit object created successfully',
-          });
-          setTimeout(() => {
-            this.messageService.clear();
-            this.router.navigate(['ams/audit-object']);
-          }, 1000);
-        } else {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Failed',
-            detail: 'Failed to create audit object',
-          });
-          setTimeout(() => {
-            this.messageService.clear();
-          }, 1000);
-        }
-      },
-      (error: any) => {}
-    );
+    this.auditObjectService
+      .addAuditObject(addDivForm.value)
+      .subscribe((response: any) => {
+        this.messageService.clear();
+        this.ref.close(response);
+      });
   }
 
-  public updateAuditObjects(updateDivForm: NgForm): void {
-    alert('pppp');
-    this.auditObjectService.updateAuditObject(updateDivForm.value).subscribe(
-      (response: any) => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Success',
-          detail: 'Audit object updated successfully',
-        });
-        setTimeout(() => {
-          this.router.navigate(['ams/audit-object']);
-        }, 1000);
-        this.getAuditUniverses();
-      },
-      (error: HttpErrorResponse) => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Failed',
-          detail: 'Audit object update failed',
-        });
-        setTimeout(() => {}, 1000);
-      }
-    );
+  updateAuditObjects(updateDivForm: NgForm): void {
+    const auditObject: AuditObjectDTO = updateDivForm.value;
+    auditObject.id = this.auditObjectInfo.id;
+    this.auditObjectService
+      .updateAuditObject(auditObject)
+      .subscribe((response: any) => {
+        this.messageService.clear();
+        this.ref.close(response);
+      });
   }
 
-  public getAuditObjectInfo(id: number): AuditObjectDTO[] {
+  getAuditObjectInfo(id: number): AuditObjectDTO[] {
     let sendAcc = new AuditObjectDTO();
     sendAcc.id = id;
     this.auditObjectService.getAuditObjectInfo(sendAcc).subscribe(
@@ -136,14 +123,7 @@ export class NewAuditObjectComponent {
     return this.auditObjectR;
   }
 
-  public getAuditUniverses(): void {
-    this.auditUniverseService.getAuditUniverse().subscribe(
-      (response: any) => {
-        this.auditUniverses = response.result;
-      },
-      (error: HttpErrorResponse) => {
-        console.log(error);
-      }
-    );
+  closeDialog(): void {
+    this.ref.close();
   }
 }

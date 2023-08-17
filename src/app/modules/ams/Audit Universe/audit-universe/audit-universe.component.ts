@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { DialogService } from 'primeng/dynamicdialog';
 import { AuditUniverseService } from 'src/app/services/auidit-universe/audit-universe.service';
 import { AuditUniverseDTO } from 'src/app/views/models/auditUniverse';
@@ -12,10 +12,9 @@ import { Subscription } from 'rxjs';
   templateUrl: './audit-universe.component.html',
   styleUrls: ['./audit-universe.component.scss'],
 })
-export class AuditUniverseComponent {
+export class AuditUniverseComponent implements OnDestroy {
   public auditUniverse: AuditUniverseDTO[] = [];
 
-  public accounts: AuditUniverseDTO[] = [];
   public auditUniverseR: AuditUniverseDTO[] = [];
   public universeInfo: AuditUniverseDTO;
   selectedUniverseInfo: AuditUniverseDTO;
@@ -25,22 +24,20 @@ export class AuditUniverseComponent {
   constructor(
     private auditUniverseService: AuditUniverseService,
     private dialogService: DialogService,
-    private messageService: MessageService,
+    private messageService: MessageService
   ) {}
 
   ngOnInit() {
     this.getAuditUniverses();
   }
 
-  public getAuditUniverses(): void {
+  getAuditUniverses(): void {
     this.subscriptions.push(
       this.auditUniverseService.getAuditUniverse().subscribe(
         (response: any) => {
           this.auditUniverse = response.result;
-          console.log(response);
         },
         (error: HttpErrorResponse) => {
-          console.log(error);
         }
       )
     );
@@ -111,17 +108,13 @@ export class AuditUniverseComponent {
     let auditUniv = new AuditUniverseDTO();
     auditUniv.id = id;
     this.subscriptions.push(
-      this.auditUniverseService.getAuditUniverseInfo(auditUniv).subscribe(
-        (response: any) => {
+      this.auditUniverseService
+        .getAuditUniverseInfo(auditUniv)
+        .subscribe((response: any) => {
           this.auditUniverseR = [response.result];
           this.universeInfo = response.result;
           this.selectedUniverseInfo = this.universeInfo;
-        },
-        (error: HttpErrorResponse) => {
-          console.log(error);
-          setTimeout(() => {}, 1000);
-        }
-      )
+        })
     );
     return this.auditUniverseR;
   }

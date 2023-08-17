@@ -1,6 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
 import { DialogService } from 'primeng/dynamicdialog';
 import { AuditableAreasService } from 'src/app/services/auditableArea/auditableArea.service';
 import { AuditableAreasDTO } from 'src/app/views/models/auditableAreas';
@@ -9,7 +8,7 @@ import { MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
 
 @Component({
-  selector: 'audit-universe-table',
+  selector: 'audit-area-table',
   templateUrl: './auditable-area.component.html',
   styleUrls: ['./auditable-area.component.scss'],
   providers: [MessageService],

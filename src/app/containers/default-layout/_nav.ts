@@ -7,27 +7,21 @@ export const navItems: INavData[] = [
     iconComponent: { name: 'cil-drop' },
     children: [
       {
-        name: 'Audit universe Table',
+        name: 'Audit universe',
         url: '/ams/audit-universe',
       },
 
       {
-        name: 'Audit Object Table',
+        name: 'Audit Object',
         url: '/ams/audit-object',
       },
       {
         name: 'Create new audit Object',
         url: '/ams/newAuditObject',
       },
-
-
       {
-        name: 'Annual Plan Table',
+        name: 'Annual Plan',
         url: '/ams/annual-plan',
-      },
-      {
-        name: 'Create new annual plan',
-        url: '/ams/newAnnualPlan',
       },
 
       {
@@ -36,7 +30,7 @@ export const navItems: INavData[] = [
       },
 
       {
-        name: 'Checklist Table',
+        name: 'Checklist',
         url: '/ams/checklist',
       },
 

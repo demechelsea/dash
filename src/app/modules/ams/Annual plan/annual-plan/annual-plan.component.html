@@ -1,5 +1,7 @@
+<p-toast position="top-right"></p-toast>
+<div class="but"><p-button label="Create a new checklist" (click)="createNewAnnualPlan()"></p-button></div>
 <div class="card">
-    <h5>Audit Universe</h5>
+    <h5>Audit Plan</h5>
     <p-table #dt1 [value]="annualPlan" selectionMode="single" dataKey="id" [tableStyle]="{'min-width': '50rem'}"
         [rows]="5" [rowsPerPageOptions]="[5,10,15,20]" [paginator]="true" stateStorage="session"
         stateKey="statedemo-session">
@@ -31,7 +33,8 @@
                 </th>
                 <th scope="col"> <input pInputText type="text"
                         (input)="dt1.filter($any($event.target)?.value, 'auditUniverse.name', 'contains')"
-                        [value]="$any(dt1.filters['type'])?.value" placeholder="Search by universe name" class="p-column-filter">
+                        [value]="$any(dt1.filters['type'])?.value" placeholder="Search by universe name"
+                        class="p-column-filter">
                 </th>
                 <th scope="col"> <input pInputText type="text"
                         (input)="dt1.filter($any($event.target)?.value, 'riskScore', 'contains')"
@@ -39,10 +42,10 @@
                         class="p-column-filter">
                 </th>
                 <th scope="col"> <input pInputText type="text"
-                    (input)="dt1.filter($any($event.target)?.value, 'riskLevel', 'contains')"
-                    [value]="$any(dt1.filters['type'])?.value" placeholder="Search by risk level"
-                    class="p-column-filter">
-            </th>
+                        (input)="dt1.filter($any($event.target)?.value, 'riskLevel', 'contains')"
+                        [value]="$any(dt1.filters['type'])?.value" placeholder="Search by risk level"
+                        class="p-column-filter">
+                </th>
                 <th scope="col"></th>
                 <th scope="col"></th>
             </tr>
@@ -58,7 +61,7 @@
                 <td>{{annualPlan?.riskScore}}</td>
                 <td>{{annualPlan?.riskLevel}}</td>
                 <td>
-                    <button pButton (click)="updateAuditPlan(annualPlan.id)" [ngClass]="{updateBlue: true}"
+                    <button pButton (click)="updateAnnualPlan(annualPlan.id)" [ngClass]="{updateBlue: true}"
                         class="p-button-sm" label="Update"></button>
                 </td>
             </tr>

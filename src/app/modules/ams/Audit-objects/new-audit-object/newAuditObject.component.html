@@ -1,91 +1,61 @@
-<p-messages styles="position: absolute; z-index: 1; right: 1em; margin: -1em 0;" [value]="msgs"></p-messages>
-<div *ngIf="newDiv">
-  <div>
-    <form #addDivForm="ngForm" (ngSubmit)="addAuditObject(addDivForm)">
-      <div class="row">
-        <div class="col mb-4">
-          <label for="integer" class="block mb-2"> Name: </label>
-          <input pInputText id="integer" pKeyFilter="int" ngModel name="name"
-            [style]="{'width':'630px','height':'45px'}" required minlength="10" />
-        </div>
-        <div class="col mb-4">
-          <label for="integer" class=" block mb-2"> Description: </label>
-          <input pInputText id="integer" pKeyFilter="int" ngModel name="description"
-            [style]="{'width':'630px','height':'45px'}" required minlength="3" />
-        </div>
+<div>
+  <form #addDivForm="ngForm" (ngSubmit)="submitAuditObject(addDivForm)">
+    <div style="margin-top: 2em;"></div>
+    <div class="row">
+      <div class="col mb-4">
+        <label for="integer" class="block mb-2"> Name: </label>
+        <input pInputText id="integer" pKeyFilter="int" [(ngModel)]="auditObjectInfo.name" name="name"
+          [style]="{'width':'300px','height':'45px'}" required minlength="10" />
       </div>
-
-      <div class="row mb-4">
-        <div class="col">
-          <label for="integer" class="block mb-2">Audit type</label>
-          <input pInputText id="integer" pKeyFilter="int" ngModel name="auditType"
-            [style]="{'width':'630px','height':'45px'}" required minlength="3" />
-        </div>
-        <div class="col">
-          <label for="hex" class=" block mb-2"> Audit universe: </label>
-          <p-dropdown  [required]="true" [options]="auditUniverses" name="auditUniverse" optionLabel="name" [filter]="true" ngModel
-            [(ngModel)]="selectedAuditObjectInfo" filterBy="auditUniverse" [showClear]="true" placeholder="Choose audit universe"
-            styleClass="p-password" [style]="{'width':'630px','height':'45px'}">
-            <ng-template pTemplate="selectedItem">
-              <div class="flex align-items-center gap-2" *ngIf="selectedAuditObjectInfo">
-                <div>{{selectedAuditObjectInfo.name}}</div>
-              </div>
-            </ng-template> 
-            <ng-template let-universe pTemplate="item">
-              <div class="flex align-items-center gap-2">
-                <div>{{universe?.name}}</div>
-              </div>
-            </ng-template>
-          </p-dropdown>
-        </div>
-      </div>
-      <p-button label="Create audit object" [disabled]="addDivForm.invalid!" type="submit"></p-button>
-    </form>
-  </div>
-</div>
-
-
-<div *ngIf="update">
-  <form #updateDivForm="ngForm" (ngSubmit)="updateAuditObjects(updateDivForm)">
-    <input type="hidden" name="id" ngModel [(ngModel)]="idY">
-
-    <div class="row mb-4">
-      <div class="col">
-        <label for="integer" class=" block mb-2"> Name:</label>
-        <input pInputText id="integer" ngModel [(ngModel)]="auditObjectInfo.name" name="name"
-          [style]="{'width':'630px','height':'45px'}" required minlength="3"  />
-      </div>
-      <div class="col">
+      <div class="col mb-4">
         <label for="integer" class=" block mb-2"> Description: </label>
-        <input pInputText id="integer"  ngModel [(ngModel)]="auditObjectInfo.description"
-          name="description" [style]="{'width':'630px','height':'45px'}" required minlength="3"  />
+        <input pInputText id="integer" pKeyFilter="int" [ngModel]="auditObjectInfo.description" name="description"
+          [style]="{'width':'300px','height':'45px'}" required minlength="3" />
       </div>
     </div>
-
-    <div class="row mb-4">
-      <div class="col">
-        <label for="integer" class=" block mb-2">Audit type:</label>
-        <input pInputText id="integer" ngModel [(ngModel)]="auditObjectInfo.auditType" name="auditType"
-          [style]="{'width':'630px','height':'45px'}" required minlength="3" />
-      </div>
-      <div class="col">
-        <label for="hex" class=" block mb-2"> Audit universe: </label>
-        <p-dropdown  [required]="true" [options]="auditUniverses" name="auditUniverse" optionLabel="name" [filter]="true" ngModel
-          [(ngModel)]="selectedAuditObjectInfo.auditUniverse" filterBy="name" [showClear]="true" placeholder="Choose audit universe"
-          styleClass="p-password" [style]="{'width':'630px','height':'45px'}">
+    <div class="row">
+      <div class="col mb-4">
+        <label for="hex" class="block mb-2"> Auditable type: </label>
+        <p-dropdown [required]="true" [options]="auditTypes" name="auditType" optionLabel="name" [filter]="true"
+          [(ngModel)]="auditObjectInfo.auditType" filterBy="name" [showClear]="true"
+          placeholder="Choose audit type" styleClass="p-password" [style]="{'width':'300px','height':'45px'}"
+          [disabled]="update">
           <ng-template pTemplate="selectedItem">
-            <div class="flex align-items-center gap-2" *ngIf="selectedAuditObjectInfo?.auditUniverse">
-              <div>{{selectedAuditObjectInfo.auditUniverse.name}}</div>
+            <div *ngIf="auditObjectInfo?.auditType">
+              <div>{{auditObjectInfo.auditType.name}}</div>
             </div>
-          </ng-template> 
-          <ng-template let-universe pTemplate="item">
-            <div class="flex align-items-center gap-2">
-              <div>{{universe?.name}}</div>
+          </ng-template>
+          <ng-template let-auditObject pTemplate="item">
+            <div>
+              <div>{{auditObject.name}}</div>
+            </div>
+          </ng-template>
+        </p-dropdown>
+      </div>
+      <div class="col mb-4">
+        <label for="hex" class="block mb-2"> Auditable universe: </label>
+        <p-dropdown [required]="true" [options]="auditUniverses" name="auditUniverse" optionLabel="name" [filter]="true"
+          [(ngModel)]="auditObjectInfo.auditUniverse" filterBy="name" [showClear]="true"
+          placeholder="Choose audit universe" styleClass="p-password" [style]="{'width':'300px','height':'45px'}"
+          [disabled]="update">
+          <ng-template pTemplate="selectedItem">
+            <div *ngIf="auditObjectInfo?.auditUniverse">
+              <div>{{auditObjectInfo.auditUniverse.name}}</div>
+            </div>
+          </ng-template>
+          <ng-template let-auditUniverse pTemplate="item">
+            <div>
+              <div>{{auditUniverse.name}}</div>
             </div>
           </ng-template>
         </p-dropdown>
       </div>
     </div>
-    <p-button label="Update audit object" [disabled]="updateDivForm.invalid!" type="submit"></p-button>
+    <div style="margin-top: 15em;"></div>
+    <div class="buttonDiv">
+      <p-button label="Cancel" class="m-8" (click)="closeDialog()"></p-button>
+      <p-button *ngIf="!update" label="Create audit object" [disabled]="addDivForm.invalid!" type="submit"></p-button>
+      <p-button *ngIf="update" label="Update audit object" [disabled]="addDivForm.invalid!" type="submit"></p-button>
+    </div>
   </form>
 </div>

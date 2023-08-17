@@ -2,17 +2,13 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 import { AuditUniverseComponent } from './Audit Universe/audit-universe/audit-universe.component';
-import { NewAuditUniverseComponent } from './Audit Universe/new-audit-universe/newAuditUniverse.component';
 import { AnnualPlanComponent } from './Annual plan/annual-plan/annual-plan.component';
-import { NewAnnualPlanComponent } from './Annual plan/new-annual-plan/newAnnualPlan.component';
 import { UnusualChartComponents } from './Dashboards/unusualBar/unusualBar.component';
 import { WeeklyElpasedTimeComponent } from './Dashboards/weeklyElpasedTime/weeklyElpasedTime.component';
 import { StageLineGraphComponent } from './Dashboards/stageLineGraph/stageLineGraph.component';
 import { AuditObjectComponent } from './Audit-objects/audit-object/audit-object.component';
 import { NewAuditObjectComponent } from './Audit-objects/new-audit-object/newAuditObject.component';
-import { NewAuditableAreaComponent } from './Auditable-area/new-auditable-area/newAuditableArea.component';
 import { AuditableAreaComponent } from './Auditable-area/auditable-area/auditable-area.component';
-import { NewCheckListComponent } from './Checklist/new-checklist/newChecklist.component';
 import { CheckListComponent } from './Checklist/checklist/checkList.component';
 
 const routes: Routes = [
@@ -31,7 +27,7 @@ const routes: Routes = [
         path: 'audit-object',
         component: AuditObjectComponent,
         data: {
-          title: 'Audit Object Table',
+          title: 'Audit Object',
         },
       },
       {
@@ -53,7 +49,7 @@ const routes: Routes = [
         path: 'audit-universe',
         component: AuditUniverseComponent,
         data: {
-          title: 'Audit Universe Table',
+          title: 'Audit Universe',
         },
       },
 
@@ -61,7 +57,7 @@ const routes: Routes = [
         path: 'checklist',
         component: CheckListComponent,
         data: {
-          title: 'Checklist Table',
+          title: 'Checklist',
         },
       },
 
@@ -69,7 +65,7 @@ const routes: Routes = [
         path: 'auditable-area',
         component: AuditableAreaComponent,
         data: {
-          title: 'Auditable Area Table',
+          title: 'Auditable Area',
         },
       },
 
@@ -77,21 +73,7 @@ const routes: Routes = [
         path: 'annual-plan',
         component: AnnualPlanComponent,
         data: {
-          title: 'Annual Plan Table',
-        },
-      },
-      {
-        path: 'newAnnualPlan',
-        component: NewAnnualPlanComponent,
-        data: {
-          title: 'New Annual Plan',
-        },
-      },
-      {
-        path: 'newAnnualPlan/:id',
-        component: NewAnnualPlanComponent,
-        data: {
-          title: 'Update Annual Plan',
+          title: 'Annual Plan',
         },
       },
 
