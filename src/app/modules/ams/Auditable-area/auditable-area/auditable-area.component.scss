@@ -5,6 +5,31 @@
   }
 }
 
+::ng-deep .p-dialog .p-dialog-header {
+  background: #3b82f6;
+  color: white;
+  font-size: 24px;
+}
+
+::ng-deep .p-dialog {
+  border: 4px solid #3b82f6;
+  animation: fadeIn 0.5s, fadeOut 0.5s;
+}
+
+@keyframes fadeIn {
+  0% {opacity: 0;}
+  100% {opacity: 1;}
+}
+
+@keyframes fadeOut {
+  0% {opacity: 1;}
+  100% {opacity: 0;}
+}
+
+::ng-deep .p-dialog .p-dialog-header .p-dialog-header-icon {
+  color: white;
+}
+
 h5 {
   padding: 0.5em;
 }
@@ -17,11 +42,18 @@ p-button {
   padding: 0.5em;
 }
 
-.card{
+.card {
   margin-top: 10px;
 }
 
-.but{
+.but {
   display: flex;
   justify-content: end;
+}
+
+.table-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  margin: 15px;
 }

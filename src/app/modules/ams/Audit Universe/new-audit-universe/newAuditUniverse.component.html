@@ -19,7 +19,7 @@
         <input pInputText id="integer" pKeyFilter="int" [ngModel]="universeInfo.type" name="type"
           [style]="{'width':'300px','height':'45px'}" required minlength="3" />
       </div>
-      <div class="col mb-4">
+      <div  *ngIf="update" class="col mb-4">
         <label for="integer" class=" block mb-2">Status:</label>
         <input pInputText id="integer" pKeyFilter="int" [ngModel]="universeInfo.status" name="status"
           [style]="{'width':'300px','height':'45px'}" required minlength="3" />

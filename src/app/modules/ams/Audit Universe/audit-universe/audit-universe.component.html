@@ -1,19 +1,19 @@
 <p-toast position="top-right"></p-toast>
 <div class="but"><p-button label="Create a new audit universe" (click)="createNewAuditUniverse()"></p-button></div>
 <div class="card">
-    <h5>Audit Universe</h5>
+    <h5 class="table-title">Audit Universe</h5>
     <p-table #dt1 [value]="auditUniverse" selectionMode="single" dataKey="id" [tableStyle]="{'min-width': '50rem'}"
         [rows]="5" [rowsPerPageOptions]="[5,10,15,20]" [paginator]="true" stateStorage="session"
         stateKey="statedemo-session">
         <ng-template pTemplate="header">
             <tr>
-                <th pSortableColumn="id" style="width:2%">ID </th>
-                <th pSortableColumn="name" style="width:24.5%">Name<p-sortIcon field="name"></p-sortIcon></th>
-                <th pSortableColumn="description" style="width:24.5%">Description <p-sortIcon
+                <th pSortableColumn="id">ID </th>
+                <th pSortableColumn="name" >Name<p-sortIcon field="name"></p-sortIcon></th>
+                <th pSortableColumn="description" >Description <p-sortIcon
                         field="description"></p-sortIcon></th>
-                <th pSortableColumn="type" style="width:24.5%">Type</th>
-                <th pSortableColumn="status" style="width:24.5%">Status</th>
-                <th scope="col" style="width:32%">Actions</th>
+                <th pSortableColumn="type">Type</th>
+                <th pSortableColumn="status">Status</th>
+                <th scope="col" >Actions</th>
             </tr>
             <tr>
                 <th scope="col"></th>

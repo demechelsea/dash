@@ -37,8 +37,7 @@ export class AuditUniverseComponent implements OnDestroy {
         (response: any) => {
           this.auditUniverse = response.result;
         },
-        (error: HttpErrorResponse) => {
-        }
+        (error: HttpErrorResponse) => {}
       )
     );
   }
@@ -46,11 +45,12 @@ export class AuditUniverseComponent implements OnDestroy {
   createNewAuditUniverse(): void {
     const ref = this.dialogService.open(NewAuditUniverseComponent, {
       header: 'Create a new audit universe',
+      draggable: true,
       width: '40%',
-      contentStyle: { 'min-height': 'auto', overflow: 'auto' },
+      contentStyle: { 'min-height': 'auto', overflow: 'auto'},
       baseZIndex: 10000,
     });
-
+  
     ref.onClose.subscribe((response: any) => {
       if (response.status) {
         this.getAuditUniverses();
@@ -68,6 +68,11 @@ export class AuditUniverseComponent implements OnDestroy {
       }
     });
   }
+  
+  
+  
+  
+  
 
   updateAuditUniverse(id: number): void {
     const auditUniverse = this.auditUniverse.find(

@@ -21,14 +21,6 @@
           [style]="{'width':'300px','height':'45px'}" required minlength="3" />
       </div>
       <div class="col mb-4">
-        <label for="integer" class=" block mb-2">Status:</label>
-        <input pInputText id="integer" pKeyFilter="int" [ngModel]="annualPlanInfo.status" name="status"
-          [style]="{'width':'300px','height':'45px'}" required minlength="3" />
-      </div>
-    </div>
-
-    <div class="row mb-4">
-      <div class="col mb-4">
         <label for="hex" class="block mb-2"> Auditable universe: </label>
         <p-dropdown [required]="true" [options]="auditUniverses" name="auditUniverse" optionLabel="name" [filter]="true"
           [(ngModel)]="annualPlanInfo.auditUniverse" filterBy="name" [showClear]="true"
@@ -46,9 +38,17 @@
           </ng-template>
         </p-dropdown>
       </div>
+    </div>
+
+    <div class="row mb-4">
       <div class="col">
         <label for="integer" class="block mb-2">Risk Scores:</label>
         <p-button (click)="show()" class="m-12" icon="pi pi-info-circle" label="Choose"></p-button>
+      </div>
+      <div  *ngIf="update" class="col mb-4">
+        <label for="integer" class=" block mb-2">Status:</label>
+        <input pInputText id="integer" pKeyFilter="int" [ngModel]="annualPlanInfo.status" name="status"
+          [style]="{'width':'300px','height':'45px'}" required minlength="3" />
       </div>
     </div>
     <div style="margin-top: 15em;"></div>
