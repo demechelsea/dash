@@ -30,20 +30,6 @@ const routes: Routes = [
           title: 'Audit Object',
         },
       },
-      {
-        path: 'newAuditObject',
-        component: NewAuditObjectComponent,
-        data: {
-          title: 'New Audit Object',
-        },
-      },
-      {
-        path: 'newAuditObject/:id',
-        component: NewAuditObjectComponent,
-        data: {
-          title: 'Update Audit Object',
-        },
-      },
 
       {
         path: 'audit-universe',
