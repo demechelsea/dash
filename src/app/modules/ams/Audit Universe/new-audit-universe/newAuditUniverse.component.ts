@@ -1,8 +1,9 @@
-import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { ConfirmationService, Message, MessageService } from 'primeng/api';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { Subscription } from 'rxjs';
 import { AuditUniverseService } from 'src/app/services/auidit-universe/audit-universe.service';
 import { AuditUniverseDTO } from 'src/app/views/models/auditUniverse';
 
@@ -15,13 +16,11 @@ import { AuditUniverseDTO } from 'src/app/views/models/auditUniverse';
 export class NewAuditUniverseComponent {
   public auditUniverse: AuditUniverseDTO[] = [];
   public auditUniverseR: AuditUniverseDTO[] = [];
-  public universeInfo: AuditUniverseDTO;
+  public universeInfo: AuditUniverseDTO = new AuditUniverseDTO();
   selectedUniverseInfo: AuditUniverseDTO;
 
-  states: any[] = [
-    { name: 'Active', value: 'Active' },
-    { name: 'Inactive', value: 'Inactive' },
-  ];
+  private subscriptions: Subscription[] = [];
+
   route?: ActivatedRoute;
   update: Boolean = false;
   newDiv: Boolean = true;
@@ -32,117 +31,78 @@ export class NewAuditUniverseComponent {
   created: boolean = false;
 
   constructor(
-    private router: Router,
     private messageService: MessageService,
     private auditUniverseService: AuditUniverseService,
-    private activatedRoute: ActivatedRoute
+    private ref: DynamicDialogRef,
+    private config: DynamicDialogConfig
   ) {}
 
   ngOnInit() {
-    this.getAuditUniverses();
-    var x = this.activatedRoute.snapshot.paramMap.get('id');
-    if (x !== null) {
-      this.idY = +x;
-      if (this.idY) {
-        this.getAuditUniverseInfo(this.idY);
-        this.update = true;
-        this.newDiv = false;
-      }
+    if (this.config.data?.auditUniverse) {
+      this.universeInfo = this.config.data.auditUniverse;
+      this.update = true;
+      this.newDiv = false;
+    }
+    if (this.config.data?.auditUniverse) {
+      this.universeInfo = this.config.data.auditUniverse;
+    }
+  }
+
+  public submitAuditableArea(auditableAreaForm: NgForm): void {
+    if (this.update) {
+      this.updateAuditUniverses(auditableAreaForm);
+    } else {
+      this.addAuditUniverse(auditableAreaForm);
     }
   }
 
   public addAuditUniverse(addDivForm: NgForm): void {
-    this.auditUniverseService.addAuditUniverse(addDivForm.value).subscribe(
-      (response: any) => {
-        this.getAuditUniverses();
-        if (response.status) {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Success',
-            detail: 'Audit universe created successfully',
-          });
-          setTimeout(() => {
-            this.messageService.clear();
-            this.router.navigate(['ams/audit-universe']);
-          }, 1000);
-          this.getAuditUniverses();
-        } else {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Failed',
-            detail: 'Failed to create audit universe',
-          });
-          setTimeout(() => {
-            this.messageService.clear();
-          }, 1000);
-        }
-      },
-      (error: any) => {}
+    this.subscriptions.push(
+      this.auditUniverseService
+        .addAuditUniverse(addDivForm.value)
+        .subscribe((response: any) => {
+          this.messageService.clear();
+          this.ref.close(response);
+        })
     );
   }
-  
-  
 
   public updateAuditUniverses(updateDivForm: NgForm): void {
-    this.auditUniverseService
-      .updateAuditUniverse(updateDivForm.value)
-      .subscribe(
-        (response: any) => {
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Success',
-            detail: 'Audit universe updated successfully',
-          });
-          setTimeout(() => {
-            this.router.navigate(['ams/audit-universe']);
-          }, 1000);
-          this.getAuditUniverses();
-        },
-        (error: HttpErrorResponse) => {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Failed',
-            detail: 'Audit universe update failed',
-          });
-          setTimeout(() => {}, 1000);
-        }
-      );
+    const auditUnivere: AuditUniverseDTO = updateDivForm.value;
+    auditUnivere.id = this.universeInfo.id;
+    this.subscriptions.push(
+      this.auditUniverseService
+        .updateAuditUniverse(updateDivForm.value)
+        .subscribe((response: any) => {
+          this.messageService.clear();
+          this.ref.close(response);
+        })
+    );
   }
 
   public getAuditUniverseInfo(id: number): AuditUniverseDTO[] {
     let sendAcc = new AuditUniverseDTO();
     sendAcc.id = id;
-    this.auditUniverseService.getAuditUniverseInfo(sendAcc).subscribe(
-      (response: any) => {
-        this.auditUniverseR = [response.result];
-        this.universeInfo = response.result;
-        this.selectedUniverseInfo = this.universeInfo;
-      },
-      (error: HttpErrorResponse) => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Faild',
-          detail: error.message,
-        });
-        setTimeout(() => {}, 1000);
-      }
+    this.subscriptions.push(
+      this.auditUniverseService
+        .getAuditUniverseInfo(sendAcc)
+        .subscribe((response: any) => {
+          this.auditUniverseR = [response.result];
+          this.universeInfo = response.result;
+          this.selectedUniverseInfo = this.universeInfo;
+        })
     );
     return this.auditUniverseR;
   }
 
-  public getAuditUniverses(): void {
-    this.auditUniverseService.getAuditUniverse().subscribe(
-      (response: AuditUniverseDTO[]) => {
-        this.auditUniverse = response;
-      },
-      (error: HttpErrorResponse) => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Faild',
-          detail: error.message,
-        });
-        setTimeout(() => {}, 1000);
-      }
-    );
+  ngOnDestroy() {
+    for (const subscription of this.subscriptions) {
+      subscription.unsubscribe();
+    }
   }
+
+  public closeDialog(): void {
+    this.ref.close();
+  }
+  
 }

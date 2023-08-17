@@ -17,7 +17,7 @@ import { Subscription } from 'rxjs';
 export class NewAuditableAreaComponent implements OnDestroy {
   public auditableArea: AuditableAreasDTO[] = [];
   public auditObjectR: AuditableAreasDTO[] = [];
-  public auditObjectInfo: AuditableAreasDTO = new AuditableAreasDTO();
+  public auditAreaInfo: AuditableAreasDTO = new AuditableAreasDTO();
   selectedAuditObjectInfo: AuditableAreasDTO;
 
   states: any[] = [
@@ -43,12 +43,12 @@ export class NewAuditableAreaComponent implements OnDestroy {
 
   ngOnInit() {
     if (this.config.data?.auditableArea) {
-      this.auditObjectInfo = this.config.data.auditableArea;
+      this.auditAreaInfo = this.config.data.auditableArea;
       this.update = true;
       this.newDiv = false;
     }
     if (this.config.data?.auditableArea) {
-      this.auditObjectInfo = this.config.data.auditableArea;
+      this.auditAreaInfo = this.config.data.auditableArea;
     }
   }
 
@@ -66,20 +66,20 @@ export class NewAuditableAreaComponent implements OnDestroy {
         .addAuditableArea(addDivForm.value)
         .subscribe((response: any) => {
           this.messageService.clear();
-          this.ref.close(response.result);
+          this.ref.close(response);
         })
     );
   }
 
   public updateAuditableArea(updateDivForm: NgForm): void {
     const auditableArea: AuditableAreasDTO = updateDivForm.value;
-    auditableArea.id = this.auditObjectInfo.id;
+    auditableArea.id = this.auditAreaInfo.id;
     this.subscriptions.push(
       this.auditableAreaService
         .updateAuditableAreas(auditableArea)
         .subscribe((response: any) => {
           this.messageService.clear();
-          this.ref.close(response.result);
+          this.ref.close(response);
         })
     );
   }
@@ -91,8 +91,8 @@ export class NewAuditableAreaComponent implements OnDestroy {
       this.auditableAreaService.getAuditableAreaInfo(sendAcc).subscribe(
         (response: any) => {
           this.auditObjectR = [response.result];
-          this.auditObjectInfo = response.result;
-          this.selectedAuditObjectInfo = this.auditObjectInfo;
+          this.auditAreaInfo = response.result;
+          this.selectedAuditObjectInfo = this.auditAreaInfo;
         },
       )
     );

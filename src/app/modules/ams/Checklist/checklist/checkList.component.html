@@ -35,15 +35,15 @@
                 <th scope="col"></th>
             </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-checkList>
+        <ng-template pTemplate="body" let-checklist>
             <tr [pSelectableRow]="checklist">
                 <td style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" tooltipPosition="top">
-                    {{checkList?.id}}</td>
-                <td>{{checkList?.name}}</td>
-                <td>{{checkList?.auditObjectDTO?.name}}</td>
-                <td>{{checkList?.auditableAreaDTO?.name}}</td>
+                    {{checklist?.id}}</td>
+                <td>{{checklist?.name}}</td>
+                <td>{{checklist?.auditObjectDTO?.name}}</td>
+                <td>{{checklist?.auditableArea?.name}}</td>
                 <td>
-                    <button pButton (click)="updateChecklist(checkList.id)" [ngClass]="{updateBlue: true}"
+                    <button pButton (click)="updateChecklist(checklist.id)" [ngClass]="{updateBlue: true}"
                         class="p-button-sm" label="Update"></button>
                 </td>
             </tr>

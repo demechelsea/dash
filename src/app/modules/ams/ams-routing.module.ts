@@ -56,20 +56,6 @@ const routes: Routes = [
           title: 'Audit Universe Table',
         },
       },
-      {
-        path: 'newAuditUniverse',
-        component: NewAuditUniverseComponent,
-        data: {
-          title: 'New Audit Universe',
-        },
-      },
-      {
-        path: 'newAuditUniverse/:id',
-        component: NewAuditUniverseComponent,
-        data: {
-          title: 'Update Audit Universe',
-        },
-      },
 
       {
         path: 'checklist',
@@ -78,48 +64,12 @@ const routes: Routes = [
           title: 'Checklist Table',
         },
       },
-      {
-        path: 'newCkeckList',
-        component: NewCheckListComponent,
-        data: {
-          title: 'New Checklist',
-        },
-      },
-      {
-        path: 'newCkeckList/:id',
-        component: NewCheckListComponent,
-        data: {
-          title: 'Update Checklist',
-        },
-      },
 
       {
         path: 'auditable-area',
         component: AuditableAreaComponent,
         data: {
           title: 'Auditable Area Table',
-        },
-      },
-
-      {
-        path: 'newCkeckList',
-        component: NewAuditableAreaComponent,
-        data: {
-          title: 'New Checklist',
-        },
-      },
-      {
-        path: 'checklist',
-        component: AuditableAreaComponent,
-        data: {
-          title: 'Checklist Table',
-        },
-      },
-      {
-        path: 'newCkeckList/:id',
-        component: NewAuditableAreaComponent,
-        data: {
-          title: 'Update Checklist',
         },
       },
 
@@ -164,13 +114,6 @@ const routes: Routes = [
         component: UnusualChartComponents,
         data: {
           title: 'chart',
-        },
-      },
-      {
-        path: 'newAuditUniverse/:id',
-        component: NewAuditUniverseComponent,
-        data: {
-          title: 'Update Audit Universe',
         },
       },
     ],

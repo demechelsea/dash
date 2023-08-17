@@ -53,6 +53,8 @@ export class CheckListComponent {
     this.checkListService.getChecklists().subscribe(
       (response: any) => {
         this.checklist = response.result;
+        console.log("bbb", this.checklist);
+        
       },
       (error: HttpErrorResponse) => {
         console.log(error);

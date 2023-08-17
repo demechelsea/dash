@@ -33,6 +33,19 @@ export class AuditableAreaComponent implements OnDestroy {
     this.getAuditableAreas();
   }
 
+  getAuditableAreas(): void {
+    this.subscriptions.push(
+      this.auditableAreaService.getAuditableAreas().subscribe(
+        (response: any) => {
+          this.auditableArea = response.result;
+        },
+        (error: HttpErrorResponse) => {
+          console.log(error);
+        }
+      )
+    );
+  }
+
   createNewAuditableArea(): void {
     const ref = this.dialogService.open(NewAuditableAreaComponent, {
       header: 'Create a new auditable area',
@@ -41,13 +54,19 @@ export class AuditableAreaComponent implements OnDestroy {
       baseZIndex: 10000,
     });
 
-    ref.onClose.subscribe((auditableArea: AuditableAreasDTO) => {
-      if (auditableArea) {
-        this.auditableArea = [...this.auditableArea, auditableArea];
+    ref.onClose.subscribe((response: any) => {
+      this.getAuditableAreas();
+      if (response.status) {
         this.messageService.add({
           severity: 'success',
           summary: 'Success',
-          detail: 'Auditable area created successfully',
+          detail: response.message,
+        });
+      } else {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Failed',
+          detail: response.message,
         });
       }
     });
@@ -62,32 +81,27 @@ export class AuditableAreaComponent implements OnDestroy {
       contentStyle: { 'min-height': 'auto', overflow: 'auto' },
       baseZIndex: 10000,
     });
-  
-    ref.onClose.subscribe((updatedAuditableArea: AuditableAreasDTO) => {
-      if (updatedAuditableArea) {
+
+    ref.onClose.subscribe((response: any) => {
+      if (response) {
         this.auditableArea = this.auditableArea.map((area) =>
-          area.id === updatedAuditableArea.id ? updatedAuditableArea : area
+          area.id === response.id ? response : area
         );
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Success',
-          detail: 'Auditable area updated successfully',
-        });
+        if (response.status) {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: response.message,
+          });
+        } else {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Failed',
+            detail: response.message,
+          });
+        }
       }
     });
-  }
-  
-  getAuditableAreas(): void {
-    this.subscriptions.push(
-      this.auditableAreaService.getAuditableAreas().subscribe(
-        (response: any) => {
-          this.auditableArea = response.result;
-        },
-        (error: HttpErrorResponse) => {
-          console.log(error);
-        }
-      )
-    );
   }
 
   public getAuditableAreaInfo(id: number): AuditableAreasDTO[] {

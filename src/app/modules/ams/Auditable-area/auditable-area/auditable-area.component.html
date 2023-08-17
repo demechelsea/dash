@@ -2,7 +2,7 @@
 <div class="but"><p-button  label="Create a new auditable area" (click)="createNewAuditableArea()"></p-button></div>
 <div class="card">
     <h5>Auditable area</h5>
-    <p-table #dt1 [value]="auditableArea" selectionMode="single" dataKey="id" [tableStyle]="{'min-width': '50rem'}"
+    <p-table #dt1 [value]="auditableArea" selectionMode="single" dataKey="id" [tableStyle]="{'width': 'auto'}"
         [rows]="5" [rowsPerPageOptions]="[5,10,15,20]" [paginator]="true" stateStorage="session"
         stateKey="statedemo-session">
         <ng-template pTemplate="header">

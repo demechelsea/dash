@@ -10,11 +10,6 @@ export const navItems: INavData[] = [
         name: 'Audit universe Table',
         url: '/ams/audit-universe',
       },
-      {
-        name: 'Create new audit universe',
-        url: '/ams/newAuditUniverse',
-      },
-
 
       {
         name: 'Audit Object Table',
@@ -44,11 +39,6 @@ export const navItems: INavData[] = [
         name: 'Checklist Table',
         url: '/ams/checklist',
       },
-      {
-        name: 'Create new checklist',
-        url: '/ams/newCkeckList',
-      },
-
 
       {
         name: 'Dash',
