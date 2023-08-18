@@ -2,18 +2,27 @@
 <div class="but"><p-button label="Create a new audit universe" (click)="createNewAuditUniverse()"></p-button></div>
 <div class="card">
     <h5 class="table-title">Audit Universe</h5>
-    <p-table #dt1 [value]="auditUniverse" selectionMode="single" dataKey="id" [tableStyle]="{'min-width': '50rem'}"
+    <p-table #dt1 [value]="auditUniverse" [exportHeader]="'customExportHeader'" selectionMode="single" dataKey="id" [tableStyle]="{'min-width': '50rem'}"
         [rows]="5" [rowsPerPageOptions]="[5,10,15,20]" [paginator]="true" stateStorage="session"
         stateKey="statedemo-session">
+        <ng-template pTemplate="caption">
+            <div class="flex">
+                <button type="button" pButton pRipple icon="pi pi-file" (click)="dt1.exportCSV()" class="m-2"
+                    pTooltip="CSV" tooltipPosition="bottom"></button>
+                <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportExcel()"
+                    class="p-button-success m-2" pTooltip="XLS" tooltipPosition="bottom"></button>
+                <button type="button" pButton pRipple icon="pi pi-file-pdf" (click)="exportPdf()"
+                    class="p-button-warning m-2" pTooltip="PDF" tooltipPosition="bottom"></button>
+            </div>
+        </ng-template>
         <ng-template pTemplate="header">
             <tr>
                 <th pSortableColumn="id">ID </th>
-                <th pSortableColumn="name" >Name<p-sortIcon field="name"></p-sortIcon></th>
-                <th pSortableColumn="description" >Description <p-sortIcon
-                        field="description"></p-sortIcon></th>
-                <th pSortableColumn="type">Type</th>
+                <th pSortableColumn="name">Name<p-sortIcon field="name"></p-sortIcon></th>
+                <th pSortableColumn="description">Description <p-sortIcon field="description"></p-sortIcon></th>
+                <th pSortableColumn="type">Audit Type</th>
                 <th pSortableColumn="status">Status</th>
-                <th scope="col" >Actions</th>
+                <th scope="col">Actions</th>
             </tr>
             <tr>
                 <th scope="col"></th>
@@ -34,13 +43,12 @@
                 <th scope="col"></th>
             </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-auditUniverse>
+        <ng-template pTemplate="body" let-auditUniverse let-rowIndex="rowIndex">
             <tr [pSelectableRow]="auditUniverse">
-                <td style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" tooltipPosition="top">
-                    {{auditUniverse?.id}}</td>
+                <td>{{rowIndex + 1}}</td>
                 <td>{{auditUniverse?.name}}</td>
                 <td>{{auditUniverse?.description}}</td>
-                <td>{{auditUniverse?.type}}</td>
+                <td>{{auditUniverse?.auditType}}</td>
                 <td>{{auditUniverse?.status}}</td>
                 <td>
                     <button pButton (click)="updateAuditUniverse(auditUniverse.id)" [ngClass]="{updateBlue: true}"

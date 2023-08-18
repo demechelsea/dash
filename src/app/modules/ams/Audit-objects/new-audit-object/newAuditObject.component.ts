@@ -1,8 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ConfirmationService, Message, MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { AuditObjectService } from 'src/app/services/auditObject/auditObject.service';
 import { AuditUniverseService } from 'src/app/services/auidit-universe/audit-universe.service';
 import { AuditPlanService } from 'src/app/services/audit-type/audit-type.service';
@@ -20,6 +19,7 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 export class NewAuditObjectComponent {
   public auditUniverses: AuditUniverseDTO[] = [];
   public auditTypes: AuditType[] = [];
+  public auditType: AuditType;
 
   public auditObjectR: AuditObjectDTO[] = [];
   public auditObjectInfo: AuditObjectDTO = new AuditObjectDTO();
@@ -64,9 +64,9 @@ export class NewAuditObjectComponent {
   getAuditTypes(): void {
     this.auditTypeService.getAuditTypes().subscribe(
       (response: any) => {
-        console.log("ttt" , response);
-        
-        this.auditTypes = response.result;
+        this.auditTypes = response.result.map(
+          (auditType: AuditType) => auditType.name
+        );
       },
       (error: HttpErrorResponse) => {
         console.log(error);

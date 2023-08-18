@@ -8,7 +8,7 @@ export class AnnualPlanDTO extends BaseModel {
     year: string;
     riskLevel : string;
     riskScore : number;
-    status : number;
+    status : string;
     auditUniverse : AuditUniverseDTO;
     riskScores : RistScoreDTO[];
 }

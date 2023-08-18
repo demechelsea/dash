@@ -1,16 +1,25 @@
 <p-toast position="top-right"></p-toast>
 <div class="but"><p-button label="Create a new annual plan" (click)="createNewAnnualPlan()"></p-button></div>
 <div class="card">
-    <h5 class="table-title">Audit Plan</h5>
-    <p-table #dt1 [value]="annualPlan" selectionMode="single" dataKey="id" [tableStyle]="{'min-width': '50rem'}"
+    <h5 class="table-title">Annual Plan</h5>
+    <p-table #dt1 [value]="annualPlan" [exportHeader]="'customExportHeader'" selectionMode="single" dataKey="id" [tableStyle]="{'min-width': '50rem'}"
         [rows]="5" [rowsPerPageOptions]="[5,10,15,20]" [paginator]="true" stateStorage="session"
         stateKey="statedemo-session">
+        <ng-template pTemplate="caption">
+            <div class="flex">
+                <button type="button" pButton pRipple icon="pi pi-file" (click)="dt1.exportCSV()" class="m-2"
+                    pTooltip="CSV" tooltipPosition="bottom"></button>
+                <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportExcel()"
+                    class="p-button-success m-2" pTooltip="XLS" tooltipPosition="bottom"></button>
+                <button type="button" pButton pRipple icon="pi pi-file-pdf" (click)="exportPdf()"
+                    class="p-button-warning m-2" pTooltip="PDF" tooltipPosition="bottom"></button>
+            </div>
+        </ng-template>
         <ng-template pTemplate="header">
             <tr>
                 <th pSortableColumn="id">ID </th>
                 <th pSortableColumn="name">Name<p-sortIcon field="name"></p-sortIcon></th>
-                <th pSortableColumn="description">Description <p-sortIcon
-                        field="description"></p-sortIcon></th>
+                <th pSortableColumn="description">Description <p-sortIcon field="description"></p-sortIcon></th>
                 <th pSortableColumn="type">Year</th>
                 <th pSortableColumn="status">Audit universe</th>
                 <th pSortableColumn="status">Risk scores</th>
@@ -50,10 +59,9 @@
                 <th scope="col"></th>
             </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-annualPlan>
+        <ng-template pTemplate="body" let-annualPlan let-rowIndex="rowIndex">
             <tr [pSelectableRow]="annualPlan">
-                <td style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" tooltipPosition="top">
-                    {{annualPlan?.id}}</td>
+                <td>{{rowIndex + 1}}</td>
                 <td>{{annualPlan?.name}}</td>
                 <td>{{annualPlan?.description}}</td>
                 <td>{{annualPlan?.year}}</td>

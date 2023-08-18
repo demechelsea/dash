@@ -47,6 +47,14 @@ export class AnnualPlanService {
     this.init();
     return this.http.post(`${this.apiServiceUrl}/ams/annualPlan/update`, annualPlan, this.httpOptions)
   }
+
+  public addToSchedule(annualPlan: AnnualPlanDTO): Observable<any>{
+    this.init();
+    return this.http.post(`${this.apiServiceUrl}/ams/annualPlan/addToSchedule`, annualPlan, this.httpOptions)
+  }
+
+  public plannedList(annualPlan: AnnualPlanDTO): Observable<any>{
+    this.init();
+    return this.http.post(`${this.apiServiceUrl}/ams/annualPlan/planedList`, annualPlan, this.httpOptions)
+  }
 }
-
-

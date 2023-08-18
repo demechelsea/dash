@@ -16,30 +16,29 @@
     <div class="row">
       <div class="col mb-4">
         <label for="hex" class="block mb-2"> Auditable type: </label>
-        <p-dropdown [required]="true" [options]="auditTypes" name="auditType" optionLabel="name" [filter]="true"
-          [(ngModel)]="auditObjectInfo.auditType" filterBy="name" [showClear]="true"
-          placeholder="Choose audit type" styleClass="p-password" [style]="{'width':'300px','height':'45px'}"
-          [disabled]="update">
+        <p-dropdown [required]="true" [options]="auditTypes" name="auditType" [filter]="true"
+          [(ngModel)]="auditObjectInfo.auditType" filterBy="name" [showClear]="true" placeholder="Choose audit type"
+          styleClass="p-password" [style]="{'width':'300px','height':'45px'}" [disabled]="update">
           <ng-template pTemplate="selectedItem">
-            <div *ngIf="auditObjectInfo?.auditType">
-              <div>{{auditObjectInfo.auditType.name}}</div>
+            <div *ngIf="auditObjectInfo.auditType">
+              <div>{{auditObjectInfo.auditType}}</div>
             </div>
           </ng-template>
-          <ng-template let-auditObject pTemplate="item">
+          <ng-template let-auditType pTemplate="item">
             <div>
-              <div>{{auditObject.name}}</div>
+              <div>{{auditType}}</div>
             </div>
           </ng-template>
         </p-dropdown>
       </div>
       <div class="col mb-4">
-        <label for="hex" class="block mb-2"> Auditable universe: </label>
+        <label for="hex" class="block mb-2"> Audit universe: </label>
         <p-dropdown [required]="true" [options]="auditUniverses" name="auditUniverse" optionLabel="name" [filter]="true"
           [(ngModel)]="auditObjectInfo.auditUniverse" filterBy="name" [showClear]="true"
           placeholder="Choose audit universe" styleClass="p-password" [style]="{'width':'300px','height':'45px'}"
           [disabled]="update">
           <ng-template pTemplate="selectedItem">
-            <div *ngIf="auditObjectInfo?.auditUniverse">
+            <div *ngIf="auditObjectInfo.auditUniverse">
               <div>{{auditObjectInfo.auditUniverse.name}}</div>
             </div>
           </ng-template>

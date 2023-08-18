@@ -16,12 +16,18 @@
 
     <div class="row">
       <div class="col mb-4">
-        <label for="integer" class="block mb-2">Year:</label>
-        <input pInputText id="integer" pKeyFilter="int" [ngModel]="annualPlanInfo.year" name="year"
-          [style]="{'width':'300px','height':'45px'}" required minlength="3" />
+        <label for="year" class="block mb-2">Year:</label>
+        <p-dropdown [options]="years" name="year" [(ngModel)]="annualPlanInfo.year"
+          [style]="{'width':'300px','height':'45px'}" [required]="true"  [disabled]="update" placeholder="Choose year">
+          <ng-template let-year pTemplate="item">
+            <div>{{year}}</div>
+          </ng-template>
+        </p-dropdown>
       </div>
+
+
       <div class="col mb-4">
-        <label for="hex" class="block mb-2"> Auditable universe: </label>
+        <label for="hex" class="block mb-2"> Audit universe: </label>
         <p-dropdown [required]="true" [options]="auditUniverses" name="auditUniverse" optionLabel="name" [filter]="true"
           [(ngModel)]="annualPlanInfo.auditUniverse" filterBy="name" [showClear]="true"
           placeholder="Choose auditable area" styleClass="p-password" [style]="{'width':'300px','height':'45px'}"
@@ -45,7 +51,7 @@
         <label for="integer" class="block mb-2">Risk Scores:</label>
         <p-button (click)="show()" class="m-12" icon="pi pi-info-circle" label="Choose"></p-button>
       </div>
-      <div  *ngIf="update" class="col mb-4">
+      <div *ngIf="update" class="col mb-4">
         <label for="integer" class=" block mb-2">Status:</label>
         <input pInputText id="integer" pKeyFilter="int" [ngModel]="annualPlanInfo.status" name="status"
           [style]="{'width':'300px','height':'45px'}" required minlength="3" />

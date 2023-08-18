@@ -1,8 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnDestroy } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ConfirmationService, Message, MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import {
   DialogService,
   DynamicDialogConfig,
@@ -28,6 +27,7 @@ export class NewAnnualPlanComponent implements OnDestroy {
   selectedAnnualPlanInfo: AnnualPlanDTO;
 
   private subscriptions: Subscription[] = [];
+  years: string[] = [];
 
   savedRiskScores: {
     riskItem: any | null;
@@ -48,14 +48,23 @@ export class NewAnnualPlanComponent implements OnDestroy {
   ) {}
 
   ngOnInit() {
+    this.generateYears();
     this.getAuditUniverses();
     if (this.config.data?.annualPlan) {
       this.annualPlanInfo = this.config.data.annualPlan;
+      console.log('sssss,', this.annualPlanInfo);
+
       this.update = true;
       this.newDiv = false;
     }
     if (this.config.data?.annualPlan) {
       this.annualPlanInfo = this.config.data.annualPlan;
+    }
+  }
+
+  generateYears() {
+    for (let i = 2024; i <= 2050; i++) {
+      this.years.push(`${i}/${i + 1}`);
     }
   }
 
@@ -125,12 +134,14 @@ export class NewAnnualPlanComponent implements OnDestroy {
   }
 
   updateAnnualPlan(updateDivForm: NgForm): void {
+    console.log('were,', updateDivForm.value);
     const annualPlan: AnnualPlanDTO = updateDivForm.value;
     annualPlan.id = this.annualPlanInfo.id;
     this.subscriptions.push(
       this.annualPlanService
         .updateAnnualPlan(annualPlan)
         .subscribe((response: any) => {
+          console.log('error,', response.result);
           this.messageService.clear();
           this.ref.close(response);
         })
@@ -146,6 +157,8 @@ export class NewAnnualPlanComponent implements OnDestroy {
         .subscribe((response: any) => {
           this.annualPlanR = [response.result];
           this.annualPlanInfo = response.result;
+          console.log('bbbbb,', response);
+
           this.selectedAnnualPlanInfo = this.annualPlanInfo;
         })
     );

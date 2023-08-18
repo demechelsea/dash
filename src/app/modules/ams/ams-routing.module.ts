@@ -7,7 +7,6 @@ import { UnusualChartComponents } from './Dashboards/unusualBar/unusualBar.compo
 import { WeeklyElpasedTimeComponent } from './Dashboards/weeklyElpasedTime/weeklyElpasedTime.component';
 import { StageLineGraphComponent } from './Dashboards/stageLineGraph/stageLineGraph.component';
 import { AuditObjectComponent } from './Audit-objects/audit-object/audit-object.component';
-import { NewAuditObjectComponent } from './Audit-objects/new-audit-object/newAuditObject.component';
 import { AuditableAreaComponent } from './Auditable-area/auditable-area/auditable-area.component';
 import { CheckListComponent } from './Checklist/checklist/checkList.component';
 

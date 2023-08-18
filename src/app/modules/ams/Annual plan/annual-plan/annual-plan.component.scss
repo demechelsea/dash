@@ -16,30 +16,8 @@
   animation: fadeIn 0.5s, fadeOut 0.5s;
 }
 
-@keyframes fadeIn {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-
-@keyframes fadeOut {
-  0% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
-}
-
 ::ng-deep .p-dialog .p-dialog-header .p-dialog-header-icon {
   color: white;
-}
-
-h5 {
-  padding: 0.5em;
 }
 
 th input {
@@ -56,7 +34,7 @@ p-button {
 
 .but {
   display: flex;
-  justify-content: end;
+  justify-content: flex-end;
 }
 
 .table-title {

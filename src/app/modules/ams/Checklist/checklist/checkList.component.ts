@@ -6,6 +6,18 @@ import { CkeckListItemDTO } from 'src/app/views/models/checkListItem';
 import { NewCheckListComponent } from '../new-checklist/newChecklist.component';
 import { MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
+import * as FileSaver from 'file-saver';
+
+interface ExportColumn {
+  title: string;
+  dataKey: string;
+}
+
+interface Column {
+  field: string;
+  header: string;
+  customExportHeader?: string;
+}
 
 @Component({
   selector: 'checkList-table',
@@ -19,7 +31,12 @@ export class CheckListComponent implements OnDestroy {
   public auditableAreaInfo: CkeckListItemDTO;
   selectedAuditableAreaInfo: CkeckListItemDTO;
 
+  public checklistDisplay: any[] = [];
+
   private subscriptions: Subscription[] = [];
+
+  exportColumns!: ExportColumn[];
+  cols!: Column[];
 
   constructor(
     private checkListService: CheckListService,
@@ -29,6 +46,17 @@ export class CheckListComponent implements OnDestroy {
 
   ngOnInit() {
     this.getCheckLists();
+    this.cols = [
+      { field: 'id', header: 'ID' },
+      { field: 'name', header: 'Name' },
+      { field: 'description', header: 'Description' },
+      { field: 'auditableAreaName', header: 'Auditable area' },
+    ];
+
+    this.exportColumns = this.cols.map((col) => ({
+      title: col.header,
+      dataKey: col.field,
+    }));
   }
 
   getCheckLists(): void {
@@ -36,6 +64,12 @@ export class CheckListComponent implements OnDestroy {
       this.checkListService.getChecklists().subscribe(
         (response: any) => {
           this.checklist = response.result;
+          this.checklistDisplay = this.checklist.map((obj: any) => ({
+            ...obj,
+            auditableAreaName: obj.auditableArea
+              ? obj.auditableArea.name
+              : null,
+          }));
         },
         (error: HttpErrorResponse) => {
           console.log(error);
@@ -121,5 +155,40 @@ export class CheckListComponent implements OnDestroy {
     for (const subscription of this.subscriptions) {
       subscription.unsubscribe();
     }
+  }
+
+  exportPdf() {
+    import('jspdf').then((jsPDF) => {
+      import('jspdf-autotable').then((x) => {
+        const doc = new jsPDF.default('p', 'px', 'a4');
+        (doc as any).autoTable(this.exportColumns, this.checklistDisplay);
+        doc.save('checklist.pdf');
+      });
+    });
+  }
+
+  exportExcel() {
+    import('xlsx').then((xlsx) => {
+      const worksheet = xlsx.utils.json_to_sheet(this.checklistDisplay);
+      const workbook = { Sheets: { data: worksheet }, SheetNames: ['data'] };
+      const excelBuffer: any = xlsx.write(workbook, {
+        bookType: 'xlsx',
+        type: 'array',
+      });
+      this.saveAsExcelFile(excelBuffer, 'products');
+    });
+  }
+
+  saveAsExcelFile(buffer: any, fileName: string): void {
+    let EXCEL_TYPE =
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+    let EXCEL_EXTENSION = '.xlsx';
+    const data: Blob = new Blob([buffer], {
+      type: EXCEL_TYPE,
+    });
+    FileSaver.saveAs(
+      data,
+      fileName + '_export_' + new Date().getTime() + EXCEL_EXTENSION
+    );
   }
 }

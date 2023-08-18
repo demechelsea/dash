@@ -6,6 +6,17 @@ import { AuditableAreasDTO } from 'src/app/views/models/auditableAreas';
 import { NewAuditableAreaComponent } from '../new-auditable-area/newAuditableArea.component';
 import { MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
+import * as FileSaver from 'file-saver';
+
+interface ExportColumn {
+  title: string;
+  dataKey: string;
+}
+interface Column {
+  field: string;
+  header: string;
+  customExportHeader?: string;
+}
 
 @Component({
   selector: 'audit-area-table',
@@ -15,10 +26,14 @@ import { Subscription } from 'rxjs';
 })
 export class AuditableAreaComponent implements OnDestroy {
   public auditableArea: AuditableAreasDTO[] = [];
+  public auditableAreaDisplay: any[] = [];
 
   public auditableAreaR: AuditableAreasDTO[] = [];
   public auditableAreaInfo: AuditableAreasDTO;
   selectedAuditableAreaInfo: AuditableAreasDTO;
+
+  exportColumns!: ExportColumn[];
+  cols!: Column[];
 
   private subscriptions: Subscription[] = [];
 
@@ -30,6 +45,18 @@ export class AuditableAreaComponent implements OnDestroy {
 
   ngOnInit() {
     this.getAuditableAreas();
+
+    this.cols = [
+      { field: 'id', header: 'ID' },
+      { field: 'name', header: 'Name' },
+      { field: 'auditaObjectName', header: 'Auditable Object' },
+      { field: 'description', header: 'Description' },
+    ];
+
+    this.exportColumns = this.cols.map((col) => ({
+      title: col.header,
+      dataKey: col.field,
+    }));
   }
 
   getAuditableAreas(): void {
@@ -37,6 +64,12 @@ export class AuditableAreaComponent implements OnDestroy {
       this.auditableAreaService.getAuditableAreas().subscribe(
         (response: any) => {
           this.auditableArea = response.result;
+          this.auditableAreaDisplay = this.auditableArea.map((obj: any) => ({
+            ...obj,
+            auditaObjectName: obj.auditObject ? obj.auditObject.name : null,
+          }));
+          console.log("bbb",this.auditableAreaDisplay);
+          
         },
         (error: HttpErrorResponse) => {
           console.log(error);
@@ -126,5 +159,40 @@ export class AuditableAreaComponent implements OnDestroy {
     for (const subscription of this.subscriptions) {
       subscription.unsubscribe();
     }
+  }
+
+  exportPdf() {
+    import('jspdf').then((jsPDF) => {
+      import('jspdf-autotable').then((x) => {
+        const doc = new jsPDF.default('p', 'px', 'a4');
+        (doc as any).autoTable(this.exportColumns, this.auditableAreaDisplay);
+        doc.save('auditable-area.pdf');
+      });
+    });
+  }
+
+  exportExcel() {
+    import('xlsx').then((xlsx) => {
+      const worksheet = xlsx.utils.json_to_sheet(this.auditableAreaDisplay);
+      const workbook = { Sheets: { data: worksheet }, SheetNames: ['data'] };
+      const excelBuffer: any = xlsx.write(workbook, {
+        bookType: 'xlsx',
+        type: 'array',
+      });
+      this.saveAsExcelFile(excelBuffer, 'products');
+    });
+  }
+
+  saveAsExcelFile(buffer: any, fileName: string): void {
+    let EXCEL_TYPE =
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+    let EXCEL_EXTENSION = '.xlsx';
+    const data: Blob = new Blob([buffer], {
+      type: EXCEL_TYPE,
+    });
+    FileSaver.saveAs(
+      data,
+      fileName + '_export_' + new Date().getTime() + EXCEL_EXTENSION
+    );
   }
 }

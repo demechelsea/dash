@@ -1,4 +1,4 @@
-import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AuditUniverseComponent } from './Audit Universe/audit-universe/audit-universe.component';
 import { AnnualPlanComponent } from './Annual plan/annual-plan/annual-plan.component';
@@ -11,6 +11,7 @@ import { AuditableAreaComponent } from './Auditable-area/auditable-area/auditabl
 import { NewAuditableAreaComponent } from './Auditable-area/new-auditable-area/newAuditableArea.component';
 import { NewCheckListComponent } from './Checklist/new-checklist/newChecklist.component';
 import { CheckListComponent } from './Checklist/checklist/checkList.component';
+import {CalendarModule} from 'primeng/calendar';
 
 import { AmsRoutingModule } from './ams-routing.module';
 import { ButtonModule } from 'primeng/button';
@@ -107,7 +108,8 @@ import { ConfirmationService, MessageService } from 'primeng/api';
     TableModule,
     InputTextModule,
     MessagesModule,
-    ToastModule
+    ToastModule,
+    CalendarModule
   ],
   providers: [ConfirmationService, MessageService, DialogService],
 })
