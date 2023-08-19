@@ -9,6 +9,7 @@ import { StageLineGraphComponent } from './Dashboards/stageLineGraph/stageLineGr
 import { AuditObjectComponent } from './Audit-objects/audit-object/audit-object.component';
 import { AuditableAreaComponent } from './Auditable-area/auditable-area/auditable-area.component';
 import { CheckListComponent } from './Checklist/checklist/checkList.component';
+import { AuditScheduleComponent } from './Audit-schedule/audit-schedule/audit-schedule.component';
 
 const routes: Routes = [
   {
@@ -59,6 +60,14 @@ const routes: Routes = [
         component: AnnualPlanComponent,
         data: {
           title: 'Annual Plan',
+        },
+      },
+
+      {
+        path: 'audit-schedule',
+        component: AuditScheduleComponent,
+        data: {
+          title: 'Audit Schedule',
         },
       },
 

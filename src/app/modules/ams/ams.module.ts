@@ -11,6 +11,8 @@ import { AuditableAreaComponent } from './Auditable-area/auditable-area/auditabl
 import { NewAuditableAreaComponent } from './Auditable-area/new-auditable-area/newAuditableArea.component';
 import { NewCheckListComponent } from './Checklist/new-checklist/newChecklist.component';
 import { CheckListComponent } from './Checklist/checklist/checkList.component';
+import { NewAuditScheduleComponent } from './Audit-schedule/new-audit-schedule/newAuditSchedule.component';
+import { AuditScheduleComponent } from './Audit-schedule/audit-schedule/audit-schedule.component';
 import {CalendarModule} from 'primeng/calendar';
 
 import { AmsRoutingModule } from './ams-routing.module';
@@ -70,6 +72,8 @@ import { ConfirmationService, MessageService } from 'primeng/api';
     NewAuditableAreaComponent,
     NewCheckListComponent,
     CheckListComponent,
+    NewAuditScheduleComponent,
+    AuditScheduleComponent
   ],
   imports: [
     NgApexchartsModule,

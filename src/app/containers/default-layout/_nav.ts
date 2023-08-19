@@ -32,6 +32,11 @@ export const navItems: INavData[] = [
       },
 
       {
+        name: 'Schedule',
+        url: '/ams/audit-schedule',
+      },
+
+      {
         name: 'Dash',
         url: '/ams/dash',
       },

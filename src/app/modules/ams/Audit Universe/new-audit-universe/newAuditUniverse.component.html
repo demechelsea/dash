@@ -8,13 +8,6 @@
           [style]="{'width':'300px','height':'45px'}" required minlength="3" />
       </div>
       <div class="col mb-4">
-        <label for="integer" class=" block mb-2"> Description: </label>
-        <input pInputText id="integer" pKeyFilter="int" [ngModel]="universeInfo.description" name="description"
-          [style]="{'width':'300px','height':'45px'}" required minlength="3" />
-      </div>
-    </div>
-    <div class="row">
-      <div class="col mb-4">
         <label for="hex" class="block mb-2"> Auditable type: </label>
         <p-dropdown [required]="true" [options]="auditTypes" name="auditType" [filter]="true"
           [(ngModel)]="universeInfo.auditType" filterBy="name" [showClear]="true" placeholder="Choose audit type"
@@ -31,14 +24,24 @@
           </ng-template>
         </p-dropdown>
       </div>
-
-
+    </div>
+    <div class="row">
       <div *ngIf="update" class="col mb-4">
         <label for="integer" class=" block mb-2">Status:</label>
         <input pInputText id="integer" pKeyFilter="int" [ngModel]="universeInfo.status" name="status"
           [style]="{'width':'300px','height':'45px'}" required minlength="3" />
       </div>
     </div>
+    <div class="row">
+      <div class="col mb-4">
+        <label for="integer" class=" block mb-2"> Description: </label>
+        <textarea pInputText id="integer" pKeyFilter="int" [ngModel]="universeInfo.description" name="description"
+          style='width: 94%; height:150px; resize: none;' required minlength="3"></textarea>
+      </div>
+      <div>
+      </div>
+    </div>
+
     <div style="margin-top: 15em;"></div>
     <div class="buttonDiv">
       <p-button label="Cancel" class="m-8" (click)="closeDialog()"></p-button>
