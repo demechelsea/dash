@@ -103,6 +103,7 @@ export class AuditUniverseComponent implements OnDestroy {
     const auditUniverse = this.auditUniverse.find(
       (universe) => universe.id === id
     );
+    console.log("ppppppppp", auditUniverse);
     const ref = this.dialogService.open(NewAuditUniverseComponent, {
       header: 'Update audit universe',
       width: '40%',
@@ -132,21 +133,6 @@ export class AuditUniverseComponent implements OnDestroy {
         }
       }
     });
-  }
-
-  public getAuditUniverseInfo(id: number): AuditUniverseDTO[] {
-    let auditUniv = new AuditUniverseDTO();
-    auditUniv.id = id;
-    this.subscriptions.push(
-      this.auditUniverseService
-        .getAuditUniverseInfo(auditUniv)
-        .subscribe((response: any) => {
-          this.auditUniverseR = [response.result];
-          this.universeInfo = response.result;
-          this.selectedUniverseInfo = this.universeInfo;
-        })
-    );
-    return this.auditUniverseR;
   }
 
   ngOnDestroy() {

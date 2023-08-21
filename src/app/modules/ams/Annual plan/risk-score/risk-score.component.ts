@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Inject, Optional, Output } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { SelectItem } from 'primeng/api';
 import { RiskItemService } from 'src/app/services/risk-item/risk-item.service';
 import { RiskItemDTO } from 'src/app/views/models/riskItemDTO';
@@ -68,7 +68,6 @@ export class RiskScoreComponent {
       frequency: riskScore.selectedLikelihood || 1,
       impact: riskScore.selectedImpact || 1,
     }));
-    console.log('Saved risk scores:', this.savedRiskScores);
     this.ref.close(this.savedRiskScores);
   }
   

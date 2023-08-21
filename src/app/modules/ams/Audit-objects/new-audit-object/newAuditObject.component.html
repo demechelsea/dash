@@ -11,7 +11,7 @@
         <label for="hex" class="block mb-2"> Auditable type: </label>
         <p-dropdown [required]="true" [options]="auditTypes" name="auditType" [filter]="true"
           [(ngModel)]="auditObjectInfo.auditType" filterBy="name" [showClear]="true" placeholder="Choose audit type"
-          styleClass="p-password" [style]="{'width':'300px','height':'45px'}" [disabled]="update">
+          styleClass="p-password" [style]="{'width':'300px','height':'45px'}">
           <ng-template pTemplate="selectedItem">
             <div *ngIf="auditObjectInfo.auditType">
               <div>{{auditObjectInfo.auditType}}</div>

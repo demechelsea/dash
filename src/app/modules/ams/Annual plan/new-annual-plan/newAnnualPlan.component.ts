@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnDestroy } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import {
@@ -26,6 +26,8 @@ export class NewAnnualPlanComponent implements OnDestroy {
   public annualPlanInfo: AnnualPlanDTO = new AnnualPlanDTO();
   selectedAnnualPlanInfo: AnnualPlanDTO;
 
+  riskScoreDialogRef: DynamicDialogRef;
+
   private subscriptions: Subscription[] = [];
   years: string[] = [];
 
@@ -44,7 +46,8 @@ export class NewAnnualPlanComponent implements OnDestroy {
     private auditUniverseService: AuditUniverseService,
     private ref: DynamicDialogRef,
     private config: DynamicDialogConfig,
-    public dialogService: DialogService
+    public dialogService: DialogService,
+    private cd: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -52,14 +55,16 @@ export class NewAnnualPlanComponent implements OnDestroy {
     this.getAuditUniverses();
     if (this.config.data?.annualPlan) {
       this.annualPlanInfo = this.config.data.annualPlan;
-      console.log('sssss,', this.annualPlanInfo);
-
       this.update = true;
       this.newDiv = false;
     }
     if (this.config.data?.annualPlan) {
       this.annualPlanInfo = this.config.data.annualPlan;
     }
+  }
+
+  ngAfterViewInit() {
+    this.cd.detectChanges();
   }
 
   generateYears() {
@@ -77,14 +82,15 @@ export class NewAnnualPlanComponent implements OnDestroy {
   }
 
   show() {
-    this.ref = this.dialogService.open(RiskScoreComponent, {
+    this.riskScoreDialogRef = this.dialogService.open(RiskScoreComponent, {
       header: 'Risk score',
       width: '50%',
       data: { savedRiskScores: this.savedRiskScores },
     });
-    this.ref.onClose.subscribe((savedRiskScores) => {
+    this.riskScoreDialogRef.onClose.subscribe((savedRiskScores) => {
       if (savedRiskScores) {
         this.savedRiskScores = savedRiskScores;
+        this.cd.detectChanges();
       }
     });
   }
@@ -104,6 +110,8 @@ export class NewAnnualPlanComponent implements OnDestroy {
     this.subscriptions.push(
       this.auditUniverseService.getAuditUniverse().subscribe(
         (response: any) => {
+          console.log("universe", response);
+          
           this.auditUniverses = response.result;
         },
         (error: HttpErrorResponse) => {
@@ -134,35 +142,16 @@ export class NewAnnualPlanComponent implements OnDestroy {
   }
 
   updateAnnualPlan(updateDivForm: NgForm): void {
-    console.log('were,', updateDivForm.value);
     const annualPlan: AnnualPlanDTO = updateDivForm.value;
     annualPlan.id = this.annualPlanInfo.id;
     this.subscriptions.push(
       this.annualPlanService
         .updateAnnualPlan(annualPlan)
         .subscribe((response: any) => {
-          console.log('error,', response.result);
           this.messageService.clear();
           this.ref.close(response);
         })
     );
-  }
-
-  getAuditPlanInfo(id: number): AnnualPlanDTO[] {
-    let sendAcc = new AnnualPlanDTO();
-    sendAcc.id = id;
-    this.subscriptions.push(
-      this.annualPlanService
-        .getAnnualPlanInfo(sendAcc)
-        .subscribe((response: any) => {
-          this.annualPlanR = [response.result];
-          this.annualPlanInfo = response.result;
-          console.log('bbbbb,', response);
-
-          this.selectedAnnualPlanInfo = this.annualPlanInfo;
-        })
-    );
-    return this.annualPlanR;
   }
 
   ngOnDestroy() {

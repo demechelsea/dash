@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
 import { AnnualPlanService } from 'src/app/services/annual-plan/annual-plan.service';
@@ -24,7 +24,7 @@ interface ExportColumn {
   styleUrls: ['./annual-plan.component.scss'],
 })
 export class AnnualPlanComponent {
-  public annualPlan: AnnualPlanDTO[] = [];
+  public annualPlans: AnnualPlanDTO[] = [];
   public risk: AnnualPlanDTO[] = [];
 
   public annualPlanDisplay: any[] = [];
@@ -41,7 +41,8 @@ export class AnnualPlanComponent {
   constructor(
     private annualPlanService: AnnualPlanService,
     private dialogService: DialogService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private cd: ChangeDetectorRef,
   ) {}
 
   ngOnInit() {
@@ -67,8 +68,9 @@ export class AnnualPlanComponent {
     this.subscriptions.push(
       this.annualPlanService.getAnnualPlans().subscribe(
         (response: any) => {
-          this.annualPlan = response.result;
-          this.annualPlanDisplay = this.annualPlan.map((obj: any) => ({
+          console.log("jjjj", response.result);
+          this.annualPlans = response.result;
+          this.annualPlanDisplay = this.annualPlans.map((obj: any) => ({
             ...obj,
             auditaUniverseName: obj.auditUniverse
               ? obj.auditUniverse.name
@@ -109,7 +111,8 @@ export class AnnualPlanComponent {
   }
 
   updateAnnualPlan(id: number): void {
-    const annualPlan = this.annualPlan.find((plan) => plan.id === id);
+    const annualPlan = this.annualPlans.find((plan) => plan.id === id);
+    console.log("annual", annualPlan);
     const ref = this.dialogService.open(NewAnnualPlanComponent, {
       header: 'Update annual plan',
       width: '40%',
@@ -120,7 +123,7 @@ export class AnnualPlanComponent {
 
     ref.onClose.subscribe((response: any) => {
       if (response) {
-        this.annualPlan = this.annualPlan.map((plan) =>
+        this.annualPlans = this.annualPlans.map((plan) =>
           plan.id === response.id ? response : plan
         );
         if (response.status) {
@@ -137,27 +140,10 @@ export class AnnualPlanComponent {
             detail: response.message,
           });
         }
+        this.cd.detectChanges();
       }
     });
-  }
-
-  getAuditAnnualInfo(id: number): AnnualPlanDTO[] {
-    let auditUniv = new AnnualPlanDTO();
-    auditUniv.id = id;
-    this.subscriptions.push(
-      this.annualPlanService.getAnnualPlanInfo(auditUniv).subscribe(
-        (response: any) => {
-          this.auditAnnualR = [response.result];
-          this.annualInfo = response.result;
-          this.selectedAnnualInfo = this.annualInfo;
-        },
-        (error: HttpErrorResponse) => {
-          console.log(error);
-          setTimeout(() => {}, 1000);
-        }
-      )
-    );
-    return this.auditAnnualR;
+    
   }
 
   ngOnDestroy() {

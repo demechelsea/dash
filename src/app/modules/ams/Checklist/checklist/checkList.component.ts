@@ -106,6 +106,7 @@ export class CheckListComponent implements OnDestroy {
 
   updateChecklist(id: number): void {
     const checklist = this.checklist.find((check) => check.id === id);
+    console.log("check", checklist);
     const ref = this.dialogService.open(NewCheckListComponent, {
       header: 'Update auditable area',
       width: '40%',
@@ -134,21 +135,6 @@ export class CheckListComponent implements OnDestroy {
         }
       }
     });
-  }
-
-  public getAuditableAreaInfo(id: number): CkeckListItemDTO[] {
-    let auditObj = new CkeckListItemDTO();
-    auditObj.id = id;
-    this.subscriptions.push(
-      this.checkListService
-        .getCheckListInfo(auditObj)
-        .subscribe((response: any) => {
-          this.auditableAreaR = [response.result];
-          this.auditableAreaInfo = response.result;
-          this.selectedAuditableAreaInfo = this.auditableAreaInfo;
-        })
-    );
-    return this.auditableAreaR;
   }
 
   ngOnDestroy() {

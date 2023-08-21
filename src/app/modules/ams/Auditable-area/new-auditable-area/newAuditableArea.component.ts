@@ -43,9 +43,6 @@ export class NewAuditableAreaComponent implements OnDestroy {
       this.update = true;
       this.newDiv = false;
     }
-    if (this.config.data?.auditableArea) {
-      this.auditAreaInfo = this.config.data.auditableArea;
-    }
   }
 
   public submitAuditableArea(auditableAreaForm: NgForm): void {
@@ -59,8 +56,6 @@ export class NewAuditableAreaComponent implements OnDestroy {
   public getAuditObjects(): void {
     this.auditObjectService.getAuditObjects().subscribe(
       (response: any) => {
-        console.log("response.result", response.result);
-        
         this.auditObjects = response.result;
       },
       (error: HttpErrorResponse) => {
@@ -69,7 +64,7 @@ export class NewAuditableAreaComponent implements OnDestroy {
     );
   }
 
-  public addAuditableArea(addDivForm: NgForm): void {
+  addAuditableArea(addDivForm: NgForm): void {
     this.subscriptions.push(
       this.auditableAreaService
         .addAuditableArea(addDivForm.value)
@@ -80,8 +75,9 @@ export class NewAuditableAreaComponent implements OnDestroy {
     );
   }
 
-  public updateAuditableArea(updateDivForm: NgForm): void {
+  updateAuditableArea(updateDivForm: NgForm): void {
     const auditableArea: AuditableAreasDTO = updateDivForm.value;
+    console.log("bak", auditableArea);
     auditableArea.id = this.auditAreaInfo.id;
     this.subscriptions.push(
       this.auditableAreaService
@@ -93,27 +89,12 @@ export class NewAuditableAreaComponent implements OnDestroy {
     );
   }
 
-  public getAuditObjectInfo(id: number): AuditableAreasDTO[] {
-    let sendAcc = new AuditableAreasDTO();
-    sendAcc.id = id;
-    this.subscriptions.push(
-      this.auditableAreaService.getAuditableAreaInfo(sendAcc).subscribe(
-        (response: any) => {
-          this.auditObjectR = [response.result];
-          this.auditAreaInfo = response.result;
-          this.selectedAuditObjectInfo = this.auditAreaInfo;
-        },
-      )
-    );
-    return this.auditObjectR;
-  }
-
   ngOnDestroy() {
     for (const subscription of this.subscriptions) {
       subscription.unsubscribe();
     }
   }
-  public closeDialog(): void {
+  closeDialog(): void {
     this.ref.close();
   }
 }

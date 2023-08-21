@@ -38,27 +38,25 @@ export class NewAuditUniverseComponent implements OnDestroy {
 
   ngOnInit() {
     this.getAuditTypes();
-    if (this.config.data?.auditUniverse) {
+    if (this.config.data?.auditUniverse) {      
       this.universeInfo = this.config.data.auditUniverse;
       this.update = true;
       this.newDiv = false;
-    }
-    if (this.config.data?.auditUniverse) {
-      this.universeInfo = this.config.data.auditUniverse;
     }
   }
 
   getAuditTypes(): void {
     this.auditTypeService.getAuditTypes().subscribe(
       (response: any) => {
-        this.auditTypes = response.result.map((auditType: AuditType) => auditType.name);
+        this.auditTypes = response.result.map(
+          (auditType: AuditType) => auditType.name
+        );
       },
       (error: HttpErrorResponse) => {
         console.log(error);
       }
     );
   }
-
 
   submitAuditableArea(auditableAreaForm: NgForm): void {
     if (this.update) {
@@ -68,19 +66,19 @@ export class NewAuditUniverseComponent implements OnDestroy {
     }
   }
 
-  addAuditUniverse(addDivForm: NgForm): void {    
+  addAuditUniverse(addDivForm: NgForm): void {
     this.subscriptions.push(
       this.auditUniverseService
         .addAuditUniverse(addDivForm.value)
-        .subscribe((response: any) => {          
+        .subscribe((response: any) => {
           this.messageService.clear();
           this.ref.close(response);
         })
     );
   }
 
-  updateAuditUniverses(updateDivForm: NgForm): void {
-    const auditUniverse: AuditUniverseDTO = updateDivForm.value;
+  updateAuditUniverses(addDivForm: NgForm): void {
+    const auditUniverse: AuditUniverseDTO = addDivForm.value;
     auditUniverse.id = this.universeInfo.id;
     this.subscriptions.push(
       this.auditUniverseService
@@ -90,21 +88,6 @@ export class NewAuditUniverseComponent implements OnDestroy {
           this.ref.close(response);
         })
     );
-  }
-
-  getAuditUniverseInfo(id: number): AuditUniverseDTO[] {
-    let sendAcc = new AuditUniverseDTO();
-    sendAcc.id = id;
-    this.subscriptions.push(
-      this.auditUniverseService
-        .getAuditUniverseInfo(sendAcc)
-        .subscribe((response: any) => {
-          this.auditUniverseR = [response.result];
-          this.universeInfo = response.result;
-          this.selectedUniverseInfo = this.universeInfo;
-        })
-    );
-    return this.auditUniverseR;
   }
 
   ngOnDestroy() {

@@ -68,7 +68,6 @@ export class AuditableAreaComponent implements OnDestroy {
             ...obj,
             auditaObjectName: obj.auditObject ? obj.auditObject.name : null,
           }));
-          console.log("bbb",this.auditableAreaDisplay);
           
         },
         (error: HttpErrorResponse) => {
@@ -106,6 +105,7 @@ export class AuditableAreaComponent implements OnDestroy {
 
   updateAuditableObject(id: number): void {
     const auditableArea = this.auditableArea.find((area) => area.id === id);
+    console.log("vvvvvvvvv", auditableArea);
     const ref = this.dialogService.open(NewAuditableAreaComponent, {
       header: 'Update auditable area',
       width: '40%',

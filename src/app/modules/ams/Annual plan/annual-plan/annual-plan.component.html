@@ -2,7 +2,7 @@
 <div class="but"><p-button label="Create a new annual plan" (click)="createNewAnnualPlan()"></p-button></div>
 <div class="card">
     <h5 class="table-title">Annual Plan</h5>
-    <p-table #dt1 [value]="annualPlan" [exportHeader]="'customExportHeader'" selectionMode="single" dataKey="id" [tableStyle]="{'min-width': '50rem'}"
+    <p-table #dt1 [value]="annualPlans" [exportHeader]="'customExportHeader'" selectionMode="single" dataKey="id" [tableStyle]="{'min-width': '50rem'}"
         [rows]="5" [rowsPerPageOptions]="[5,10,15,20]" [paginator]="true" stateStorage="session"
         stateKey="statedemo-session">
         <ng-template pTemplate="caption">
