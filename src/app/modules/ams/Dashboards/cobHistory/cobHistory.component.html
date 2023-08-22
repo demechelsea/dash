@@ -1,4 +1,6 @@
-<c-row>
-  <c-col sm="6" xl="3">
-</c-col>
-</c-row>
+<div class="block" *ngIf="cobHistory">
+  <div class="box">Average elapsed time: {{cobHistory.averageCOBElapsedTime}}</div>
+  <div class="box">Fastest elapsed time: {{cobHistory.fastestCOBElapsedTime}}</div>
+  <div class="box">Slowest elapsed time: {{cobHistory.slowestCOBElapsedTime}}</div>
+  <div class="box">Total JT analyzed: {{cobHistory.totalJTAnalyzed}}</div>
+</div>

@@ -51,8 +51,6 @@ export class MonthlyElpasedTimeComponent implements OnInit {
     private cdr: ChangeDetectorRef
   ) {}
 
-  
-
   ngOnInit() {
     this.subscriptions.add(
       this.dashboardService.getAllJTSummary().subscribe((data) => {
@@ -60,7 +58,6 @@ export class MonthlyElpasedTimeComponent implements OnInit {
         const { averageCOBTime } = data;
         const [hours, minutes, seconds] = averageCOBTime.split(':').map(Number);
         const averageCOBTimeInSeconds = hours * 3600 + minutes * 60 + seconds;
-
         this.updateChart(averageCOBTimeInSeconds);
       })
     );
@@ -72,7 +69,7 @@ export class MonthlyElpasedTimeComponent implements OnInit {
         type: 'bar',
       },
       stroke: {
-        width: [0, 1],
+        width: [0, 2],
       },
       dataLabels: {
         enabled: true,
