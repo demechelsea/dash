@@ -64,6 +64,8 @@ export class AuditableAreaComponent implements OnDestroy {
       this.auditableAreaService.getAuditableAreas().subscribe(
         (response: any) => {
           this.auditableArea = response.result;
+          console.log(response);
+          console.log(this.auditableArea);
           this.auditableAreaDisplay = this.auditableArea.map((obj: any) => ({
             ...obj,
             auditaObjectName: obj.auditObject ? obj.auditObject.name : null,

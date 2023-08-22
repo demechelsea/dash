@@ -58,7 +58,6 @@ export class WeeklyElpasedTimeComponent implements OnInit {
       this.dashboardService
         .getCOBHistory()
         .subscribe((data) => {
-          console.log(data)
           this.COBHistory = data;
         })
     );

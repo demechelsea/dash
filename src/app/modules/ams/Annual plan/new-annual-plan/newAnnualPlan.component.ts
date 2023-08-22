@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectorRef, Component, OnDestroy } from '@angular/core';
+import { AfterContentChecked, AfterViewInit, ChangeDetectorRef, Component, OnDestroy } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import {
@@ -20,7 +20,7 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./newAnnualPlan.component.scss'],
   providers: [MessageService, ConfirmationService, DialogService],
 })
-export class NewAnnualPlanComponent implements OnDestroy {
+export class NewAnnualPlanComponent implements OnDestroy, AfterContentChecked {
   public auditUniverses: AuditUniverseDTO[] = [];
   public annualPlanR: AnnualPlanDTO[] = [];
   public annualPlanInfo: AnnualPlanDTO = new AnnualPlanDTO();
@@ -47,7 +47,7 @@ export class NewAnnualPlanComponent implements OnDestroy {
     private ref: DynamicDialogRef,
     private config: DynamicDialogConfig,
     public dialogService: DialogService,
-    private cd: ChangeDetectorRef
+    private cdref: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -63,9 +63,9 @@ export class NewAnnualPlanComponent implements OnDestroy {
     }
   }
 
-  ngAfterViewInit() {
-    this.cd.detectChanges();
-  }
+  ngAfterContentChecked() {
+    this.cdref.detectChanges();
+ }
 
   generateYears() {
     for (let i = 2024; i <= 2050; i++) {
@@ -90,7 +90,7 @@ export class NewAnnualPlanComponent implements OnDestroy {
     this.riskScoreDialogRef.onClose.subscribe((savedRiskScores) => {
       if (savedRiskScores) {
         this.savedRiskScores = savedRiskScores;
-        this.cd.detectChanges();
+        this.cdref.detectChanges();
       }
     });
   }

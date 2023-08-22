@@ -49,6 +49,7 @@ import { ToastModule } from 'primeng/toast';
 
 import { COBHistoryComponent } from './Dashboards/cobHistory/cobHistory.component';
 import { WeeklyElpasedTimeComponent } from './Dashboards/weeklyElpasedTime/weeklyElpasedTime.component';
+import { MonthlyElpasedTimeComponent } from './Dashboards/monthlyElpasedTime/monthlyElpasedTime.component';
 import { StageLineGraphComponent } from './Dashboards/stageLineGraph/stageLineGraph.component';
 import { UnusualChartComponents } from './Dashboards/unusualBar/unusualBar.component';
 import { NgApexchartsModule } from 'ng-apexcharts';
@@ -73,7 +74,8 @@ import { ConfirmationService, MessageService } from 'primeng/api';
     NewCheckListComponent,
     CheckListComponent,
     NewAuditScheduleComponent,
-    AuditScheduleComponent
+    AuditScheduleComponent,
+    MonthlyElpasedTimeComponent
   ],
   imports: [
     NgApexchartsModule,

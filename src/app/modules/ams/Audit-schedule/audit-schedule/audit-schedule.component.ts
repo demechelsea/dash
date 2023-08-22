@@ -62,6 +62,7 @@ export class AuditScheduleComponent implements OnDestroy {
       dataKey: col.field,
     }));
   }
+  
 
   getAuditSchedules(): void {
     this.subscriptions.push(

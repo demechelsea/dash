@@ -6,11 +6,8 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Subscription } from 'rxjs';
 import { AnnualPlanService } from 'src/app/services/annual-plan/annual-plan.service';
 import { AuditScheduleService } from 'src/app/services/audit-schedule/audit-schedule.service';
-import { AuditPlanService } from 'src/app/services/audit-type/audit-type.service';
-import { AuditUniverseService } from 'src/app/services/auidit-universe/audit-universe.service';
 import { AnnualPlanDTO } from 'src/app/views/models/annualPlan';
 import { AuditScheduleDTO } from 'src/app/views/models/auditSchedule';
-import { AuditType } from 'src/app/views/models/auditType';
 import { AuditUniverseDTO } from 'src/app/views/models/auditUniverse';
 
 @Component({

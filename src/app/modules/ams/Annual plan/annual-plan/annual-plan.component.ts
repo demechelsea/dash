@@ -29,7 +29,7 @@ export class AnnualPlanComponent {
 
   public annualPlanDisplay: any[] = [];
 
-  public auditAnnualR: AnnualPlanDTO[] = [];
+  public annualPlanR: AnnualPlanDTO[] = [];
   public annualInfo: AnnualPlanDTO;
   selectedAnnualInfo: AnnualPlanDTO;
 
@@ -42,12 +42,11 @@ export class AnnualPlanComponent {
     private annualPlanService: AnnualPlanService,
     private dialogService: DialogService,
     private messageService: MessageService,
-    private cd: ChangeDetectorRef,
+    private cd: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
     this.getAnnualPlans();
-
     this.cols = [
       { field: 'id', header: 'ID' },
       { field: 'name', header: 'Name' },
@@ -68,8 +67,9 @@ export class AnnualPlanComponent {
     this.subscriptions.push(
       this.annualPlanService.getAnnualPlans().subscribe(
         (response: any) => {
-          console.log("jjjj", response.result);
           this.annualPlans = response.result;
+          console.log(response);
+          console.log(this.annualPlans);
           this.annualPlanDisplay = this.annualPlans.map((obj: any) => ({
             ...obj,
             auditaUniverseName: obj.auditUniverse
@@ -112,7 +112,7 @@ export class AnnualPlanComponent {
 
   updateAnnualPlan(id: number): void {
     const annualPlan = this.annualPlans.find((plan) => plan.id === id);
-    console.log("annual", annualPlan);
+    console.log('annual', annualPlan);
     const ref = this.dialogService.open(NewAnnualPlanComponent, {
       header: 'Update annual plan',
       width: '40%',
@@ -143,7 +143,6 @@ export class AnnualPlanComponent {
         this.cd.detectChanges();
       }
     });
-    
   }
 
   ngOnDestroy() {

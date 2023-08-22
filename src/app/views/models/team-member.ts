@@ -1,4 +1,4 @@
-import { UserDTO } from "./annualPlan copy";
+import { UserDTO } from "./userDTO";
 import { AuditScheduleDTO } from "./auditSchedule";
 import { BaseModel } from "./base";
 

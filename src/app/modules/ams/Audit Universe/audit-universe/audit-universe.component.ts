@@ -103,7 +103,6 @@ export class AuditUniverseComponent implements OnDestroy {
     const auditUniverse = this.auditUniverse.find(
       (universe) => universe.id === id
     );
-    console.log("ppppppppp", auditUniverse);
     const ref = this.dialogService.open(NewAuditUniverseComponent, {
       header: 'Update audit universe',
       width: '40%',

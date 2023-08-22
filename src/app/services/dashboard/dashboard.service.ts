@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { DailyHistoryDTO } from 'src/app/views/models/dailyHistory';
 import { WeeklyDTO } from 'src/app/views/models/weekly report';
 import { SpecificDay } from 'src/app/views/models/specificDay';
 @Injectable({
@@ -18,15 +17,15 @@ export class DashboardService {
         Authorization: `Bearer ${localStorage.getItem('access_token')}`,
       }),
     };
-    this.apiServiceUrl = 'http://10.1.125.58:8088';
+    this.apiServiceUrl = 'http://10.1.11.44:8088';
   }
 
   constructor(private http: HttpClient) {}
 
-  public getAllStageNames(): Observable<any> {
+  public getAllJTSummary(): Observable<any> {
     this.init();
     return this.http.get<any>(
-      `${this.apiServiceUrl}/CMS/JT/getAllStages`,
+      `${this.apiServiceUrl}/CMS/JT/getAllJTSummary`,
       this.httpOptions
     );
   }
