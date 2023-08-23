@@ -36,6 +36,8 @@ export type ChartOptions = {
 })
 export class StageLineGraphComponent implements OnInit {
   @Input() data: any;
+  @Input() averageData: any;
+
   public cumulativeElapsedTimeInSeconds: number[] = [];
 
   @ViewChild('chart') chart: ChartComponent;
@@ -94,23 +96,24 @@ export class StageLineGraphComponent implements OnInit {
     };
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+  }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['data']) {
       const newData = changes['data'].currentValue;
-      if (newData) {
+      if (Array.isArray(newData)){
         this.stageNames = newData.map((item: any) => item.stage.name);
-        if (this.chartOptions.xaxis) {
+        if (this.chartOptions && this.chartOptions.xaxis) {
           this.chartOptions.xaxis.tickAmount = this.stageNames.length;
-        } 
+        }
         this.chart?.updateOptions(this.chartOptions);
         const elapsedTimeValues = newData.map((list: any) => list.elapsedTime);
         const elapsedTimeInSeconds = elapsedTimeValues.map((time: string) => {
           const [hours, minutes, seconds] = time.split(':').map(Number);
           return hours * 3600 + minutes * 60 + seconds;
         });
-
+  
         this.cumulativeElapsedTimeInSeconds = elapsedTimeInSeconds.reduce(
           (acc: number[], cur: number) => [
             ...acc,
@@ -118,22 +121,70 @@ export class StageLineGraphComponent implements OnInit {
           ],
           []
         );
-        this.chartOptions.series = [
-          {
-            name: 'Time',
+  
+        // Initialize the series array
+        this.chartOptions.series = [];
+  
+        // Push the first line series
+        this.chartOptions.series.push({
+          name: 'Time',
+          type: 'line',
+          data: [
+            [0, 0],
+            ...this.cumulativeElapsedTimeInSeconds.map((value, index) => [
+              value,
+              index + 1,
+            ]),
+          ],
+        });
+  
+        // Push the second line series
+        if (this.averageData && this.chartOptions && this.chartOptions.series) {
+          const averageElapsedTimeValues = this.averageData.map(
+            (list: any) => list || ''
+          );
+  
+          const averageElapsedTimeInSeconds = averageElapsedTimeValues.map(
+            (time: string) => {
+              if (time) {
+                const [hours, minutes, seconds] = time.split(':').map(Number);
+                return hours * 3600 + minutes * 60 + seconds;
+              } else {
+                return 0;
+              }
+            }
+          );
+  
+          const cumulativeAverageElapsedTimeInSeconds =
+            averageElapsedTimeInSeconds.reduce(
+              (acc: number[], cur: number) => [
+                ...acc,
+                cur + (acc.length > 0 ? acc[acc.length - 1] : 0),
+              ],
+              []
+            );
+          
+          console.log('kkkkkk', cumulativeAverageElapsedTimeInSeconds);
+  
+          this.chartOptions.series.push({
+            name: 'Average Time',
             type: 'line',
             data: [
               [0, 0],
-              ...this.cumulativeElapsedTimeInSeconds.map((value, index) => [
-                value,
-                index + 1,
-              ]),
+              ...cumulativeAverageElapsedTimeInSeconds.map(
+                (value: any, index: number) => [value, index + 1]
+              ),
             ],
-          },
-        ];
-        this.chart?.updateSeries(this.chartOptions.series);
+          });
+        }
+  
+        if (this.chartOptions && this.chartOptions.series) {
+          this.chart?.updateSeries(this.chartOptions.series);
+        }
+  
         this.cdr.detectChanges();
       }
     }
   }
+  
 }

@@ -1,7 +1,7 @@
 export interface COBHistoryDTO  {
     id: number;
-    earliestJTAnalyzed: string;
-    latestJTAnalyzed: string;
+    initialJTAnalyzed: string;
+    latestRecordedJTAnalyzed: string;
     totalJTAnalyzed: number;
     fastestCOBElapsedTime: string;
     averageCOBElapsedTime: string;

@@ -1,9 +1,4 @@
-import {
-  ChangeDetectorRef,
-  Component,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import * as moment from 'moment';
 import {
   ChartComponent,
@@ -42,6 +37,8 @@ export type ChartOptions = {
 })
 export class WeeklyElpasedTimeComponent implements OnInit {
   chartData: any;
+  averageChartData: any;
+  chartDataWithNulls: (DailyHistoryDTO | null)[] = [];
 
   private subscriptions = new Subscription();
 
@@ -55,11 +52,9 @@ export class WeeklyElpasedTimeComponent implements OnInit {
 
   ngOnInit() {
     this.subscriptions.add(
-      this.dashboardService
-        .getCOBHistory()
-        .subscribe((data) => {
-          this.COBHistory = data;
-        })
+      this.dashboardService.getCOBHistory().subscribe((data) => {
+        this.COBHistory = data;
+      })
     );
     const today = moment();
     const startOfLastWeek = today
@@ -84,7 +79,8 @@ export class WeeklyElpasedTimeComponent implements OnInit {
       this.dashboardService
         .getDailyStageHistory(specificDay)
         .subscribe((data) => {
-          this.chartData = data;
+          this.chartData = data.stageHistoryList;
+          this.averageChartData = data.averageStageElapsedTime;                    
           this.cdr.detectChanges();
         })
     );
@@ -106,17 +102,22 @@ export class WeeklyElpasedTimeComponent implements OnInit {
       chart: {
         events: {
           dataPointSelection: (event, chartContext, { dataPointIndex }) => {
-            const selectedUtcDate =
-              this.dailyHistoryData[dataPointIndex].utcDate;
-            const specificDay: SpecificDay = { date: selectedUtcDate };
-            this.subscriptions.add(
-              this.dashboardService
-                .getDailyStageHistory(specificDay)
-                .subscribe((data) => {
-                  this.chartData = data;
-                  this.cdr.detectChanges();
-                })
-            );
+            const data = this.chartDataWithNulls[dataPointIndex];            
+            if (data) {
+              const selectedUtcDate = data.utcDate;
+              const specificDay: SpecificDay = { date: selectedUtcDate };
+              this.subscriptions.add(
+                this.dashboardService
+                  .getDailyStageHistory(specificDay)
+                  .subscribe((data) => {
+                    this.chartData = data.stageHistoryList;
+                    this.averageChartData = data.averageStageElapsedTime;                    
+                    this.cdr.detectChanges();
+                  })
+              );
+            } else {
+              console.log('No data for this day');
+            }
           },
         },
         height: 350,
@@ -139,33 +140,38 @@ export class WeeklyElpasedTimeComponent implements OnInit {
         },
         custom: ({ series, seriesIndex, dataPointIndex, w }) => {
           const data = this.dailyHistoryData[dataPointIndex];
-          const utcDate = data.utcDate;
-          const year = utcDate.substring(0, 4);
-          const month = utcDate.substring(4, 6);
-          const day = utcDate.substring(6, 8);
-          const date = new Date(`${year}-${month}-${day}`);
-          const monthNames = [
-            'Jan',
-            'Feb',
-            'Mar',
-            'Apr',
-            'May',
-            'Jun',
-            'Jul',
-            'Aug',
-            'Sep',
-            'Oct',
-            'Nov',
-            'Dec',
-          ];
-          const formattedDate = `${day} ${monthNames[date.getMonth()]} ${year}`;
-          return `<div style="background-color: #333; color: #fff; padding: 10px; border-radius: 5px;">
-                    <div>Uploaded By: ${data.uploadedBy}</div>
-                    <div>Start Time: ${data.startTime}</div>
-                    <div>End Time: ${data.endTime}</div>
-                    <div>Upload Date Time: ${data.uploadDateTime}</div>
-                    <div>UTC Date: ${formattedDate}</div>
-                  </div>`;
+          if (data) {
+            const utcDate = data.utcDate;
+            const year = utcDate.substring(0, 4);
+            const month = utcDate.substring(4, 6);
+            const day = utcDate.substring(6, 8);
+            const date = new Date(`${year}-${month}-${day}`);
+            const monthNames = [
+              'Jan',
+              'Feb',
+              'Mar',
+              'Apr',
+              'May',
+              'Jun',
+              'Jul',
+              'Aug',
+              'Sep',
+              'Oct',
+              'Nov',
+              'Dec',
+            ];
+            const formattedDate = `${day} ${
+              monthNames[date.getMonth()]
+            } ${year}`;
+            return `<div style="background-color: #333; color: #fff; padding: 10px; border-radius: 5px;">
+                      <div>Uploaded By: ${data.uploadedBy}</div>
+                      <div>Start Time: ${data.startTime}</div>
+                      <div>End Time: ${data.endTime}</div>
+                      <div>Upload Date Time: ${data.uploadDateTime}</div>
+                      <div>UTC Date: ${formattedDate}</div>
+                    </div>`;
+          }
+          return '';
         },
       },
       labels: dates,
@@ -216,7 +222,6 @@ export class WeeklyElpasedTimeComponent implements OnInit {
       ],
     };
   }
-
 
   onWeekChange(event: any) {
     this.selectedWeekString = event.target.value;
@@ -280,6 +285,19 @@ export class WeeklyElpasedTimeComponent implements OnInit {
 
       days[cobDay as keyof typeof days] = elapsedTimeInSeconds;
     }
+
+    this.chartDataWithNulls = [
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday',
+      'Sunday',
+    ].map((day) => {
+      return this.dailyHistoryData.find((data) => data.cobDay === day) || null;
+    });
+
     this.chartOptions.series = [
       {
         name: 'Elapsed Time',
@@ -287,6 +305,7 @@ export class WeeklyElpasedTimeComponent implements OnInit {
         data: Object.values(days),
       },
     ];
+
     this.chart?.updateSeries(this.chartOptions.series);
   }
 

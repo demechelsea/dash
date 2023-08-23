@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ChartComponents } from './cobHistory.component';
+import { COBHistoryComponent } from './cobHistory.component';
 
 
-describe('ChartComponents', () => {
-  let component: ChartComponents;
-  let fixture: ComponentFixture<ChartComponents>;
+describe('COBHistoryComponent', () => {
+  let component: COBHistoryComponent;
+  let fixture: ComponentFixture<COBHistoryComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [ChartComponents]
+      declarations: [COBHistoryComponent]
     });
-    fixture = TestBed.createComponent(ChartComponents);
+    fixture = TestBed.createComponent(COBHistoryComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

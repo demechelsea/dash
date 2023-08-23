@@ -4,3 +4,9 @@
   <div class="box">Slowest elapsed time: {{cobHistory.slowestCOBElapsedTime}}</div>
   <div class="box">Total JT analyzed: {{cobHistory.totalJTAnalyzed}}</div>
 </div>
+<monthly-barChart></monthly-barChart>
+<div class="block" *ngIf="cobHistory">
+  <div class="box">Earliest JT analyzed: {{cobHistory.initialJTAnalyzed}}</div>
+  <div class="box">Latest elapsed time: {{cobHistory.latestRecordedJTAnalyzed}}</div>
+  <div class="box">Total COB elapsed time: {{cobHistory.totalCOBElapsedTime}}</div>
+</div>
