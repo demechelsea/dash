@@ -1,19 +1,44 @@
-<div id="chart">
-  <div class="date-picker-container">
-    <label for="date-picker">Select a day:</label>
-    <input type="date" id="date-picker" [(ngModel)]="selectedDayString" (change)="onDayChange($event)" />
-    <button class="apply-button" (click)="onApply()">Apply</button>
-  </div>
-  <apx-chart
-    [series]="chartOptions.series!"
-    [chart]="chartOptions.chart!"
-    [dataLabels]="chartOptions.dataLabels!"
-    [plotOptions]="chartOptions.plotOptions!"
-    [yaxis]="chartOptions.yaxis!"
-    [legend]="chartOptions.legend!"
-    [fill]="chartOptions.fill!"
-    [stroke]="chartOptions.stroke!"
-    [tooltip]="chartOptions.tooltip!"
-    [xaxis]="chartOptions.xaxis!"
-  ></apx-chart>
-</div>
+<c-row class="mt-4 mb-4">
+  <c-col>
+    <c-card class="mb-4">
+      <c-card-header>
+        Unusual jobs and their average elapsed time
+      </c-card-header>
+      <c-card-body>
+        <div id="chart">
+          <div class="date-picker-container">
+            <label for="date-picker">Select a day:</label>
+            <input type="date" id="date-picker" [(ngModel)]="selectedDayString" (change)="onDayChange($event)" />
+            <button class="apply-button" (click)="onApply()">Apply</button>
+          </div>
+          <apx-chart
+            [series]="chartOptions.series!"
+            [chart]="chartOptions.chart!"
+            [dataLabels]="chartOptions.dataLabels!"
+            [plotOptions]="chartOptions.plotOptions!"
+            [yaxis]="chartOptions.yaxis!"
+            [legend]="chartOptions.legend!"
+            [fill]="chartOptions.fill!"
+            [stroke]="chartOptions.stroke!"
+            [tooltip]="chartOptions.tooltip!"
+            [xaxis]="chartOptions.xaxis!"
+          ></apx-chart>
+        </div>
+      </c-card-body>
+    </c-card>
+  </c-col>
+</c-row>
+
+
+<c-row class="mt-4 mb-4">
+  <c-col>
+    <c-card class="mb-4">
+      <c-card-header>
+        Unusual job history
+      </c-card-header>
+      <c-card-body>
+        <jobHistory [jobData]="specificJobData" [averageJobData]="averageJobData"></jobHistory>
+      </c-card-body>
+    </c-card>
+  </c-col>
+</c-row>

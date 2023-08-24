@@ -28,32 +28,9 @@
         Stages elapsed time for the selected Day
       </c-card-header>
       <c-card-body>
-        <app-line [data]="chartData" [averageData]="averageChartData" ></app-line>
+        <app-line [data]="chartData" [averageData]="averageChartData"></app-line>
       </c-card-body>
     </c-card>
   </c-col>
 </c-row>
-<c-row class="mt-4 mb-4">
-  <c-col>
-    <c-card class="mb-4">
-      <c-card-header>
-        Unusual jobs and their average elapsed time
-      </c-card-header>
-      <c-card-body>
-        <app-unusualBarChart></app-unusualBarChart>
-      </c-card-body>
-    </c-card>
-  </c-col>
-</c-row>
-<c-row class="mt-4 mb-4">
-  <c-col>
-    <c-card class="mb-4">
-      <c-card-header>
-        Unusual job history
-      </c-card-header>
-      <c-card-body>
-        <jobHistory></jobHistory>
-      </c-card-body>
-    </c-card>
-  </c-col>
-</c-row>
+<app-unusualBarChart></app-unusualBarChart>

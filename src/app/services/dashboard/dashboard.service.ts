@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { WeeklyDTO } from 'src/app/views/models/weekly report';
 import { SpecificDay } from 'src/app/views/models/specificDay';
+import { SpecificJob } from 'src/app/views/models/specificJob';
 @Injectable({
   providedIn: 'root',
 })
@@ -58,6 +59,14 @@ export class DashboardService {
     this.init();
     return this.http.post<any>(
       `${this.apiServiceUrl}/CMS/JT/getTopJobsForSpecificDay`, specificDay,
+      this.httpOptions
+    );
+  }
+
+  public getJobDetailForSpecificJob(specificJob: SpecificJob): Observable<any> {
+    this.init();    
+    return this.http.post<any>(
+      `${this.apiServiceUrl}/CMS/JT/getJobDetailForSpecificJob`, specificJob,
       this.httpOptions
     );
   }
