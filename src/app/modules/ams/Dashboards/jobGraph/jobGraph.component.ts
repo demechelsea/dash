@@ -30,11 +30,11 @@ export type ChartOptions = {
 };
 
 @Component({
-  selector: 'app-line',
-  templateUrl: './stageLineGraph.component.html',
-  styleUrls: ['./stageLineGraph.component.scss'],
+  selector: 'jobHistory',
+  templateUrl: './jobGraph.component.html',
+  styleUrls: ['./jobGraph.component.scss'],
 })
-export class StageLineGraphComponent implements OnInit {
+export class JobMonthlyElpasedTimeComponent implements OnInit {
   @Input() data: any;
   @Input() averageData: any;
 

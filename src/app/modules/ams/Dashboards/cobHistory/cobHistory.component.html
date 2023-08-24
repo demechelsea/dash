@@ -4,7 +4,18 @@
   <div class="box">Slowest elapsed time: {{cobHistory.slowestCOBElapsedTime}}</div>
   <div class="box">Total JT analyzed: {{cobHistory.totalJTAnalyzed}}</div>
 </div>
-<monthly-barChart></monthly-barChart>
+<c-row class="mt-4 mb-4">
+  <c-col>
+    <c-card class="mb-4">
+      <c-card-header>
+        Monthly elapsed times
+      </c-card-header>
+      <c-card-body>
+        <monthly-barChart></monthly-barChart>
+      </c-card-body>
+    </c-card>
+  </c-col>
+</c-row>
 <div class="block" *ngIf="cobHistory">
   <div class="box">Earliest JT analyzed: {{cobHistory.initialJTAnalyzed}}</div>
   <div class="box">Latest elapsed time: {{cobHistory.latestRecordedJTAnalyzed}}</div>

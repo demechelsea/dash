@@ -1,4 +1,9 @@
 <div id="chart">
+  <div class="date-picker-container">
+    <label for="date-picker">Select a day:</label>
+    <input type="date" id="date-picker" [(ngModel)]="selectedDayString" (change)="onDayChange($event)" />
+    <button class="apply-button" (click)="onApply()">Apply</button>
+  </div>
   <apx-chart
     [series]="chartOptions.series!"
     [chart]="chartOptions.chart!"

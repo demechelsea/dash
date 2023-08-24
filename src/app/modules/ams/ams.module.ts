@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { AuditUniverseComponent } from './Audit Universe/audit-universe/audit-universe.component';
 import { AnnualPlanComponent } from './Annual plan/annual-plan/annual-plan.component';
 import { NewAnnualPlanComponent } from './Annual plan/new-annual-plan/newAnnualPlan.component';
@@ -51,7 +51,8 @@ import { COBHistoryComponent } from './Dashboards/cobHistory/cobHistory.componen
 import { WeeklyElpasedTimeComponent } from './Dashboards/weeklyElpasedTime/weeklyElpasedTime.component';
 import { MonthlyElpasedTimeComponent } from './Dashboards/monthlyElpasedTime/monthlyElpasedTime.component';
 import { StageLineGraphComponent } from './Dashboards/stageLineGraph/stageLineGraph.component';
-import { UnusualChartComponents } from './Dashboards/unusualBar/unusualBar.component';
+import { UnusualChartComponents } from './Dashboards/unusualJobs/unusualJobs.component';
+import { JobMonthlyElpasedTimeComponent } from './Dashboards/jobGraph/jobGraph.component';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { ConfirmationService, MessageService } from 'primeng/api';
 
@@ -75,7 +76,8 @@ import { ConfirmationService, MessageService } from 'primeng/api';
     CheckListComponent,
     NewAuditScheduleComponent,
     AuditScheduleComponent,
-    MonthlyElpasedTimeComponent
+    MonthlyElpasedTimeComponent,
+    JobMonthlyElpasedTimeComponent
   ],
   imports: [
     NgApexchartsModule,
@@ -117,6 +119,6 @@ import { ConfirmationService, MessageService } from 'primeng/api';
     ToastModule,
     CalendarModule
   ],
-  providers: [ConfirmationService, MessageService, DialogService],
+  providers: [ConfirmationService, MessageService, DialogService,DatePipe],
 })
 export class AmsModule {}

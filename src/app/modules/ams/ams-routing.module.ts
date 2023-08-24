@@ -3,7 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { AuditUniverseComponent } from './Audit Universe/audit-universe/audit-universe.component';
 import { AnnualPlanComponent } from './Annual plan/annual-plan/annual-plan.component';
-import { UnusualChartComponents } from './Dashboards/unusualBar/unusualBar.component';
+import { UnusualChartComponents } from './Dashboards/unusualJobs/unusualJobs.component';
 import { WeeklyElpasedTimeComponent } from './Dashboards/weeklyElpasedTime/weeklyElpasedTime.component';
 import { StageLineGraphComponent } from './Dashboards/stageLineGraph/stageLineGraph.component';
 import { AuditObjectComponent } from './Audit-objects/audit-object/audit-object.component';
