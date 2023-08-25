@@ -1,7 +1,7 @@
 <c-row class="mt-4 mb-4">
   <c-col>
     <c-card class="mb-4">
-      <c-card-header>
+      <c-card-header class="graph-header">
         Unusual jobs and their average elapsed time
       </c-card-header>
       <c-card-body>
@@ -11,29 +11,20 @@
             <input type="date" id="date-picker" [(ngModel)]="selectedDayString" (change)="onDayChange($event)" />
             <button class="apply-button" (click)="onApply()">Apply</button>
           </div>
-          <apx-chart
-            [series]="chartOptions.series!"
-            [chart]="chartOptions.chart!"
-            [dataLabels]="chartOptions.dataLabels!"
-            [plotOptions]="chartOptions.plotOptions!"
-            [yaxis]="chartOptions.yaxis!"
-            [legend]="chartOptions.legend!"
-            [fill]="chartOptions.fill!"
-            [stroke]="chartOptions.stroke!"
-            [tooltip]="chartOptions.tooltip!"
-            [xaxis]="chartOptions.xaxis!"
-          ></apx-chart>
+          <apx-chart [series]="chartOptions.series!" [chart]="chartOptions.chart!"
+            [dataLabels]="chartOptions.dataLabels!" [plotOptions]="chartOptions.plotOptions!"
+            [yaxis]="chartOptions.yaxis!" [legend]="chartOptions.legend!" [fill]="chartOptions.fill!"
+            [stroke]="chartOptions.stroke!" [tooltip]="chartOptions.tooltip!" [xaxis]="chartOptions.xaxis!"></apx-chart>
         </div>
       </c-card-body>
     </c-card>
   </c-col>
 </c-row>
 
-
 <c-row class="mt-4 mb-4">
   <c-col>
     <c-card class="mb-4">
-      <c-card-header>
+      <c-card-header class="graph-header">
         Unusual job history
       </c-card-header>
       <c-card-body>

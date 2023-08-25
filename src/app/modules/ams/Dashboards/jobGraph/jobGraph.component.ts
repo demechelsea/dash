@@ -108,7 +108,7 @@ export class JobMonthlyElpasedTimeComponent implements OnInit {
             name: 'Job Elapsed Time',
             data: this.jobData.map((job: any, index: number) => {
               return {
-                x: index,
+                x: index  + 1,
                 y: this.convertToSeconds(job.elapsedTime),
               };
             }),
@@ -145,7 +145,7 @@ export class JobMonthlyElpasedTimeComponent implements OnInit {
           .fill(null)
           .map((_, index) => {
             return {
-              x: index,
+              x: index + 1,
               y: this.convertToSeconds(this.averageJobData),
             };
           }),

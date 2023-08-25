@@ -50,40 +50,18 @@ export class WeeklyElpasedTimeComponent implements OnInit {
   COBHistory: COBHistoryDTO[];
   selectedWeekString: string;
 
+  private readonly DAYS = [
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+    'Sunday',
+  ];
+
   ngOnInit() {
-    this.subscriptions.add(
-      this.dashboardService.getCOBHistory().subscribe((data) => {
-        this.COBHistory = data;
-      })
-    );
-    const today = moment();
-    const startOfLastWeek = today
-      .subtract(1, 'weeks')
-      .startOf('week')
-      .add(1, 'days');
-    const endOfLastWeek = moment(startOfLastWeek).add(6, 'days');
-    const startDate = startOfLastWeek.format('YYYYMMDD');
-    const endDate = endOfLastWeek.format('YYYYMMDD');
-    this.selectedWeek = { startDate, endDate };
-    this.subscriptions.add(
-      this.dashboardService
-        .getDailyHistory(this.selectedWeek)
-        .subscribe((data) => {
-          this.dailyHistoryData = data;
-          this.updateChart();
-        })
-    );
-    const lastMonday = startOfLastWeek.format('YYYYMMDD');
-    const specificDay: SpecificDay = { date: lastMonday };
-    this.subscriptions.add(
-      this.dashboardService
-        .getDailyStageHistory(specificDay)
-        .subscribe((data) => {
-          this.chartData = data.stageHistoryList;
-          this.averageChartData = data.averageStageElapsedTime;                    
-          this.cdr.detectChanges();
-        })
-    );
+    this.initData();
   }
 
   constructor(
@@ -102,7 +80,7 @@ export class WeeklyElpasedTimeComponent implements OnInit {
       chart: {
         events: {
           dataPointSelection: (event, chartContext, { dataPointIndex }) => {
-            const data = this.chartDataWithNulls[dataPointIndex];            
+            const data = this.chartDataWithNulls[dataPointIndex];
             if (data) {
               const selectedUtcDate = data.utcDate;
               const specificDay: SpecificDay = { date: selectedUtcDate };
@@ -111,7 +89,7 @@ export class WeeklyElpasedTimeComponent implements OnInit {
                   .getDailyStageHistory(specificDay)
                   .subscribe((data) => {
                     this.chartData = data.stageHistoryList;
-                    this.averageChartData = data.averageStageElapsedTime;                    
+                    this.averageChartData = data.averageStageElapsedTime;
                     this.cdr.detectChanges();
                   })
               );
@@ -160,9 +138,8 @@ export class WeeklyElpasedTimeComponent implements OnInit {
               'Nov',
               'Dec',
             ];
-            const formattedDate = `${day} ${
-              monthNames[date.getMonth()]
-            } ${year}`;
+            const formattedDate = `${day} ${monthNames[date.getMonth()]
+              } ${year}`;
             return `<div style="background-color: #333; color: #fff; padding: 10px; border-radius: 5px;">
                       <div>Uploaded By: ${data.uploadedBy}</div>
                       <div>Start Time: ${data.startTime}</div>
@@ -179,7 +156,7 @@ export class WeeklyElpasedTimeComponent implements OnInit {
         tickPlacement: 'between',
         tickAmount: 7,
         title: {
-          text: 'Day of the week',
+          text: 'Days of the week',
         },
         labels: {
           formatter: function (value, timestamp) {
@@ -223,8 +200,53 @@ export class WeeklyElpasedTimeComponent implements OnInit {
     };
   }
 
+  initData() {
+    const today = moment();
+    const startOfLastWeek = today
+      .subtract(1, 'weeks')
+      .startOf('week')
+      .add(1, 'days');
+    const endOfLastWeek = moment(startOfLastWeek).add(6, 'days');
+    const startDate = startOfLastWeek.format('YYYYMMDD');
+    const endDate = endOfLastWeek.format('YYYYMMDD');
+    this.selectedWeek = { startDate, endDate };
+
+    this.subscriptions.add(
+      this.dashboardService.getCOBHistory().subscribe((data) => {
+        this.COBHistory = data;
+        this.updateDailyHistory();
+        this.updateDailyStageHistory(startOfLastWeek);
+      })
+    );
+  }
+
+  updateDailyHistory() {
+    this.subscriptions.add(
+      this.dashboardService
+        .getDailyHistory(this.selectedWeek)
+        .subscribe((data) => {
+          this.dailyHistoryData = data;
+          this.updateChart();
+        })
+    );
+  }
+
+  updateDailyStageHistory(startOfLastWeek: moment.Moment) {
+    const lastMonday = startOfLastWeek.format('YYYYMMDD');
+    const specificDay: SpecificDay = { date: lastMonday };
+
+    this.subscriptions.add(
+      this.dashboardService
+        .getDailyStageHistory(specificDay)
+        .subscribe((data) => {
+          this.chartData = data.stageHistoryList;
+          this.averageChartData = data.averageStageElapsedTime;
+          this.cdr.detectChanges();
+        })
+    );
+  }
+
   onWeekChange(event: any) {
-    this.selectedWeekString = event.target.value;
     const weekString = event.target.value;
     const [year, week] = weekString.split('-W');
     const startDate = moment()
@@ -237,6 +259,8 @@ export class WeeklyElpasedTimeComponent implements OnInit {
       .week(parseInt(week))
       .endOf('week')
       .format('YYYY-MM-DD');
+
+    this.selectedWeekString = weekString;
     this.selectedWeek = { startDate, endDate };
   }
 
@@ -244,69 +268,54 @@ export class WeeklyElpasedTimeComponent implements OnInit {
     const week = moment(this.selectedWeek.startDate);
     const startDate = week.startOf('week').add(1, 'days').format('YYYYMMDD');
     const endDate = week.endOf('week').format('YYYYMMDD');
+
     this.selectedWeek.startDate = startDate;
     this.selectedWeek.endDate = endDate;
-    this.subscriptions.add(
-      this.dashboardService
-        .getDailyHistory(this.selectedWeek)
-        .subscribe((data) => {
-          this.dailyHistoryData = data;
-          this.updateChart();
-        })
-    );
 
-    const specificDay: SpecificDay = { date: startDate };
+    this.updateDailyHistory();
+    this.updateSpecificDayData(startDate);
+  }
+
+  updateSpecificDayData(date: string) {
+    const specificDay: SpecificDay = { date };
 
     this.subscriptions.add(
       this.dashboardService
         .getDailyStageHistory(specificDay)
         .subscribe((data) => {
-          this.chartData = data;
+          this.chartData = data.stageHistoryList;
+          this.averageChartData = data.averageStageElapsedTime;
           this.cdr.detectChanges();
         })
     );
   }
 
   updateChart() {
-    const days = {
-      Monday: 0,
-      Tuesday: 0,
-      Wednesday: 0,
-      Thursday: 0,
-      Friday: 0,
-      Saturday: 0,
-      Sunday: 0,
-    };
+    const daysData = this.DAYS.reduce((acc: Record<string, number>, day) => {
+      const data = this.dailyHistoryData.find((data) => data.cobDay === day);
+      acc[day] = data ? this.timeToSeconds(data.elapsedTime) : 0;
+      return acc;
+    }, {});
 
-    for (const data of this.dailyHistoryData) {
-      const { cobDay, elapsedTime } = data;
-      const [hours, minutes, seconds] = elapsedTime.split(':').map(Number);
-      const elapsedTimeInSeconds = hours * 3600 + minutes * 60 + seconds;
-
-      days[cobDay as keyof typeof days] = elapsedTimeInSeconds;
-    }
-
-    this.chartDataWithNulls = [
-      'Monday',
-      'Tuesday',
-      'Wednesday',
-      'Thursday',
-      'Friday',
-      'Saturday',
-      'Sunday',
-    ].map((day) => {
-      return this.dailyHistoryData.find((data) => data.cobDay === day) || null;
-    });
+    this.chartDataWithNulls = this.DAYS.map(
+      (day) => this.dailyHistoryData.find((data) => data.cobDay === day) || null
+    );
 
     this.chartOptions.series = [
       {
         name: 'Elapsed Time',
         type: 'column',
-        data: Object.values(days),
+        data: Object.values(daysData),
       },
     ];
 
     this.chart?.updateSeries(this.chartOptions.series);
+  }
+
+  timeToSeconds(time: string): number {
+    const [hours, minutes, seconds] = time.split(':').map(Number);
+
+    return hours * 3600 + minutes * 60 + seconds;
   }
 
   ngOnDestroy() {
