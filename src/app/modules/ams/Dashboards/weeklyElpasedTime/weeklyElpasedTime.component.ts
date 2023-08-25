@@ -57,7 +57,6 @@ export class WeeklyElpasedTimeComponent implements OnInit {
     'Thursday',
     'Friday',
     'Saturday',
-    'Sunday',
   ];
 
   ngOnInit() {
@@ -68,9 +67,13 @@ export class WeeklyElpasedTimeComponent implements OnInit {
     private dashboardService: DashboardService,
     private cdr: ChangeDetectorRef
   ) {
+    this.initChartOptions();
+  }
+
+  private initChartOptions() {
     const today = moment();
     const startOfWeek = today.startOf('week').add(1, 'days');
-    const dates = Array.from({ length: 7 }, (_, i) =>
+    const dates = Array.from({ length: 6 }, (_, i) =>
       moment(startOfWeek).add(i, 'days').toISOString()
     );
 
@@ -80,22 +83,7 @@ export class WeeklyElpasedTimeComponent implements OnInit {
       chart: {
         events: {
           dataPointSelection: (event, chartContext, { dataPointIndex }) => {
-            const data = this.chartDataWithNulls[dataPointIndex];
-            if (data) {
-              const selectedUtcDate = data.utcDate;
-              const specificDay: SpecificDay = { date: selectedUtcDate };
-              this.subscriptions.add(
-                this.dashboardService
-                  .getDailyStageHistory(specificDay)
-                  .subscribe((data) => {
-                    this.chartData = data.stageHistoryList;
-                    this.averageChartData = data.averageStageElapsedTime;
-                    this.cdr.detectChanges();
-                  })
-              );
-            } else {
-              console.log('No data for this day');
-            }
+            this.handleDataPointSelection(dataPointIndex);
           },
         },
         height: 350,
@@ -117,88 +105,85 @@ export class WeeklyElpasedTimeComponent implements OnInit {
           },
         },
         custom: ({ series, seriesIndex, dataPointIndex, w }) => {
-          const data = this.dailyHistoryData[dataPointIndex];
-          if (data) {
-            const utcDate = data.utcDate;
-            const year = utcDate.substring(0, 4);
-            const month = utcDate.substring(4, 6);
-            const day = utcDate.substring(6, 8);
-            const date = new Date(`${year}-${month}-${day}`);
-            const monthNames = [
-              'Jan',
-              'Feb',
-              'Mar',
-              'Apr',
-              'May',
-              'Jun',
-              'Jul',
-              'Aug',
-              'Sep',
-              'Oct',
-              'Nov',
-              'Dec',
-            ];
-            const formattedDate = `${day} ${monthNames[date.getMonth()]
-              } ${year}`;
-            return `<div style="background-color: #333; color: #fff; padding: 10px; border-radius: 5px;">
-                      <div>Uploaded By: ${data.uploadedBy}</div>
-                      <div>Start Time: ${data.startTime}</div>
-                      <div>End Time: ${data.endTime}</div>
-                      <div>Upload Date Time: ${data.uploadDateTime}</div>
-                      <div>UTC Date: ${formattedDate}</div>
-                    </div>`;
-          }
-          return '';
+          return this.customTooltip(dataPointIndex);
         },
       },
       labels: dates,
-      xaxis: {
-        tickPlacement: 'between',
-        tickAmount: 7,
-        title: {
-          text: 'Days of the week',
-        },
-        labels: {
-          formatter: function (value, timestamp) {
-            if (timestamp === undefined) {
-              return '';
-            }
-            const days = [
-              'Monday',
-              'Tuesday',
-              'Wednesday',
-              'Thursday',
-              'Friday',
-              'Saturday',
-              'Sunday',
-            ];
-            const date = new Date(timestamp);
-            const dayIndex = date.getUTCDay();
-            if (date.toDateString() === new Date().toDateString()) {
-              return `${days[dayIndex]}`;
-            }
-            return days[dayIndex];
-          },
-        },
-      },
-
+      xaxis: this.initXAxis(),
       yaxis: [
         {
           title: {
             text: 'Elapsed Time',
           },
           labels: {
-            formatter: function (value) {
-              const hours = Math.floor(value / 3600);
-              const minutes = Math.floor((value % 3600) / 60);
-              const seconds = Math.floor(value % 60);
-              return `${hours}h ${minutes}m ${seconds}s`;
+            formatter: (value: any) => {
+              return this.formatElapsedTime(value);
             },
           },
         },
       ],
+
     };
   }
+
+  private handleDataPointSelection(dataPointIndex: number) {
+    const data = this.chartDataWithNulls[dataPointIndex];
+    if (data) {
+      const selectedUtcDate = data.utcDate;
+      const specificDay: SpecificDay = { date: selectedUtcDate };
+      this.subscriptions.add(
+        this.dashboardService
+          .getDailyStageHistory(specificDay)
+          .subscribe((data) => {
+            this.chartData = data.stageHistoryList;
+            this.averageChartData = data.averageStageElapsedTime;
+            this.cdr.detectChanges();
+          })
+      );
+    } else {
+      console.log('No data for this day');
+    }
+  }
+
+  private initXAxis() {
+    return {
+      tickPlacement: 'between',
+      tickAmount: 6,
+      title: {
+        text: 'Days of the week',
+      },
+      labels: {
+        formatter: function (value: any, timestamp: string | number | Date | undefined) {
+          if (timestamp === undefined) {
+            return '';
+          }
+          const days = [
+            'Monday',
+            'Tuesday',
+            'Wednesday',
+            'Thursday',
+            'Friday',
+            'Saturday',
+          ];
+          const date = new Date(timestamp);
+          const dayIndex = date.getUTCDay();
+          if (date.toDateString() === new Date().toDateString()) {
+            return `${days[dayIndex]}`;
+          }
+          return days[dayIndex];
+        },
+      },
+    };
+  }
+
+  private formatElapsedTime(value: number) {
+    const hours = Math.floor(value / 3600);
+    const minutes = Math.floor((value % 3600) / 60);
+    const seconds = Math.floor(value % 60);
+    return `${hours}h ${minutes}m ${seconds}s`;
+  }
+
+
 
   initData() {
     const today = moment();
@@ -209,6 +194,9 @@ export class WeeklyElpasedTimeComponent implements OnInit {
     const endOfLastWeek = moment(startOfLastWeek).add(6, 'days');
     const startDate = startOfLastWeek.format('YYYYMMDD');
     const endDate = endOfLastWeek.format('YYYYMMDD');
+
+    this.selectedWeekString = today.format('YYYY-[W]WW');
+
     this.selectedWeek = { startDate, endDate };
 
     this.subscriptions.add(
@@ -219,6 +207,7 @@ export class WeeklyElpasedTimeComponent implements OnInit {
       })
     );
   }
+
 
   updateDailyHistory() {
     this.subscriptions.add(
@@ -248,6 +237,8 @@ export class WeeklyElpasedTimeComponent implements OnInit {
 
   onWeekChange(event: any) {
     const weekString = event.target.value;
+    console.log(weekString);
+
     const [year, week] = weekString.split('-W');
     const startDate = moment()
       .year(parseInt(year))
@@ -290,17 +281,58 @@ export class WeeklyElpasedTimeComponent implements OnInit {
     );
   }
 
+  private customTooltip(dataPointIndex: number) {
+    const data = this.dailyHistoryData.find(
+      (item) =>
+        moment(item.utcDate, 'YYYYMMDD').day() - 1 === dataPointIndex
+    );
+    if (data) {
+      const utcDate = data.utcDate;
+      const year = utcDate.substring(0, 4);
+      const month = utcDate.substring(4, 6);
+      const day = utcDate.substring(6, 8);
+      const date = new Date(`${year}-${month}-${day}`);
+      const monthNames = [
+        'Jan',
+        'Feb',
+        'Mar',
+        'Apr',
+        'May',
+        'Jun',
+        'Jul',
+        'Aug',
+        'Sep',
+        'Oct',
+        'Nov',
+        'Dec',
+      ];
+      const formattedDate = `${day} ${monthNames[date.getMonth()]
+        } ${year}`;
+      return `<div style="background-color: #333; color: #fff; padding: 10px; border-radius: 5px;">
+                <div>Uploaded By: ${data.uploadedBy}</div>
+                <div>Elapsed time: ${data.elapsedTime}</div>
+                <div>Start Time: ${data.startTime}</div>
+                <div>End Time: ${data.endTime}</div>
+                <div>Upload Date Time: ${data.uploadDateTime}</div>
+                <div>UTC Date: ${formattedDate}</div>
+              </div>`;
+    }
+    return '';
+  }
+  
   updateChart() {
     const daysData = this.DAYS.reduce((acc: Record<string, number>, day) => {
       const data = this.dailyHistoryData.find((data) => data.cobDay === day);
       acc[day] = data ? this.timeToSeconds(data.elapsedTime) : 0;
       return acc;
     }, {});
-
-    this.chartDataWithNulls = this.DAYS.map(
-      (day) => this.dailyHistoryData.find((data) => data.cobDay === day) || null
-    );
-
+  
+    this.chartDataWithNulls = this.DAYS.map((day) => {
+      const dataForDay = this.dailyHistoryData.find((data) => data.cobDay === day);
+      return dataForDay || null;
+    });
+    
+  
     this.chartOptions.series = [
       {
         name: 'Elapsed Time',
@@ -308,9 +340,10 @@ export class WeeklyElpasedTimeComponent implements OnInit {
         data: Object.values(daysData),
       },
     ];
-
+  
     this.chart?.updateSeries(this.chartOptions.series);
   }
+  
 
   timeToSeconds(time: string): number {
     const [hours, minutes, seconds] = time.split(':').map(Number);

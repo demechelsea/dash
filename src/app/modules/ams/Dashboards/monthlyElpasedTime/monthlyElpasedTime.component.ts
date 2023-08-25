@@ -49,7 +49,7 @@ export class MonthlyElpasedTimeComponent implements OnInit {
   constructor(
     private dashboardService: DashboardService,
     private cdr: ChangeDetectorRef
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.subscriptions.add(
