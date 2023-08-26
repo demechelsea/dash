@@ -114,7 +114,7 @@ export class JobMonthlyElpasedTimeComponent implements OnInit {
             }),
           },
         ];
-  
+        this.chart?.updateSeries(this.chartOptions.series);
         if (
           this.chartOptions &&
           this.chartOptions.series &&

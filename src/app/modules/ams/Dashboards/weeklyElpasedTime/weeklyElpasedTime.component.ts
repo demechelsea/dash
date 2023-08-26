@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import * as moment from 'moment';
 import {
   ChartComponent,
@@ -41,6 +41,7 @@ export class WeeklyElpasedTimeComponent implements OnInit {
   chartDataWithNulls: (DailyHistoryDTO | null)[] = [];
 
   private subscriptions = new Subscription();
+  selectedDateValue: string;
 
   @ViewChild('chart') chart: ChartComponent;
   public chartOptions: Partial<ChartOptions> = {};
@@ -83,8 +84,12 @@ export class WeeklyElpasedTimeComponent implements OnInit {
       chart: {
         events: {
           dataPointSelection: (event, chartContext, { dataPointIndex }) => {
-            this.handleDataPointSelection(dataPointIndex);
-          },
+            const dataPoint = this.chartDataWithNulls[dataPointIndex];
+            if (dataPoint !== null) {
+              this.handleDataPointSelection(dataPointIndex);
+              this.selectedDateValue = dataPoint.utcDate;
+            }
+          }
         },
         height: 350,
         type: 'bar',
@@ -206,6 +211,7 @@ export class WeeklyElpasedTimeComponent implements OnInit {
         this.updateDailyStageHistory(startOfLastWeek);
       })
     );
+    this.selectedDateValue = startDate;
   }
 
 
@@ -237,8 +243,6 @@ export class WeeklyElpasedTimeComponent implements OnInit {
 
   onWeekChange(event: any) {
     const weekString = event.target.value;
-    console.log(weekString);
-
     const [year, week] = weekString.split('-W');
     const startDate = moment()
       .year(parseInt(year))
@@ -262,6 +266,8 @@ export class WeeklyElpasedTimeComponent implements OnInit {
 
     this.selectedWeek.startDate = startDate;
     this.selectedWeek.endDate = endDate;
+
+    this.selectedDateValue = startDate;
 
     this.updateDailyHistory();
     this.updateSpecificDayData(startDate);
@@ -319,20 +325,20 @@ export class WeeklyElpasedTimeComponent implements OnInit {
     }
     return '';
   }
-  
+
   updateChart() {
     const daysData = this.DAYS.reduce((acc: Record<string, number>, day) => {
       const data = this.dailyHistoryData.find((data) => data.cobDay === day);
       acc[day] = data ? this.timeToSeconds(data.elapsedTime) : 0;
       return acc;
     }, {});
-  
+
     this.chartDataWithNulls = this.DAYS.map((day) => {
       const dataForDay = this.dailyHistoryData.find((data) => data.cobDay === day);
       return dataForDay || null;
     });
-    
-  
+
+
     this.chartOptions.series = [
       {
         name: 'Elapsed Time',
@@ -340,14 +346,13 @@ export class WeeklyElpasedTimeComponent implements OnInit {
         data: Object.values(daysData),
       },
     ];
-  
+
     this.chart?.updateSeries(this.chartOptions.series);
   }
-  
+
 
   timeToSeconds(time: string): number {
     const [hours, minutes, seconds] = time.split(':').map(Number);
-
     return hours * 3600 + minutes * 60 + seconds;
   }
 

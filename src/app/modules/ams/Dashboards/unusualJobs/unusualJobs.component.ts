@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import {
   ApexAxisChartSeries,
   ApexChart,
@@ -18,6 +18,7 @@ import { JobHistoryDTO } from 'src/app/views/models/jobHistoryDTO';
 import { DatePipe } from '@angular/common';
 import { SpecificJob } from 'src/app/views/models/specificJob';
 import { Subscription } from 'rxjs';
+import * as moment from 'moment';
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -37,9 +38,11 @@ export type ChartOptions = {
   templateUrl: './unusualJobs.component.html',
   styleUrls: ['./unusualJobs.component.scss'],
 })
-export class UnusualChartComponents implements OnInit {
+export class UnusualChartComponents implements OnChanges {
   @ViewChild('chart') chart: ChartComponent;
   public chartOptions: Partial<ChartOptions>;
+
+  @Input() selectedDate: string;
 
   jobData: JobHistoryDTO[];
   specificJobData: JobHistoryDTO[];
@@ -56,28 +59,31 @@ export class UnusualChartComponents implements OnInit {
   jobHistoryList: string[] = [];
   jobNames: number[] = [];
 
-  ngOnInit() {
-    const now = new Date();
-    const dayOfWeek = now.getDay();
-    const numDaysToLastMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
 
-    const lastMonday = new Date();
-    lastMonday.setDate(now.getDate() - 7 - numDaysToLastMonday);
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['selectedDate'] && changes['selectedDate'].currentValue) {
+      console.log('Received selectedDate:', changes['selectedDate'].currentValue);
+      this.formattedDate = changes['selectedDate'].currentValue;
+      if (this.formattedDate) {
+        this.selectedDayString = moment(this.formattedDate, 'YYYYMMDD').format('YYYY-MM-DD');
+        this.onApply();
+      }
+      
+    }
 
-    this.formattedDate = this.datePipe.transform(lastMonday, 'yyyyMMdd');
-
-    this.onApply();
   }
+
 
   constructor(
     private dashboardService: DashboardService,
     private datePipe: DatePipe,
     private cdr: ChangeDetectorRef
   ) {
+
     this.chartOptions = {
       series: [
         {
-          name: 'Average job elapsed time',
+          name: 'Average elapsed time',
           data: [],
         },
         {
@@ -93,7 +99,6 @@ export class UnusualChartComponents implements OnInit {
               jobId: this.jobData[dataPointIndex].jobId.toString(),
               batchId: this.jobData[dataPointIndex].batchId.toString(),
             };
-
             this.subscriptions.add(
               this.dashboardService
                 .getJobDetailForSpecificJob(specificJob)
@@ -166,8 +171,8 @@ export class UnusualChartComponents implements OnInit {
       tooltip: {
         x: {
           formatter: (val: any) => {
-            return this.jobNames[val].toString();
-          },
+            return val ? this.jobNames[val].toString() : '';
+          }
         },
         y: {
           formatter: function (val: any, opts: any) {
@@ -198,6 +203,7 @@ export class UnusualChartComponents implements OnInit {
         .subscribe((data) => {
           this.jobData = data.jobHistoryList;
           this.averageJobElapsedTime = data.averageJobElapsedTime;
+
           this.jobHistoryList = data.jobHistoryList.map(
             (job: { elapsedTime: any }) => job.elapsedTime
           );
@@ -209,7 +215,11 @@ export class UnusualChartComponents implements OnInit {
           const averageData = this.averageJobElapsedTime.map(
             this.timeToSeconds
           );
+          console.log(averageData);
+          
+
           const currentData = this.jobHistoryList.map(this.timeToSeconds);
+          console.log(currentData);
 
           const xAxisCategories = Array.from(
             { length: this.jobNames.length },
@@ -221,15 +231,16 @@ export class UnusualChartComponents implements OnInit {
             this.chartOptions.series &&
             this.chartOptions.xaxis
           ) {
+
             this.chartOptions = {
               ...this.chartOptions,
               series: [
                 {
-                  name: 'Average job elapsed time',
+                  name: 'Average elapsed time',
                   data: averageData,
                 },
                 {
-                  name: 'Selected date job elapsed time',
+                  name: 'Selected date elapsed time',
                   data: currentData,
                   color: '#FF4560',
                 },
@@ -240,6 +251,7 @@ export class UnusualChartComponents implements OnInit {
                 tickAmount: xAxisCategories.length,
               },
             };
+            this.cdr.detectChanges();
           } else {
             console.error('chartOptions is undefined');
           }
