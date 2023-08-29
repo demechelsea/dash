@@ -60,6 +60,7 @@ export class WeeklyElpasedTimeComponent implements OnInit {
 
   ngOnInit() {
     this.initData();
+    this.cdr.detectChanges();
   }
 
   constructor(
@@ -72,9 +73,13 @@ export class WeeklyElpasedTimeComponent implements OnInit {
   private initChartOptions() {
     const today = moment();
     const startOfWeek = today.startOf('week').add(1, 'days');
+    const lastWeekMonday = moment(startOfWeek).subtract(7, 'days').format('YYYYMMDD');
+
     const dates = Array.from({ length: 6 }, (_, i) =>
       moment(startOfWeek).add(i, 'days').toISOString()
     );
+
+    this.stageDate = lastWeekMonday;
 
     this.chartOptions = {
       ...this.chartOptions,
@@ -84,7 +89,7 @@ export class WeeklyElpasedTimeComponent implements OnInit {
           dataPointSelection: (event, chartContext, { dataPointIndex }) => {
             const dataPoint = this.chartDataWithNulls[dataPointIndex];
             if (dataPoint !== null) {
-              this.stageDate = dataPoint.utcDate;              
+              this.stageDate = dataPoint.utcDate;
               this.selectedDateValue = dataPoint.utcDate;
               this.cdr.detectChanges();
             }
