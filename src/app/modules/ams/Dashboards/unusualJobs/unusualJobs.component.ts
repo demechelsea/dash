@@ -19,6 +19,8 @@ import { DatePipe } from '@angular/common';
 import { SpecificJob } from 'src/app/views/models/specificJob';
 import { Subscription } from 'rxjs';
 import * as moment from 'moment';
+import { JobBatchDetailedDTO } from 'src/app/views/models/jobBatchDetailedDTO';
+import { HttpErrorResponse } from '@angular/common/http';
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -38,7 +40,7 @@ export type ChartOptions = {
   templateUrl: './unusualJobs.component.html',
   styleUrls: ['./unusualJobs.component.scss'],
 })
-export class UnusualChartComponents implements OnChanges {
+export class UnusualChartComponents implements OnChanges,OnInit {
   @ViewChild('chart') chart: ChartComponent;
   public chartOptions: Partial<ChartOptions>;
 
@@ -50,6 +52,8 @@ export class UnusualChartComponents implements OnChanges {
   jobDataWithNulls: (JobHistoryDTO | null)[] = [];
   private subscriptions = new Subscription();
 
+  selectedSpecificJob: any;
+
   selectedDayString: string | null;
   formattedDate: string | null;
   selectedDay: SpecificDay;
@@ -58,22 +62,21 @@ export class UnusualChartComponents implements OnChanges {
   averageJobElapsedTime: string[] = [];
   jobHistoryList: string[] = [];
   jobNames: number[] = [];
+  monthlyTopJobsData: JobBatchDetailedDTO[] = [];
+
 
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['selectedDate'] && changes['selectedDate'].currentValue) {
-      console.log('Received selectedDate:', changes['selectedDate'].currentValue);
       this.formattedDate = changes['selectedDate'].currentValue;
       if (this.formattedDate) {
         this.selectedDayString = moment(this.formattedDate, 'YYYYMMDD').format('YYYY-MM-DD');
         this.onApply();
       }
-      
+
     }
 
   }
-
-
   constructor(
     private dashboardService: DashboardService,
     private datePipe: DatePipe,
@@ -99,28 +102,8 @@ export class UnusualChartComponents implements OnChanges {
               jobId: this.jobData[dataPointIndex].jobId.toString(),
               batchId: this.jobData[dataPointIndex].batchId.toString(),
             };
-            this.subscriptions.add(
-              this.dashboardService
-                .getJobDetailForSpecificJob(specificJob)
-                .subscribe((data) => {
-                  this.specificJobData = data.jobHistoryList;
-                  this.averageJobData = data.averageJobElapsedTime;
-
-                  this.jobDataWithNulls = this.jobHistoryList.map(
-                    (job: any) => {
-                      return (
-                        this.jobData.find(
-                          (data: JobHistoryDTO) =>
-                            data.jobId === job.jobId &&
-                            data.batchId === job.batchId
-                        ) || null
-                      );
-                    }
-                  );
-
-                  this.cdr.detectChanges();
-                })
-            );
+            this.selectedSpecificJob = specificJob;
+            this.cdr.detectChanges();
           },
         },
 
@@ -185,10 +168,32 @@ export class UnusualChartComponents implements OnChanges {
       },
     };
   }
+  ngOnInit(): void {
+    this.getTopJobs();
+  }
+
+  getTopJobs(): void {
+    this.dashboardService.getTopJobsForlatestMonth().subscribe(
+      (response: any) => {
+        this.monthlyTopJobsData = response;
+      },
+      (error: HttpErrorResponse) => {
+        console.log(error);
+      }
+    )
+  }
+
+
+  ShowJobHistory(jobId: number, batchId: number){
+    const specificJob: SpecificJob = {
+      jobId: jobId.toString(),
+      batchId: batchId.toString()
+    };
+    this.selectedSpecificJob = specificJob;
+  }
 
   onDayChange(event: any) {
     this.selectedDayString = event.target.value;
-
     this.formattedDate = this.datePipe.transform(
       this.selectedDayString,
       'yyyyMMdd'
@@ -198,11 +203,15 @@ export class UnusualChartComponents implements OnChanges {
   onApply() {
     if (this.formattedDate) {
       const specificDay: SpecificDay = { date: this.formattedDate };
-      this.dashboardService
+      this.subscriptions.add(this.dashboardService
         .getTopJobHistoryWithAverageJobTime(specificDay)
         .subscribe((data) => {
           this.jobData = data.jobHistoryList;
           this.averageJobElapsedTime = data.averageJobElapsedTime;
+
+          if (this.jobData && this.jobData.length > 0) {
+            this.selectedSpecificJob = { jobId: this.jobData[0].jobId, batchId: this.jobData[0].batchId };
+          }
 
           this.jobHistoryList = data.jobHistoryList.map(
             (job: { elapsedTime: any }) => job.elapsedTime
@@ -215,11 +224,8 @@ export class UnusualChartComponents implements OnChanges {
           const averageData = this.averageJobElapsedTime.map(
             this.timeToSeconds
           );
-          console.log(averageData);
-          
 
           const currentData = this.jobHistoryList.map(this.timeToSeconds);
-          console.log(currentData);
 
           const xAxisCategories = Array.from(
             { length: this.jobNames.length },
@@ -255,7 +261,7 @@ export class UnusualChartComponents implements OnChanges {
           } else {
             console.error('chartOptions is undefined');
           }
-        });
+        }));
     } else {
       console.error('formattedDate is null');
     }
@@ -264,5 +270,9 @@ export class UnusualChartComponents implements OnChanges {
   timeToSeconds(time: string): number {
     const [hours, minutes, seconds] = time.split(':').map(Number);
     return hours * 3600 + minutes * 60 + seconds;
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe();
   }
 }

@@ -28,9 +28,10 @@
         Stages elapsed time for the selected Day
       </c-card-header>
       <c-card-body>
-        <app-line [data]="chartData" [averageData]="averageChartData"></app-line>
+        <app-line [stageDate]="stageDate"></app-line>
       </c-card-body>
     </c-card>
   </c-col>
+
 </c-row>
 <app-unusualBarChart [selectedDate]="selectedDateValue"></app-unusualBarChart>

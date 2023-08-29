@@ -5,6 +5,7 @@ import {
   ChangeDetectorRef,
   Input,
   SimpleChanges,
+  OnDestroy,
 } from '@angular/core';
 import * as moment from 'moment';
 import {
@@ -18,6 +19,9 @@ import {
   ApexGrid,
   ApexYAxis,
 } from 'ng-apexcharts';
+import { Subscription } from 'rxjs';
+import { DashboardService } from 'src/app/services/dashboard/dashboard.service';
+import { JobHistoryDTO } from 'src/app/views/models/jobHistoryDTO';
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -35,9 +39,15 @@ export type ChartOptions = {
   templateUrl: './jobGraph.component.html',
   styleUrls: ['./jobGraph.component.scss'],
 })
-export class JobMonthlyElpasedTimeComponent implements OnInit {
-  @Input() jobData: any;
-  @Input() averageJobData: any;
+export class JobMonthlyElpasedTimeComponent implements OnDestroy {
+  jobData: any;
+  averageJobData: any;
+
+  @Input() selectedSpecificData: any;
+  private subscriptions = new Subscription();
+  specificJobData: JobHistoryDTO[];
+  jobDataWithNulls: (JobHistoryDTO | null)[] = [];
+  jobHistoryList: string[] = [];
 
   public cumulativeElapsedTimeInSeconds: number[] = [];
 
@@ -46,7 +56,8 @@ export class JobMonthlyElpasedTimeComponent implements OnInit {
 
   public stageNames: string[] = [];
 
-  constructor(private cdr: ChangeDetectorRef) {
+  constructor(private cdr: ChangeDetectorRef, private dashboardService: DashboardService,
+  ) {
     this.chartOptions = {
       series: [],
       chart: {
@@ -61,7 +72,6 @@ export class JobMonthlyElpasedTimeComponent implements OnInit {
         title: {
           text: `Days of a month (${moment().format('MMMM')})`,
         },
-        tickAmount: 10,
       },
       yaxis: {
         title: {
@@ -91,80 +101,60 @@ export class JobMonthlyElpasedTimeComponent implements OnInit {
     };
   }
 
-  ngOnInit(): void {}
-
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['jobData'] && changes['jobData'].currentValue) {
-      this.jobData = changes['jobData'].currentValue;
-  
-      if (this.jobData && this.jobData.length !== undefined) {
-        const xAxisCategories = Array.from(
-          { length: this.jobData.length },
-          (_, i) => i + 1
+    if (changes['selectedSpecificData'] && changes['selectedSpecificData'].currentValue) {
+      this.selectedSpecificData = changes['selectedSpecificData'].currentValue;
+      if (this.selectedSpecificData) {
+        this.subscriptions.add(
+          this.dashboardService
+            .getJobDetailForSpecificJob(this.selectedSpecificData)
+            .subscribe((data) => {
+              this.specificJobData = data.jobHistoryList;
+              this.averageJobData = data.averageJobElapsedTime;
+
+              this.jobDataWithNulls = this.jobHistoryList.map(
+                (job: any) => {
+                  return (
+                    this.jobData.find(
+                      (data: JobHistoryDTO) =>
+                        data.jobId === job.jobId &&
+                        data.batchId === job.batchId
+                    ) || null
+                  );
+                }
+              );
+              this.chartOptions.series = [
+                {
+                  name: 'Selected job elapsed time',
+                  type: 'line',
+                  data: this.specificJobData.map((job) => this.convertToSeconds(job.elapsedTime))
+                },
+                {
+                  name: 'Average job elapsed time',
+                  type: 'line',
+                  data: Array(this.specificJobData.length).fill(this.convertToSeconds(this.averageJobData))
+                },
+              ];
+              if (this.chartOptions && this.chartOptions.xaxis) {
+                this.chartOptions.xaxis.tickAmount = this.specificJobData.length;
+              }
+
+              this.chart?.updateOptions(this.chartOptions);
+              this.cdr.detectChanges();
+            })
         );
-  
-        this.chartOptions.series = [
-          {
-            name: 'Job Elapsed Time',
-            data: this.jobData.map((job: any, index: number) => {
-              return {
-                x: index  + 1,
-                y: this.convertToSeconds(job.elapsedTime),
-              };
-            }),
-          },
-        ];
-        this.chart?.updateSeries(this.chartOptions.series);
-        if (
-          this.chartOptions &&
-          this.chartOptions.series &&
-          this.chartOptions.xaxis
-        ) {
-          this.chartOptions = {
-            ...this.chartOptions,
-            xaxis: {
-              ...this.chartOptions.xaxis,
-              categories: xAxisCategories,
-              tickAmount: xAxisCategories.length - 1,
-            },
-          };
-        } else {
-          console.error('chartOptions is undefined');
-        }
       }
+
     }
-  
-    if (changes['averageJobData'] && changes['averageJobData'].currentValue) {
-      this.averageJobData = changes['averageJobData'].currentValue;
-    }
-  
-    if (this.jobData && this.jobData.length !== undefined) {
-      const averageJobSeries = {
-        name: 'Average Job Elapsed Time',
-        data: Array(this.jobData.length)
-          .fill(null)
-          .map((_, index) => {
-            return {
-              x: index + 1,
-              y: this.convertToSeconds(this.averageJobData),
-            };
-          }),
-      };
-  
-      if (this.chartOptions?.series) {
-        this.chartOptions.series.push(averageJobSeries);
-      }
-    }
-  
-    if (this.chart && this.chartOptions) {
-      this.chart.updateOptions(this.chartOptions);
-    }
-  
-    this.cdr.detectChanges();
+
   }
-   
+
   convertToSeconds(timeString: string): number {
     const [hours, minutes, seconds] = timeString.split(':').map(Number);
     return hours * 3600 + minutes * 60 + seconds;
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe();
   }
 }

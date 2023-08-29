@@ -18,7 +18,7 @@ export class DashboardService {
         Authorization: `Bearer ${localStorage.getItem('access_token')}`,
       }),
     };
-    this.apiServiceUrl = 'http://10.1.125.58:8088';
+    this.apiServiceUrl = 'http://10.1.11.44:8088';
   }
 
   constructor(private http: HttpClient) {}
@@ -70,5 +70,14 @@ export class DashboardService {
       this.httpOptions
     );
   }
+
+  public getTopJobsForlatestMonth(): Observable<any> {
+    this.init();    
+    return this.http.post<any>(
+      `${this.apiServiceUrl}/CMS/JT/getTopJobsForLatestMonth`,
+      this.httpOptions
+    );
+  }
 }
+
 

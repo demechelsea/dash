@@ -1,7 +1,6 @@
 import {
   Component,
   ViewChild,
-  OnInit,
   ChangeDetectorRef,
   Input,
   SimpleChanges,
@@ -11,22 +10,17 @@ import {
   ApexAxisChartSeries,
   ApexChart,
   ApexXAxis,
-  ApexDataLabels,
-  ApexTitleSubtitle,
-  ApexStroke,
-  ApexGrid,
   ApexYAxis,
 } from 'ng-apexcharts';
+import { Subscription } from 'rxjs';
+import { DashboardService } from 'src/app/services/dashboard/dashboard.service';
+import { SpecificDay } from 'src/app/views/models/specificDay';
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
   chart: ApexChart;
   xaxis: ApexXAxis;
   yaxis: ApexYAxis;
-  dataLabels: ApexDataLabels;
-  grid: ApexGrid;
-  stroke: ApexStroke;
-  title: ApexTitleSubtitle;
 };
 
 @Component({
@@ -34,20 +28,32 @@ export type ChartOptions = {
   templateUrl: './stageLineGraph.component.html',
   styleUrls: ['./stageLineGraph.component.scss'],
 })
-export class StageLineGraphComponent implements OnInit {
-  @Input() data: any;
-  @Input() averageData: any;
+export class StageLineGraphComponent {
+  @Input() stageDate: any;
+  chartData: any;
+  averageChartData: any;
 
   public cumulativeElapsedTimeInSeconds: number[] = [];
+  
 
   @ViewChild('chart') chart: ChartComponent;
   public chartOptions: Partial<ChartOptions> = {};
 
   public stageNames: string[] = [];
+  private subscriptions = new Subscription();
 
-  constructor(private cdr: ChangeDetectorRef) {
+  constructor(private cdr: ChangeDetectorRef, private dashboardService: DashboardService) {
     this.chartOptions = {
-      series: [],
+      series: [
+        {
+          name: 'Average stage elapsed time',
+          data: [],
+        },
+        {
+          name: 'Selected date stage elapsed time',
+          data: [],
+        },
+      ],
       xaxis: {
         type: 'numeric',
         title: {
@@ -68,22 +74,7 @@ export class StageLineGraphComponent implements OnInit {
         },
         labels: {
           minWidth: 50,
-          formatter: (value: any, index: number) => {
-            if (index === 0) return '';
-            return this.stageNames[index - 1];
-          },
-        },
-      },
-      dataLabels: {
-        enabled: false,
-      },
-      stroke: {
-        curve: 'straight',
-      },
-      grid: {
-        row: {
-          colors: ['#f3f3f3', 'transparent'],
-          opacity: 0.5,
+          formatter: (value: any, index: number) => index === 0 ? '' : this.stageNames[index - 1],
         },
       },
       chart: {
@@ -96,88 +87,89 @@ export class StageLineGraphComponent implements OnInit {
     };
   }
 
-  ngOnInit(): void {}
-
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['data']) {
-      const newData = changes['data'].currentValue;
-      if (Array.isArray(newData)) {
-        this.stageNames = newData.map((item: any) => item.stage.name);
-        if (this.chartOptions && this.chartOptions.xaxis) {
-          this.chartOptions.xaxis.tickAmount = this.stageNames.length;
-        }
-        this.chart?.updateOptions(this.chartOptions);
-        const elapsedTimeValues = newData.map((list: any) => list.elapsedTime);
-        const elapsedTimeInSeconds = elapsedTimeValues.map((time: string) => {
-          const [hours, minutes, seconds] = time.split(':').map(Number);
-          return hours * 3600 + minutes * 60 + seconds;
-        });
+    const stageDateChange = changes['stageDate'];
+    if (stageDateChange?.currentValue) {
+      this.stageDate = stageDateChange.currentValue;
+      const specificDate: SpecificDay = { date: this.stageDate };
+      this.subscriptions.add(
+        this.dashboardService
+          .getDailyStageHistory(specificDate)
+          .subscribe((data) => {
+            this.updateChartData(data);
+          })
+      );
+    }
+  }
 
-        this.cumulativeElapsedTimeInSeconds = elapsedTimeInSeconds.reduce(
-          (acc: number[], cur: number) => [
-            ...acc,
-            cur + (acc.length > 0 ? acc[acc.length - 1] : 0),
-          ],
-          []
-        );
-
-        this.chartOptions.series = [];
-
-        this.chartOptions.series.push({
-          name: 'Selceted date elapsed time',
-          type: 'line',
-          data: [
-            [0, 0],
-            ...this.cumulativeElapsedTimeInSeconds.map((value, index) => [
-              value,
-              index + 1,
-            ]),
-          ],
-        });
-
-        if (this.averageData && this.chartOptions && this.chartOptions.series) {
-          const averageElapsedTimeValues = this.averageData.map(
-            (list: any) => list || ''
-          );
-
-          const averageElapsedTimeInSeconds = averageElapsedTimeValues.map(
-            (time: string) => {
-              if (time) {
-                const [hours, minutes, seconds] = time.split(':').map(Number);
-                return hours * 3600 + minutes * 60 + seconds;
-              } else {
-                return 0;
-              }
-            }
-          );
-
-          const cumulativeAverageElapsedTimeInSeconds =
-            averageElapsedTimeInSeconds.reduce(
-              (acc: number[], cur: number) => [
-                ...acc,
-                cur + (acc.length > 0 ? acc[acc.length - 1] : 0),
-              ],
-              []
-            );
-
-          this.chartOptions.series.push({
-            name: 'Average Time',
-            type: 'line',
-            data: [
-              [0, 0],
-              ...cumulativeAverageElapsedTimeInSeconds.map(
-                (value: any, index: number) => [value, index + 1]
-              ),
-            ],
-          });
-        }
-
-        if (this.chartOptions && this.chartOptions.series) {
-          this.chart?.updateSeries(this.chartOptions.series);
-        }
-
-        this.cdr.detectChanges();
+  updateChartData(data: any) {
+    this.chartData = data.stageHistoryList;
+    this.averageChartData = data.averageStageElapsedTime;
+    this.stageNames = this.chartData.map((item: any) => item.stage.name);
+  
+    if (this.averageChartData) {
+      const averageElapsedTimeInSeconds = this.getElapsedTimeInSeconds(this.averageChartData);
+      const cumulativeAverageElapsedTimeInSeconds = this.getCumulativeTime(averageElapsedTimeInSeconds);
+  
+      const elapsedTimeInSeconds = this.getElapsedTimeInSeconds(this.chartData.map((list: any) => list.elapsedTime));
+      const cumulativeElapsedTimeInSeconds = this.getCumulativeTime(elapsedTimeInSeconds);
+  
+      if (Array.isArray(cumulativeAverageElapsedTimeInSeconds) && Array.isArray(cumulativeElapsedTimeInSeconds)) {
+        this.cumulativeElapsedTimeInSeconds = cumulativeElapsedTimeInSeconds;
+        this.updateChartOptions(cumulativeAverageElapsedTimeInSeconds);
       }
     }
+  
+    if (this.chartOptions?.series) {
+      this.chart?.updateSeries(this.chartOptions.series);
+    }
+  
+    this.cdr.detectChanges();
+  }
+  
+  getElapsedTimeInSeconds(timeValues: string[]) {
+    return timeValues.map((timeString) => this.convertToSeconds(timeString));
+  }
+
+  getCumulativeTime(timeValues: number[]) {
+    return timeValues.reduce((acc: number[], cur: number, idx: number) => {
+      const prev = idx > 0 ? acc[idx - 1] : 0;
+      return [...acc, cur + prev];
+    }, []);
+  }
+  
+
+  updateChartOptions(cumulativeAverageElapsedTimeInSeconds: number[]) {
+    const seriesData = [
+      [0, 0],
+      ...this.cumulativeElapsedTimeInSeconds.map((value: number, index: number) => [value, index + 1])
+    ];
+  
+    const averageSeriesData = [
+      [0, 0],
+      ...cumulativeAverageElapsedTimeInSeconds.map((value: number, index: number) => [value, index + 1])
+    ];
+  
+    this.chartOptions = {
+      ...this.chartOptions,
+      series: [
+        { name: 'Time', type: 'line', data: seriesData },
+        { name: 'Average Time', type: 'line', data: averageSeriesData }
+      ],
+      yaxis: {
+        ...this.chartOptions.yaxis,
+        title: { text: 'Stages' },
+        labels: {
+          minWidth: 50,
+          formatter: (value: number, index: number) => index === 0 ? '' : this.stageNames[index - 1]
+        }
+      }
+    };
+  }
+  
+
+  convertToSeconds(timeString: string): number {
+    const [hours, minutes, seconds] = timeString.split(':').map(Number);
+    return hours * 3600 + minutes * 60 + seconds;
   }
 }

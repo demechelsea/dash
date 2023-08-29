@@ -53,6 +53,7 @@ import { MonthlyElpasedTimeComponent } from './Dashboards/monthlyElpasedTime/mon
 import { StageLineGraphComponent } from './Dashboards/stageLineGraph/stageLineGraph.component';
 import { UnusualChartComponents } from './Dashboards/unusualJobs/unusualJobs.component';
 import { JobMonthlyElpasedTimeComponent } from './Dashboards/jobGraph/jobGraph.component';
+import { MonthlyJobHistoryComponent } from './Dashboards/monthlyJobHisory/monthlyJobHisory.component';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { ConfirmationService, MessageService } from 'primeng/api';
 
@@ -77,7 +78,8 @@ import { ConfirmationService, MessageService } from 'primeng/api';
     NewAuditScheduleComponent,
     AuditScheduleComponent,
     MonthlyElpasedTimeComponent,
-    JobMonthlyElpasedTimeComponent
+    JobMonthlyElpasedTimeComponent,
+    MonthlyJobHistoryComponent
   ],
   imports: [
     NgApexchartsModule,

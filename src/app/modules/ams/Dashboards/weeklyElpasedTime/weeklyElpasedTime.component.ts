@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import * as moment from 'moment';
 import {
   ChartComponent,
@@ -15,7 +15,6 @@ import { WeeklyDTO } from 'src/app/views/models/weekly report';
 import { DailyHistoryDTO } from 'src/app/views/models/dailyHistory';
 import { COBHistoryDTO } from 'src/app/views/models/COBHistory';
 import { DashboardService } from 'src/app/services/dashboard/dashboard.service';
-import { SpecificDay } from 'src/app/views/models/specificDay';
 import { Subscription } from 'rxjs';
 
 export type ChartOptions = {
@@ -36,8 +35,7 @@ export type ChartOptions = {
   styleUrls: ['./weeklyElpasedTime.component.scss'],
 })
 export class WeeklyElpasedTimeComponent implements OnInit {
-  chartData: any;
-  averageChartData: any;
+  stageDate: any;
   chartDataWithNulls: (DailyHistoryDTO | null)[] = [];
 
   private subscriptions = new Subscription();
@@ -86,8 +84,9 @@ export class WeeklyElpasedTimeComponent implements OnInit {
           dataPointSelection: (event, chartContext, { dataPointIndex }) => {
             const dataPoint = this.chartDataWithNulls[dataPointIndex];
             if (dataPoint !== null) {
-              this.handleDataPointSelection(dataPointIndex);
+              this.stageDate = dataPoint.utcDate;              
               this.selectedDateValue = dataPoint.utcDate;
+              this.cdr.detectChanges();
             }
           }
         },
@@ -129,25 +128,6 @@ export class WeeklyElpasedTimeComponent implements OnInit {
       ],
 
     };
-  }
-
-  private handleDataPointSelection(dataPointIndex: number) {
-    const data = this.chartDataWithNulls[dataPointIndex];
-    if (data) {
-      const selectedUtcDate = data.utcDate;
-      const specificDay: SpecificDay = { date: selectedUtcDate };
-      this.subscriptions.add(
-        this.dashboardService
-          .getDailyStageHistory(specificDay)
-          .subscribe((data) => {
-            this.chartData = data.stageHistoryList;
-            this.averageChartData = data.averageStageElapsedTime;
-            this.cdr.detectChanges();
-          })
-      );
-    } else {
-      console.log('No data for this day');
-    }
   }
 
   private initXAxis() {
@@ -208,7 +188,7 @@ export class WeeklyElpasedTimeComponent implements OnInit {
       this.dashboardService.getCOBHistory().subscribe((data) => {
         this.COBHistory = data;
         this.updateDailyHistory();
-        this.updateDailyStageHistory(startOfLastWeek);
+        this.stageDate = startDate;
       })
     );
     this.selectedDateValue = startDate;
@@ -222,21 +202,6 @@ export class WeeklyElpasedTimeComponent implements OnInit {
         .subscribe((data) => {
           this.dailyHistoryData = data;
           this.updateChart();
-        })
-    );
-  }
-
-  updateDailyStageHistory(startOfLastWeek: moment.Moment) {
-    const lastMonday = startOfLastWeek.format('YYYYMMDD');
-    const specificDay: SpecificDay = { date: lastMonday };
-
-    this.subscriptions.add(
-      this.dashboardService
-        .getDailyStageHistory(specificDay)
-        .subscribe((data) => {
-          this.chartData = data.stageHistoryList;
-          this.averageChartData = data.averageStageElapsedTime;
-          this.cdr.detectChanges();
         })
     );
   }
@@ -270,22 +235,9 @@ export class WeeklyElpasedTimeComponent implements OnInit {
     this.selectedDateValue = startDate;
 
     this.updateDailyHistory();
-    this.updateSpecificDayData(startDate);
   }
 
-  updateSpecificDayData(date: string) {
-    const specificDay: SpecificDay = { date };
 
-    this.subscriptions.add(
-      this.dashboardService
-        .getDailyStageHistory(specificDay)
-        .subscribe((data) => {
-          this.chartData = data.stageHistoryList;
-          this.averageChartData = data.averageStageElapsedTime;
-          this.cdr.detectChanges();
-        })
-    );
-  }
 
   private customTooltip(dataPointIndex: number) {
     const data = this.dailyHistoryData.find(
