@@ -64,6 +64,7 @@ export class AuditObjectComponent {
     this.subscriptions.push(
       this.auditObjectService.getAuditObjects().subscribe(
         (response: any) => {
+          console.log("iiiii", response);
           this.auditObject = response.result;
           this.auditObjectDisplay = this.auditObject.map((obj: any) => ({
             ...obj,
@@ -71,8 +72,6 @@ export class AuditObjectComponent {
               ? obj.auditUniverse.name
               : null,
           }));
-          console.log("iiiii", this.auditObjectDisplay);
-
         },
         (error: HttpErrorResponse) => {
           console.log(error);

@@ -228,7 +228,7 @@ export class UnusualChartComponents implements OnChanges,OnInit {
           const currentData = this.jobHistoryList.map(this.timeToSeconds);
 
           const xAxisCategories = Array.from(
-            { length: this.jobNames.length + 1},
+            { length: this.jobNames.length},
             (_, i) => i + 1
           );
 

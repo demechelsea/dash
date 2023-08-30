@@ -4,13 +4,13 @@
     <div class="row">
       <div class="col mb-4">
         <label for="integer" class="block mb-2"> Name: </label>
-        <input pInputText id="integer" pKeyFilter="int" [(ngModel)]="auditObjectInfo.name" name="name"
+        <input pInputText id="integer" pKeyFilter="int" [ngModel]="auditObjectInfo.name" name="name"
           [style]="{'width':'300px','height':'45px'}" required minlength="10" />
       </div>
       <div class="col mb-4">
         <label for="hex" class="block mb-2"> Auditable type: </label>
         <p-dropdown [required]="true" [options]="auditTypes" name="auditType" [filter]="true"
-          [(ngModel)]="auditObjectInfo.auditType" filterBy="name" [showClear]="true" placeholder="Choose audit type"
+          [ngModel]="auditObjectInfo.auditType" filterBy="name" [showClear]="true" placeholder="Choose audit type"
           styleClass="p-password" [style]="{'width':'300px','height':'45px'}">
           <ng-template pTemplate="selectedItem">
             <div *ngIf="auditObjectInfo.auditType">
@@ -29,7 +29,7 @@
       <div class="col mb-4">
         <label for="hex" class="block mb-2"> Audit universe: </label>
         <p-dropdown [required]="true" [options]="auditUniverses" name="auditUniverse" optionLabel="name" [filter]="true"
-          [(ngModel)]="auditObjectInfo.auditUniverse" filterBy="name" [showClear]="true"
+          [ngModel]="auditObjectInfo.auditUniverse" filterBy="name" [showClear]="true"
           placeholder="Choose audit universe" styleClass="p-password" [style]="{'width':'300px','height':'45px'}"
           [disabled]="update">
           <ng-template pTemplate="selectedItem">

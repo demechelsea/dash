@@ -10,7 +10,7 @@
       <div class="col mb-4">
         <label for="hex" class="block mb-2"> Audit type: </label>
         <p-dropdown [required]="true" [options]="auditTypes" name="auditType" [filter]="true"
-          [(ngModel)]="universeInfo.auditType" filterBy="name" [showClear]="true" placeholder="Choose audit type"
+          [ngModel]="universeInfo.auditType" filterBy="name" [showClear]="true" placeholder="Choose audit type"
           styleClass="p-password" [style]="{'width':'300px','height':'45px'}">
           <ng-template pTemplate="selectedItem">
             <div *ngIf="universeInfo.auditType">
@@ -28,7 +28,7 @@
     <div class="row">
       <div *ngIf="update" class="col mb-4">
         <label for="status" class=" block mb-2">Status:</label>
-        <p-dropdown id="status" [options]="['Active', 'Inactive']" name="status" [(ngModel)]="universeInfo.status"
+        <p-dropdown id="status" [options]="['Active', 'Inactive']" name="status" [ngModel]="universeInfo.status"
           placeholder="Select status" [style]="{'width':'300px','height':'45px'}">
         </p-dropdown>
       </div>

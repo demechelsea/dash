@@ -34,7 +34,7 @@ export class StageLineGraphComponent {
   averageChartData: any;
 
   public cumulativeElapsedTimeInSeconds: number[] = [];
-  
+
 
   @ViewChild('chart') chart: ChartComponent;
   public chartOptions: Partial<ChartOptions> = {};
@@ -44,16 +44,7 @@ export class StageLineGraphComponent {
 
   constructor(private cdr: ChangeDetectorRef, private dashboardService: DashboardService) {
     this.chartOptions = {
-      series: [
-        {
-          name: 'Average stage elapsed time',
-          data: [],
-        },
-        {
-          name: 'Selected date stage elapsed time',
-          data: [],
-        },
-      ],
+      series: [],
       xaxis: {
         type: 'numeric',
         title: {
@@ -88,6 +79,8 @@ export class StageLineGraphComponent {
   }
 
   ngOnChanges(changes: SimpleChanges) {
+    console.log("stageLine", this.stageDate);
+
     const stageDateChange = changes['stageDate'];
     if (stageDateChange?.currentValue) {
       this.stageDate = stageDateChange.currentValue;
@@ -106,27 +99,21 @@ export class StageLineGraphComponent {
     this.chartData = data.stageHistoryList;
     this.averageChartData = data.averageStageElapsedTime;
     this.stageNames = this.chartData.map((item: any) => item.stage.name);
-  
+
     if (this.averageChartData) {
       const averageElapsedTimeInSeconds = this.getElapsedTimeInSeconds(this.averageChartData);
       const cumulativeAverageElapsedTimeInSeconds = this.getCumulativeTime(averageElapsedTimeInSeconds);
-  
+
       const elapsedTimeInSeconds = this.getElapsedTimeInSeconds(this.chartData.map((list: any) => list.elapsedTime));
       const cumulativeElapsedTimeInSeconds = this.getCumulativeTime(elapsedTimeInSeconds);
-  
+
       if (Array.isArray(cumulativeAverageElapsedTimeInSeconds) && Array.isArray(cumulativeElapsedTimeInSeconds)) {
         this.cumulativeElapsedTimeInSeconds = cumulativeElapsedTimeInSeconds;
         this.updateChartOptions(cumulativeAverageElapsedTimeInSeconds);
       }
     }
-  
-    if (this.chartOptions?.series) {
-      this.chart?.updateSeries(this.chartOptions.series);
-    }
-  
-    this.cdr.detectChanges();
   }
-  
+
   getElapsedTimeInSeconds(timeValues: string[]) {
     return timeValues.map((timeString) => this.convertToSeconds(timeString));
   }
@@ -137,19 +124,19 @@ export class StageLineGraphComponent {
       return [...acc, cur + prev];
     }, []);
   }
-  
+
 
   updateChartOptions(cumulativeAverageElapsedTimeInSeconds: number[]) {
     const seriesData = [
       [0, 0],
       ...this.cumulativeElapsedTimeInSeconds.map((value: number, index: number) => [value, index + 1])
     ];
-  
+
     const averageSeriesData = [
       [0, 0],
       ...cumulativeAverageElapsedTimeInSeconds.map((value: number, index: number) => [value, index + 1])
     ];
-  
+
     this.chartOptions = {
       ...this.chartOptions,
       series: [
@@ -165,8 +152,10 @@ export class StageLineGraphComponent {
         }
       }
     };
+    this.cdr.detectChanges();
+
   }
-  
+
 
   convertToSeconds(timeString: string): number {
     const [hours, minutes, seconds] = timeString.split(':').map(Number);

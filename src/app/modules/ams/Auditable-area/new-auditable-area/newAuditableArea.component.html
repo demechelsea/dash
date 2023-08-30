@@ -4,13 +4,13 @@
     <div class="row">
       <div class="col mb-4">
         <label for="integer" class="block m-2"> Name: </label>
-        <input pInputText id="integer" pKeyFilter="int" [(ngModel)]="auditAreaInfo.name" name="name"
+        <input pInputText id="integer" pKeyFilter="int" [ngModel]="auditAreaInfo.name" name="name"
           [style]="{'width':'300px','height':'45px'}" required minlength="10" />
       </div>
       <div class="col mb-4">
         <label for="hex" class="block mb-2"> Audit object: </label>
         <p-dropdown [required]="true" [options]="auditObjects" name="auditObject" optionLabel="name" [filter]="true"
-          [(ngModel)]="auditAreaInfo.auditObject" filterBy="name" [showClear]="true" placeholder="Choose audit object"
+          [ngModel]="auditAreaInfo.auditObject" filterBy="name" [showClear]="true" placeholder="Choose audit object"
           styleClass="p-password" [style]="{'width':'300px','height':'45px'}" [disabled]="update">
           <ng-template pTemplate="selectedItem">
             <div *ngIf="auditAreaInfo?.auditObject">

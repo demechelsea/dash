@@ -60,14 +60,13 @@ export class WeeklyElpasedTimeComponent implements OnInit {
 
   ngOnInit() {
     this.initData();
-    this.cdr.detectChanges();
+    this.initChartOptions();
   }
 
   constructor(
     private dashboardService: DashboardService,
     private cdr: ChangeDetectorRef
   ) {
-    this.initChartOptions();
   }
 
   private initChartOptions() {
@@ -80,6 +79,7 @@ export class WeeklyElpasedTimeComponent implements OnInit {
     );
 
     this.stageDate = lastWeekMonday;
+    console.log("weekly", this.stageDate);
 
     this.chartOptions = {
       ...this.chartOptions,
