@@ -7,6 +7,7 @@ import { AnnualPlanDTO } from 'src/app/views/models/annualPlan';
 import { NewAnnualPlanComponent } from '../new-annual-plan/newAnnualPlan.component';
 import { Subscription } from 'rxjs';
 import * as FileSaver from 'file-saver';
+import { AutoGenerateAnnualPlanComponent } from 'src/app/modules/ams/Annual plan/auto-geneerate-annualPlan/auto-generate-annualPlan.component';
 
 interface Column {
   field: string;
@@ -63,6 +64,32 @@ export class AnnualPlanComponent {
     }));
   }
 
+  generateAnnualPlan(): void {
+    const ref = this.dialogService.open(AutoGenerateAnnualPlanComponent, {
+      header: 'Generate Annual Plan',
+      width: '40%',
+      contentStyle: { 'min-height': 'auto', overflow: 'auto' },
+      baseZIndex: 10000,
+    });
+  
+    ref.onClose.subscribe((response: any) => {
+      if (response.status) {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: response.message,
+        });
+        this.annualPlans = response.result;
+      } else {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Failed',
+          detail: response.message,
+        });
+      }
+    });
+  }
+  
   getAnnualPlans(): void {
     this.subscriptions.push(
       this.annualPlanService.getAnnualPlans().subscribe(

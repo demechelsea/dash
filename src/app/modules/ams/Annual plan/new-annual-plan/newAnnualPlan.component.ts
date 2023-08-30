@@ -48,7 +48,7 @@ export class NewAnnualPlanComponent implements OnDestroy, AfterContentChecked {
     private config: DynamicDialogConfig,
     public dialogService: DialogService,
     private cdref: ChangeDetectorRef
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.generateYears();
@@ -65,7 +65,7 @@ export class NewAnnualPlanComponent implements OnDestroy, AfterContentChecked {
 
   ngAfterContentChecked() {
     this.cdref.detectChanges();
- }
+  }
 
   generateYears() {
     for (let i = 2024; i <= 2050; i++) {
@@ -110,8 +110,6 @@ export class NewAnnualPlanComponent implements OnDestroy, AfterContentChecked {
     this.subscriptions.push(
       this.auditUniverseService.getAuditUniverse().subscribe(
         (response: any) => {
-          console.log("universe", response);
-          
           this.auditUniverses = response.result;
         },
         (error: HttpErrorResponse) => {

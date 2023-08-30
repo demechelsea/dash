@@ -56,10 +56,10 @@ import { JobMonthlyElpasedTimeComponent } from './Dashboards/jobGraph/jobGraph.c
 import { MonthlyJobHistoryComponent } from './Dashboards/monthlyJobHisory/monthlyJobHisory.component';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { AutoGenerateAnnualPlanComponent } from './Annual plan/auto-geneerate-annualPlan/auto-generate-annualPlan.component';
 
 @NgModule({
   declarations: [
-    AuditUniverseComponent,
     AuditUniverseComponent,
     NewAuditUniverseComponent,
     AnnualPlanComponent,
@@ -79,7 +79,8 @@ import { ConfirmationService, MessageService } from 'primeng/api';
     AuditScheduleComponent,
     MonthlyElpasedTimeComponent,
     JobMonthlyElpasedTimeComponent,
-    MonthlyJobHistoryComponent
+    MonthlyJobHistoryComponent,
+    AutoGenerateAnnualPlanComponent
   ],
   imports: [
     NgApexchartsModule,
