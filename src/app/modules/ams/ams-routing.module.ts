@@ -78,20 +78,6 @@ const routes: Routes = [
           title: 'Dash',
         },
       },
-      {
-        path: 'chart',
-        component: StageLineGraphComponent,
-        data: {
-          title: 'chart',
-        },
-      },
-      {
-        path: 'unUsual',
-        component: UnusualChartComponents,
-        data: {
-          title: 'chart',
-        },
-      },
     ],
   },
 ];
