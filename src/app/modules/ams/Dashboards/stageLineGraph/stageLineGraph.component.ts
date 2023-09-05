@@ -11,6 +11,11 @@ import {
   ApexChart,
   ApexXAxis,
   ApexYAxis,
+  ApexDataLabels,
+  ApexStroke,
+  ApexGrid,
+  ApexTitleSubtitle,
+  ApexTooltip,
 } from 'ng-apexcharts';
 import { Subscription } from 'rxjs';
 import { DashboardService } from 'src/app/services/dashboard/dashboard.service';
@@ -21,6 +26,12 @@ export type ChartOptions = {
   chart: ApexChart;
   xaxis: ApexXAxis;
   yaxis: ApexYAxis;
+  dataLabels: ApexDataLabels;
+  stroke: ApexStroke;
+  grid: ApexGrid;
+  title: ApexTitleSubtitle;
+  tooltip: ApexTooltip;
+
 };
 
 @Component({
@@ -75,25 +86,41 @@ export class StageLineGraphComponent {
           enabled: false,
         },
       },
+      
+      dataLabels: {
+        enabled: true,
+      },
+      stroke: {
+        curve: 'straight',
+      },
+      grid: {
+        row: {
+          colors: ['#f3f3f3', 'transparent'],
+          opacity: 0.5,
+        },
+      },
     };
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-    console.log("stageLine", this.stageDate);
-
+  ngOnChanges(changes: SimpleChanges) {  
     const stageDateChange = changes['stageDate'];
     if (stageDateChange?.currentValue) {
       this.stageDate = stageDateChange.currentValue;
-      const specificDate: SpecificDay = { date: this.stageDate };
-      this.subscriptions.add(
-        this.dashboardService
-          .getDailyStageHistory(specificDate)
-          .subscribe((data) => {
-            this.updateChartData(data);
-          })
-      );
+      this.getDailyStageHistory(this.stageDate);
     }
   }
+  
+  getDailyStageHistory(stageDate: any) {
+    const specificDate: SpecificDay = { date: stageDate };
+    this.subscriptions.add(
+      this.dashboardService
+        .getDailyStageHistory(specificDate)
+        .subscribe((data) => {
+          this.updateChartData(data);
+        })
+    );
+  }
+  
 
   updateChartData(data: any) {
     this.chartData = data.stageHistoryList;
@@ -137,6 +164,14 @@ export class StageLineGraphComponent {
       ...cumulativeAverageElapsedTimeInSeconds.map((value: number, index: number) => [value, index + 1])
     ];
 
+    const xAxisCategories = Array.from(
+      { length: this.stageNames.length},
+      (_, i) => i + 1
+    );
+
+    console.log(xAxisCategories);
+    
+
     this.chartOptions = {
       ...this.chartOptions,
       series: [
@@ -145,20 +180,28 @@ export class StageLineGraphComponent {
       ],
       yaxis: {
         ...this.chartOptions.yaxis,
-        title: { text: 'Stages' },
         labels: {
           minWidth: 50,
           formatter: (value: number, index: number) => index === 0 ? '' : this.stageNames[index - 1]
         }
-      }
+      },
+      xaxis: {
+        ...this.chartOptions.xaxis,
+        categories: xAxisCategories,
+        tickAmount: xAxisCategories.length,
+      },
+      
     };
     this.cdr.detectChanges();
-
   }
 
 
   convertToSeconds(timeString: string): number {
     const [hours, minutes, seconds] = timeString.split(':').map(Number);
     return hours * 3600 + minutes * 60 + seconds;
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe();
   }
 }

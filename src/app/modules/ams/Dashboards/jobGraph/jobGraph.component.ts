@@ -54,8 +54,6 @@ export class JobMonthlyElpasedTimeComponent implements OnDestroy {
   @ViewChild('chart') chart: ChartComponent;
   public chartOptions: Partial<ChartOptions> = {};
 
-  public stageNames: string[] = [];
-
   constructor(private cdr: ChangeDetectorRef, private dashboardService: DashboardService,
   ) {
     this.chartOptions = {
@@ -70,7 +68,7 @@ export class JobMonthlyElpasedTimeComponent implements OnDestroy {
       xaxis: {
         type: 'category',
         title: {
-          text: `Days of a month (${moment().format('MMMM')})`,
+          text: `Days of a month`,
         },
       },
       yaxis: {

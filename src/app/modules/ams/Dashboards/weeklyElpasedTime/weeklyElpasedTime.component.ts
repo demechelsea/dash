@@ -72,14 +72,10 @@ export class WeeklyElpasedTimeComponent implements OnInit {
   private initChartOptions() {
     const today = moment();
     const startOfWeek = today.startOf('week').add(1, 'days');
-    const lastWeekMonday = moment(startOfWeek).subtract(7, 'days').format('YYYYMMDD');
 
     const dates = Array.from({ length: 6 }, (_, i) =>
       moment(startOfWeek).add(i, 'days').toISOString()
     );
-
-    this.stageDate = lastWeekMonday;
-    console.log("weekly", this.stageDate);
 
     this.chartOptions = {
       ...this.chartOptions,
@@ -192,10 +188,10 @@ export class WeeklyElpasedTimeComponent implements OnInit {
     this.subscriptions.add(
       this.dashboardService.getCOBHistory().subscribe((data) => {
         this.COBHistory = data;
-        this.updateDailyHistory();
-        this.stageDate = startDate;
+        this.updateDailyHistory();        
       })
     );
+    this.stageDate = startDate;
     this.selectedDateValue = startDate;
   }
 
@@ -238,6 +234,7 @@ export class WeeklyElpasedTimeComponent implements OnInit {
     this.selectedWeek.endDate = endDate;
 
     this.selectedDateValue = startDate;
+    this.stageDate = startDate;
 
     this.updateDailyHistory();
   }
