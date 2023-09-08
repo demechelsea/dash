@@ -2,12 +2,15 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnDestroy } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { DialogService, DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Subscription } from 'rxjs';
 import { AuditPlanService } from 'src/app/services/audit-type/audit-type.service';
+import { AuditObjectService } from 'src/app/services/auditObject/auditObject.service';
 import { AuditUniverseService } from 'src/app/services/auidit-universe/audit-universe.service';
+import { AuditObjectDTO } from 'src/app/views/models/auditObject';
 import { AuditType } from 'src/app/views/models/auditType';
 import { AuditUniverseDTO } from 'src/app/views/models/auditUniverse';
+import { NewAuditObjectComponent } from '../../Audit-objects/new-audit-object/newAuditObject.component';
 
 @Component({
   selector: 'newAuditUniverse',
@@ -17,6 +20,7 @@ import { AuditUniverseDTO } from 'src/app/views/models/auditUniverse';
 })
 export class NewAuditUniverseComponent implements OnDestroy {
   public auditTypes: AuditType[] = [];
+  public auditObjects: AuditObjectDTO[] = [];
 
   public auditUniverseR: AuditUniverseDTO[] = [];
   public universeInfo: AuditUniverseDTO = new AuditUniverseDTO();
@@ -32,13 +36,16 @@ export class NewAuditUniverseComponent implements OnDestroy {
     private messageService: MessageService,
     private auditUniverseService: AuditUniverseService,
     private auditTypeService: AuditPlanService,
+    private auditObjectService: AuditObjectService,
     private ref: DynamicDialogRef,
-    private config: DynamicDialogConfig
-  ) {}
+    private config: DynamicDialogConfig,
+    private dialogService: DialogService,
+  ) { }
 
   ngOnInit() {
     this.getAuditTypes();
-    if (this.config.data?.auditUniverse) {      
+    this.getAuditObjects();
+    if (this.config.data?.auditUniverse) {
       this.universeInfo = this.config.data.auditUniverse;
       this.update = true;
       this.newDiv = false;
@@ -56,6 +63,43 @@ export class NewAuditUniverseComponent implements OnDestroy {
         console.log(error);
       }
     );
+  }
+
+  getAuditObjects(): void {
+    this.auditObjectService.getAuditObjects().subscribe(
+      (response: any) => {
+        this.auditObjects = response.result;
+      },
+      (error: HttpErrorResponse) => {
+        console.log(error);
+      }
+    );
+  }
+
+  createAuditObject(): void {
+    const ref = this.dialogService.open(NewAuditObjectComponent, {
+      header: 'Create a new audit object',
+      width: '35%',
+      contentStyle: { 'min-height': 'auto', overflow: 'auto' },
+      baseZIndex: 10000,
+    });
+
+    ref.onClose.subscribe((response: any) => {
+      if (response.status) {
+        this.getAuditObjects();
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: response.message,
+        });
+      } else {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Failed',
+          detail: response.message,
+        });
+      }
+    });
   }
 
   submitAuditableArea(auditableAreaForm: NgForm): void {

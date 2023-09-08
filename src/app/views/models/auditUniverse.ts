@@ -1,3 +1,4 @@
+import { AuditObjectDTO } from "./auditObject";
 import { BaseModel } from "./base";
 
 export class AuditUniverseDTO extends BaseModel {
@@ -5,4 +6,6 @@ export class AuditUniverseDTO extends BaseModel {
     description: string;
     auditType: string;
     status : string;
+    auditObjectDTO : AuditObjectDTO;
 }
+

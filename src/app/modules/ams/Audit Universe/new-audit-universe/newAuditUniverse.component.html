@@ -9,7 +9,7 @@
       </div>
       <div class="col mb-4">
         <label for="hex" class="block mb-2"> Audit type: </label>
-        <p-dropdown [required]="true" [options]="auditTypes" name="auditType" [filter]="true"
+        <p-dropdown [required]="true" [options]="auditTypes" optionLabel="name" name="auditType" [filter]="true"
           [ngModel]="universeInfo.auditType" filterBy="name" [showClear]="true" placeholder="Choose audit type"
           styleClass="p-password" [style]="{'width':'300px','height':'45px'}">
           <ng-template pTemplate="selectedItem">
@@ -25,6 +25,28 @@
         </p-dropdown>
       </div>
     </div>
+
+    <div class="flex flex-row">
+      <div class="mb-4 mr-2">
+        <label for="hex" class="block mb-2"> Audit object: </label>
+        <p-dropdown [required]="true" [options]="auditObjects" name="auditObject" optionLabel="name" [filter]="true"
+          [ngModel]="universeInfo.auditObjectDTO" filterBy="name" [showClear]="true" placeholder="Choose audit object"
+          styleClass="p-password" [style]="{'width':'300px','height':'45px'}" [disabled]="update">
+          <ng-template pTemplate="selectedItem">
+            <div *ngIf="universeInfo?.auditObjectDTO">
+              <div>{{universeInfo.auditObjectDTO.name}}</div>
+            </div>
+          </ng-template>
+          <ng-template let-auditObject pTemplate="item">
+            <div>
+              <div>{{auditObject.name}}</div>
+            </div>
+          </ng-template>
+        </p-dropdown>
+      </div>
+      <p-button (click)="createAuditObject()" class="mt-4" label="Add audit object" type="submit"></p-button>
+    </div>
+    
     <div class="row">
       <div *ngIf="update" class="col mb-4">
         <label for="status" class=" block mb-2">Status:</label>
@@ -44,9 +66,9 @@
       </div>
     </div>
 
-    <div style="margin-top: 15em;"></div>
+    <div style="margin-top: 10em;"></div>
     <div class="buttonDiv">
-      <p-button label="Cancel" class="m-8" (click)="closeDialog()"></p-button>
+      <p-button label="Cancel" (click)="closeDialog()"></p-button>
       <p-button *ngIf="!update" label="Create audit universe" [disabled]="addDivForm.invalid!" type="submit"></p-button>
       <p-button *ngIf="update" label="Update audit universe" [disabled]="addDivForm.invalid!" type="submit"></p-button>
     </div>

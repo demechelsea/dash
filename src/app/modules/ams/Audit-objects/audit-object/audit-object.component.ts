@@ -64,7 +64,6 @@ export class AuditObjectComponent {
     this.subscriptions.push(
       this.auditObjectService.getAuditObjects().subscribe(
         (response: any) => {
-          console.log("iiiii", response);
           this.auditObject = response.result;
           this.auditObjectDisplay = this.auditObject.map((obj: any) => ({
             ...obj,

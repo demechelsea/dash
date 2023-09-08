@@ -12,9 +12,9 @@
         </p-dropdown>
       </div>
     </div>
-    <div style="margin-top: 15em;"></div>
+    <div style="margin-top: 10em;"></div>
     <div class="buttonDiv">
-      <p-button label="Cancel" class="m-8" (click)="closeDialog()"></p-button>
+      <p-button label="Cancel" (click)="closeDialog()"></p-button>
       <p-button *ngIf="!update" label="Generate annual plan" [disabled]="addDivForm.invalid!" type="submit"></p-button>
     </div>
   </form>
