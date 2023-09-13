@@ -10,6 +10,7 @@ import { AuditObjectComponent } from './Audit-objects/audit-object/audit-object.
 import { AuditableAreaComponent } from './Auditable-area/auditable-area/auditable-area.component';
 import { CheckListComponent } from './Checklist/checklist/checkList.component';
 import { AuditScheduleComponent } from './Audit-schedule/audit-schedule/audit-schedule.component';
+import { AuditObjectDetailComponent } from './Audit-objects/audit-object-detail/audit-object-detail.component';
 
 const routes: Routes = [
   {
@@ -28,6 +29,20 @@ const routes: Routes = [
         component: AuditObjectComponent,
         data: {
           title: 'Audit Object',
+        },
+      },
+      {
+        path: 'audit-object-detail',
+        component: AuditObjectDetailComponent,
+        data: {
+          title: 'Audit Object detail',
+        },
+      },
+      {
+        path: 'audit-object-detail/:id',
+        component: AuditObjectDetailComponent,
+        data: {
+          title: 'Audit Object detail',
         },
       },
 
@@ -86,4 +101,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
 })
-export class AmsRoutingModule {}
+export class AmsRoutingModule { }

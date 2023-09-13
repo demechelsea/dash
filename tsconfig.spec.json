@@ -14,5 +14,5 @@
   "include": [
     "src/**/*.spec.ts",
     "src/**/*.d.ts"
-, "src/app/services/auditObject/auditObject.service.spec.ts"  ]
+, "src/app/services/auditObject/auditObject.service.spec.ts", "src/app/modules/ams/Audit-objects/audit-object-detail/audit-object-detail.component.spec.ts"  ]
 }

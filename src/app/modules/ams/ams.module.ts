@@ -4,6 +4,7 @@ import { AuditUniverseComponent } from './Audit Universe/audit-universe/audit-un
 import { AnnualPlanComponent } from './Annual plan/annual-plan/annual-plan.component';
 import { NewAnnualPlanComponent } from './Annual plan/new-annual-plan/newAnnualPlan.component';
 import { AuditObjectComponent } from './Audit-objects/audit-object/audit-object.component';
+import { AuditObjectDetailComponent } from './Audit-objects/audit-object-detail/audit-object-detail.component';
 import { NewAuditObjectComponent } from './Audit-objects/new-audit-object/newAuditObject.component';
 import { RiskScoreComponent } from './Annual plan/risk-score/risk-score.component';
 import { NewAuditUniverseComponent } from './Audit Universe/new-audit-universe/newAuditUniverse.component';
@@ -80,7 +81,9 @@ import { AutoGenerateAnnualPlanComponent } from './Annual plan/auto-geneerate-an
     MonthlyElpasedTimeComponent,
     JobMonthlyElpasedTimeComponent,
     MonthlyJobHistoryComponent,
-    AutoGenerateAnnualPlanComponent
+    AutoGenerateAnnualPlanComponent,
+    AuditObjectDetailComponent
+    
   ],
   imports: [
     NgApexchartsModule,

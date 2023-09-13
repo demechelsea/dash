@@ -7,5 +7,6 @@ export interface RistScoreDTO extends BaseModel {
     frequency: number;
     impact: number;
     total : number;
+    percentage : number;
+    isWaited : boolean;
 }
-

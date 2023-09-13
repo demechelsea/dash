@@ -9,11 +9,11 @@
       </div>
       <div class="col mb-4">
         <label for="hex" class="block mb-2"> Audit type: </label>
-        <p-dropdown [required]="true" [options]="auditTypes" optionLabel="name" name="auditType" [filter]="true"
-          [ngModel]="universeInfo.auditType" filterBy="name" [showClear]="true" placeholder="Choose audit type"
+        <p-dropdown [required]="true" [options]="auditTypes" name="auditType" [filter]="true"
+          [(ngModel)]="universeInfo.auditType" filterBy="name" [showClear]="true" placeholder="Choose audit type"
           styleClass="p-password" [style]="{'width':'300px','height':'45px'}">
           <ng-template pTemplate="selectedItem">
-            <div *ngIf="universeInfo.auditType">
+            <div *ngIf="universeInfo?.auditType">
               <div>{{universeInfo.auditType}}</div>
             </div>
           </ng-template>
@@ -23,14 +23,14 @@
             </div>
           </ng-template>
         </p-dropdown>
-      </div>
+      </div>      
     </div>
 
     <div class="flex flex-row">
       <div class="mb-4 mr-2">
         <label for="hex" class="block mb-2"> Audit object: </label>
-        <p-dropdown [required]="true" [options]="auditObjects" name="auditObject" optionLabel="name" [filter]="true"
-          [ngModel]="universeInfo.auditObjectDTO" filterBy="name" [showClear]="true" placeholder="Choose audit object"
+        <p-dropdown [options]="auditObjects" name="auditObjectDTO" optionLabel="name" [filter]="true"
+          [(ngModel)]="universeInfo.auditObjectDTO.name" filterBy="name" [showClear]="true" placeholder="Choose audit object"
           styleClass="p-password" [style]="{'width':'300px','height':'45px'}" [disabled]="update">
           <ng-template pTemplate="selectedItem">
             <div *ngIf="universeInfo?.auditObjectDTO">
@@ -43,10 +43,11 @@
             </div>
           </ng-template>
         </p-dropdown>
+
       </div>
       <p-button (click)="createAuditObject()" class="mt-4" label="Add audit object" type="submit"></p-button>
     </div>
-    
+
     <div class="row">
       <div *ngIf="update" class="col mb-4">
         <label for="status" class=" block mb-2">Status:</label>

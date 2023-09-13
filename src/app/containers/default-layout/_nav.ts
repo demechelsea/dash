@@ -15,6 +15,10 @@ export const navItems: INavData[] = [
         name: 'Audit Object',
         url: '/ams/audit-object',
       },
+      {
+        name: 'Audit Object detail',
+        url: '/ams/audit-object-detail',
+      },
     
       {
         name: 'Annual Plan',

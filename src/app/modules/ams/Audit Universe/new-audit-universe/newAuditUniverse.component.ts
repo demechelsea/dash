@@ -79,6 +79,7 @@ export class NewAuditUniverseComponent implements OnDestroy {
   createAuditObject(): void {
     const ref = this.dialogService.open(NewAuditObjectComponent, {
       header: 'Create a new audit object',
+      draggable: true,
       width: '35%',
       contentStyle: { 'min-height': 'auto', overflow: 'auto' },
       baseZIndex: 10000,

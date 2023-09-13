@@ -7,6 +7,7 @@ import { AuditObjectService } from 'src/app/services/auditObject/auditObject.ser
 import { AuditObjectDTO } from 'src/app/views/models/auditObject';
 import { NewAuditObjectComponent } from '../new-audit-object/newAuditObject.component';
 import * as FileSaver from 'file-saver';
+import { Router } from '@angular/router';
 
 interface ExportColumn {
   title: string;
@@ -41,7 +42,8 @@ export class AuditObjectComponent {
   constructor(
     private auditObjectService: AuditObjectService,
     private dialogService: DialogService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -82,6 +84,7 @@ export class AuditObjectComponent {
   createAuditObject(): void {
     const ref = this.dialogService.open(NewAuditObjectComponent, {
       header: 'Create a new audit object',
+      draggable: true,
       width: '40%',
       contentStyle: { 'min-height': 'auto', overflow: 'auto' },
       baseZIndex: 10000,
@@ -135,6 +138,10 @@ export class AuditObjectComponent {
         }
       }
     });
+  }
+
+  detailAuditObject(id: number) {
+    this.router.navigate(['/audit-object-detail', id]);
   }
 
   public getAuditObjectInfo(id: number): AuditObjectDTO[] {
