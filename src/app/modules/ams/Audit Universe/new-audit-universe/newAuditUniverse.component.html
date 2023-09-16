@@ -23,18 +23,18 @@
             </div>
           </ng-template>
         </p-dropdown>
-      </div>      
+      </div> 
     </div>
 
     <div class="flex flex-row">
       <div class="mb-4 mr-2">
         <label for="hex" class="block mb-2"> Audit object: </label>
-        <p-dropdown [options]="auditObjects" name="auditObjectDTO" optionLabel="name" [filter]="true"
-          [(ngModel)]="universeInfo.auditObjectDTO.name" filterBy="name" [showClear]="true" placeholder="Choose audit object"
-          styleClass="p-password" [style]="{'width':'300px','height':'45px'}" [disabled]="update">
+        <p-dropdown [options]="auditObjects" name="auditObject" optionLabel="name" [filter]="true"
+          [(ngModel)]="universeInfo.auditObject" filterBy="name" [showClear]="true" placeholder="Choose audit object"
+          styleClass="p-password" [required]="true" [style]="{'width':'300px','height':'45px'}" [disabled]="update">
           <ng-template pTemplate="selectedItem">
-            <div *ngIf="universeInfo?.auditObjectDTO">
-              <div>{{universeInfo.auditObjectDTO.name}}</div>
+            <div *ngIf="universeInfo?.auditObject">
+              <div>{{universeInfo.auditObject.name}}</div>
             </div>
           </ng-template>
           <ng-template let-auditObject pTemplate="item">
@@ -43,18 +43,8 @@
             </div>
           </ng-template>
         </p-dropdown>
-
       </div>
-      <p-button (click)="createAuditObject()" class="mt-4" label="Add audit object" type="submit"></p-button>
-    </div>
-
-    <div class="row">
-      <div *ngIf="update" class="col mb-4">
-        <label for="status" class=" block mb-2">Status:</label>
-        <p-dropdown id="status" [options]="['Active', 'Inactive']" name="status" [ngModel]="universeInfo.status"
-          placeholder="Select status" [style]="{'width':'300px','height':'45px'}">
-        </p-dropdown>
-      </div>
+      <p-button (click)="createAuditObject()" class="mt-4" label="Add audit object"></p-button>
     </div>
 
     <div class="row">

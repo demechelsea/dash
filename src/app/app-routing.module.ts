@@ -6,7 +6,6 @@ import { Page404Component } from './views/pages/page404/page404.component';
 import { Page500Component } from './views/pages/page500/page500.component';
 import { LoginComponent } from './views/pages/login/login.component';
 import { RegisterComponent } from './views/pages/register/register.component';
-import { NewAuditUniverseComponent } from './modules/ams/Audit Universe/new-audit-universe/newAuditUniverse.component';
 
 const routes: Routes = [
   {
@@ -130,4 +129,4 @@ const routes: Routes = [
   ],
   exports: [RouterModule],
 })
-export class AppRoutingModule {}
+export class AppRoutingModule { }

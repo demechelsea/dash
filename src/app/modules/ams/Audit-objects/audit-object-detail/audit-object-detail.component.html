@@ -1,8 +1,8 @@
 <div class="p-6 bg-white rounded-lg shadow-lg mb-8">
-    <h5 class="mb-4 text-xl font-bold text-blue-600">Audit object: <strong class="text-black">Network Administration Audit</strong></h5>
-    <h5 class="text-xl text-blue-600"><strong>Description: </strong> <span class="text-black">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam dolore laboriosam magni
-            consequatur et repudiandae quod odit explicabo voluptatem! Quia aliquam inventore porro consectetur ducimus
-            nisi officia voluptates perspiciatis voluptas!</span></h5>
+    <h5 class="mb-4 text-xl font-bold text-blue-600">Audit object: <strong
+            class="text-black">{{auditObject?.name}}</strong></h5>
+    <h5 class="text-xl text-blue-600"><strong>Description: </strong> <span
+            class="text-black">{{auditObject?.description}}</span></h5>
 </div>
 
 <div class="flex flex-row justify-between">
@@ -11,9 +11,10 @@
         </div>
         <div class="card">
             <h5 class="table-title">Auditable area</h5>
-            <p-table #dt1 [value]="auditableArea" [exportHeader]="'customExportHeader'" selectionMode="single"
-                dataKey="id" [tableStyle]="{'min-width': 'auto'}" [rows]="5" [rowsPerPageOptions]="[5,10,15,20]"
-                [paginator]="true" stateStorage="session" stateKey="statedemo-session">
+            <p-table #dt1 [value]="auditableArea" (onRowSelect)="onAuditableAreaSelect($event)"
+                [exportHeader]="'customExportHeader'" selectionMode="single" dataKey="id"
+                [tableStyle]="{'min-width': 'auto'}" [rows]="5" [rowsPerPageOptions]="[5,10,15,20]" [paginator]="true"
+                stateStorage="session" stateKey="statedemo-session">
                 <ng-template pTemplate="header">
                     <tr>
                         <th pSortableColumn="name">Title<p-sortIcon field="name"></p-sortIcon></th>

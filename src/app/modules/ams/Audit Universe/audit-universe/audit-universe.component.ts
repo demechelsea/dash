@@ -32,6 +32,8 @@ export class AuditUniverseComponent implements OnDestroy {
   public universeInfo: AuditUniverseDTO;
   selectedUniverseInfo: AuditUniverseDTO;
 
+  approved: false;
+
   exportColumns!: ExportColumn[];
   cols!: Column[];
 
@@ -41,7 +43,7 @@ export class AuditUniverseComponent implements OnDestroy {
     private auditUniverseService: AuditUniverseService,
     private dialogService: DialogService,
     private messageService: MessageService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.getAuditUniverses();
@@ -64,6 +66,21 @@ export class AuditUniverseComponent implements OnDestroy {
       this.auditUniverseService.getAuditUniverse().subscribe(
         (response: any) => {
           this.auditUniverse = response.result;
+        },
+        (error: HttpErrorResponse) => {
+          console.log(error);
+        }
+      )
+    );
+  }
+
+  approveAuditUniverse(id: number): void {
+    const auditUniverse = new AuditUniverseDTO;
+    auditUniverse.id = id;
+    this.subscriptions.push(
+      this.auditUniverseService.approveAuditUniverse(auditUniverse).subscribe(
+        (response: any) => {
+          this.getAuditUniverses();
         },
         (error: HttpErrorResponse) => {
           console.log(error);
@@ -105,6 +122,7 @@ export class AuditUniverseComponent implements OnDestroy {
     );
     const ref = this.dialogService.open(NewAuditUniverseComponent, {
       header: 'Update audit universe',
+      draggable: true,
       width: '40%',
       data: { auditUniverse },
       contentStyle: { 'min-height': 'auto', overflow: 'auto' },

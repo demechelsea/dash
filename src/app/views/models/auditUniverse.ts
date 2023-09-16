@@ -9,5 +9,5 @@ export class AuditUniverseDTO extends BaseModel {
     status : string;
     approvedBy : string;
     approvedAt : Date;
-    auditObjectDTO : AuditObjectDTO;
+    auditObject : AuditObjectDTO;
 }

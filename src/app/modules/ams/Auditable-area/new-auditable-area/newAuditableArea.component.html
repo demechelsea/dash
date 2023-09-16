@@ -7,14 +7,14 @@
         <input pInputText id="integer" pKeyFilter="int" [ngModel]="auditAreaInfo.name" name="name"
           [style]="{'width':'300px','height':'45px'}" required minlength="10" />
       </div>
-      <div class="col mb-4">
+      <div class="mb-4 mr-2">
         <label for="hex" class="block mb-2"> Audit object: </label>
-        <p-dropdown [required]="true" [options]="auditObjects" name="auditObject" optionLabel="name" [filter]="true"
-          [ngModel]="auditAreaInfo.auditObjectDTO" filterBy="name" [showClear]="true" placeholder="Choose audit object"
-          styleClass="p-password" [style]="{'width':'300px','height':'45px'}" [disabled]="update">
+        <p-dropdown [options]="auditObjects" name="auditObject" optionLabel="name" [filter]="true"
+          [(ngModel)]="auditAreaInfo.auditObject" filterBy="name" [showClear]="true" placeholder="Choose audit object"
+          styleClass="p-password" [required]="true" [style]="{'width':'300px','height':'45px'}" [disabled]="update">
           <ng-template pTemplate="selectedItem">
-            <div *ngIf="auditAreaInfo?.auditObjectDTO">
-              <div>{{auditAreaInfo.auditObjectDTO.name}}</div>
+            <div *ngIf="auditAreaInfo?.auditObject">
+              <div>{{auditAreaInfo.auditObject.name}}</div>
             </div>
           </ng-template>
           <ng-template let-auditObject pTemplate="item">

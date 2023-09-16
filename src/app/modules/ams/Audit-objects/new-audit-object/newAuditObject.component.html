@@ -8,13 +8,13 @@
           [style]="{'width':'300px','height':'45px'}" required minlength="10" />
       </div>
       <div class="col mb-4">
-        <label for="hex" class="block mb-2"> Auditable type: </label>
+        <label for="hex" class="block mb-2"> Audit type: </label>
         <p-dropdown [required]="true" [options]="auditTypes" name="auditType" [filter]="true"
-          [ngModel]="auditObjectInfo.auditType" optionLabel="name" filterBy="auditType" [showClear]="true" placeholder="Choose audit type"
+          [(ngModel)]="auditObjectInfo.auditType" filterBy="name" [showClear]="true" placeholder="Choose audit type"
           styleClass="p-password" [style]="{'width':'300px','height':'45px'}">
           <ng-template pTemplate="selectedItem">
-            <div *ngIf="auditObjectInfo.auditType">
-              <div>{{auditType}}</div>
+            <div *ngIf="auditObjectInfo?.auditType">
+              <div>{{auditObjectInfo.auditType}}</div>
             </div>
           </ng-template>
           <ng-template let-auditType pTemplate="item">
@@ -23,7 +23,7 @@
             </div>
           </ng-template>
         </p-dropdown>
-      </div>
+      </div>      
     </div>
     <div class="row">
       <div class="col mb-4">

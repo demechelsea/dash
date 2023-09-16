@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { CkeckListItemDTO } from '../../views/models/checkListItem';
+import { AuditableAreasDTO } from 'src/app/views/models/auditableAreas';
 
 @Injectable({
   providedIn: 'root',
@@ -26,6 +27,14 @@ export class CheckListService {
     this.init();
     return this.http.get<any>(
       `${this.apiServiceUrl}/ams/checkListItem/listAll`,
+      this.httpOptions
+    );
+  }
+
+  public getChecklistsById(auditableArea: AuditableAreasDTO): Observable<any> {
+    this.init();
+    return this.http.post<any>(
+      `${this.apiServiceUrl}/ams/checkListItem/listAll`,auditableArea,
       this.httpOptions
     );
   }

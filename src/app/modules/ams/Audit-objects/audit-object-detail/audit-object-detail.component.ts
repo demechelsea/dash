@@ -9,7 +9,9 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { MessageService } from 'primeng/api';
 import { NewAuditableAreaComponent } from '../../Auditable-area/new-auditable-area/newAuditableArea.component';
 import { NewCheckListComponent } from '../../Checklist/new-checklist/newChecklist.component';
-
+import { ActivatedRoute, Router } from '@angular/router';
+import { AuditObjectDTO } from 'src/app/views/models/auditObject';
+import { TableRowSelectEvent } from 'primeng/table';
 
 @Component({
   selector: 'audit-object-detail',
@@ -20,24 +22,37 @@ export class AuditObjectDetailComponent {
   public auditableArea: AuditableAreasDTO[] = [];
   public checklist: CkeckListItemDTO[] = [];
 
+  public auditObject: AuditObjectDTO;
+
   private subscriptions: Subscription[] = [];
 
   constructor(
     private auditableAreaService: AuditableAreasService,
     private checkListService: CheckListService,
     private dialogService: DialogService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private router: Router
   ) {}
 
   ngOnInit() {
-    this.getAuditableAreas();
-    this.getCheckLists();
+    const navigation = this.router.getCurrentNavigation();
+    if (navigation && navigation.extras.state) {
+      this.auditObject = navigation.extras.state['data'];
+      console.log("jjjj", this.auditObject);
+      
+      const id = this.auditObject.id;
+      this.getAuditableAreas(id);
+    }
+    //this.getCheckLists(1);
   }
+  
+  
 
-
-  getAuditableAreas(): void {
+  getAuditableAreas(id?: number): void {
+    let auditObject = new AuditObjectDTO();
+    auditObject.id = id as number;
     this.subscriptions.push(
-      this.auditableAreaService.getAuditableAreas().subscribe(
+      this.auditableAreaService.getAuditableAreasById(auditObject).subscribe(
         (response: any) => {
           this.auditableArea = response.result;
         },
@@ -48,9 +63,19 @@ export class AuditObjectDetailComponent {
     );
   }
 
-  getCheckLists(): void {
+  onAuditableAreaSelect($event: TableRowSelectEvent) {
+    if ($event.data) {
+      const auditableArea: AuditableAreasDTO =
+        $event.data as unknown as AuditableAreasDTO;
+      this.getCheckLists(auditableArea.id);
+    }
+  }
+
+  getCheckLists(id?: number): void {
+    let auditableArea = new AuditableAreasDTO();
+    auditableArea.id = id as number;
     this.subscriptions.push(
-      this.checkListService.getChecklists().subscribe(
+      this.checkListService.getChecklistsById(auditableArea).subscribe(
         (response: any) => {
           this.checklist = response.result;
         },
@@ -68,9 +93,8 @@ export class AuditObjectDetailComponent {
       contentStyle: { 'min-height': 'auto', overflow: 'auto' },
       baseZIndex: 10000,
     });
-
     ref.onClose.subscribe((response: any) => {
-      this.getAuditableAreas();
+      this.getAuditableAreas(1);
       if (response.status) {
         this.messageService.add({
           severity: 'success',
@@ -97,7 +121,7 @@ export class AuditObjectDetailComponent {
 
     ref.onClose.subscribe((response: any) => {
       if (response.status) {
-        this.getCheckLists();
+        this.getCheckLists(1);
         this.messageService.add({
           severity: 'success',
           summary: 'Success',
@@ -113,11 +137,9 @@ export class AuditObjectDetailComponent {
     });
   }
 
-
   ngOnDestroy() {
     for (const subscription of this.subscriptions) {
       subscription.unsubscribe();
     }
   }
-
 }

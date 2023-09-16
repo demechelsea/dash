@@ -21,6 +21,7 @@ import { NewAuditObjectComponent } from '../../Audit-objects/new-audit-object/ne
 export class NewAuditUniverseComponent implements OnDestroy {
   public auditTypes: AuditType[] = [];
   public auditObjects: AuditObjectDTO[] = [];
+  statusOptions: any;
 
   public auditUniverseR: AuditUniverseDTO[] = [];
   public universeInfo: AuditUniverseDTO = new AuditUniverseDTO();
@@ -46,7 +47,7 @@ export class NewAuditUniverseComponent implements OnDestroy {
     this.getAuditTypes();
     this.getAuditObjects();
     if (this.config.data?.auditUniverse) {
-      this.universeInfo = this.config.data.auditUniverse;
+      this.universeInfo = this.config.data.auditUniverse;   
       this.update = true;
       this.newDiv = false;
     }
@@ -76,6 +77,9 @@ export class NewAuditUniverseComponent implements OnDestroy {
     );
   }
 
+ 
+  
+
   createAuditObject(): void {
     const ref = this.dialogService.open(NewAuditObjectComponent, {
       header: 'Create a new audit object',
@@ -103,11 +107,11 @@ export class NewAuditUniverseComponent implements OnDestroy {
     });
   }
 
-  submitAuditableArea(auditableAreaForm: NgForm): void {
+  submitAuditableArea(auditUniverseForm: NgForm): void {
     if (this.update) {
-      this.updateAuditUniverses(auditableAreaForm);
+      this.updateAuditUniverses(auditUniverseForm);
     } else {
-      this.addAuditUniverse(auditableAreaForm);
+      this.addAuditUniverse(auditUniverseForm);
     }
   }
 
@@ -125,6 +129,7 @@ export class NewAuditUniverseComponent implements OnDestroy {
   updateAuditUniverses(addDivForm: NgForm): void {
     const auditUniverse: AuditUniverseDTO = addDivForm.value;
     auditUniverse.id = this.universeInfo.id;
+    auditUniverse.auditObject = this.universeInfo.auditObject;
     this.subscriptions.push(
       this.auditUniverseService
         .updateAuditUniverse(auditUniverse)

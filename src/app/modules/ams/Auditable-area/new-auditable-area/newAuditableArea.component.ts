@@ -77,7 +77,6 @@ export class NewAuditableAreaComponent implements OnDestroy {
 
   updateAuditableArea(updateDivForm: NgForm): void {
     const auditableArea: AuditableAreasDTO = updateDivForm.value;
-    console.log("bak", auditableArea);
     auditableArea.id = this.auditAreaInfo.id;
     this.subscriptions.push(
       this.auditableAreaService

@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { AuditObjectService } from 'src/app/services/auditObject/auditObject.service';
@@ -7,6 +7,7 @@ import { AuditPlanService } from 'src/app/services/audit-type/audit-type.service
 import { AuditObjectDTO } from 'src/app/views/models/auditObject';
 import { AuditType } from 'src/app/views/models/auditType';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'newAuditObject',
@@ -15,12 +16,14 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
   providers: [MessageService, ConfirmationService],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class NewAuditObjectComponent {
+export class NewAuditObjectComponent implements OnDestroy {
   public auditTypes: AuditType[] = [];
   public auditType: AuditType;
 
   public auditObjectR: AuditObjectDTO[] = [];
   public auditObjectInfo: AuditObjectDTO = new AuditObjectDTO();
+
+  private subscriptions: Subscription[] = [];
 
   update: boolean = false;
   newDiv: boolean = true;
@@ -31,12 +34,12 @@ export class NewAuditObjectComponent {
     private auditTypeService: AuditPlanService,
     private ref: DynamicDialogRef,
     private config: DynamicDialogConfig
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.getAuditTypes();
     if (this.config.data?.auditObject) {
-      this.auditObjectInfo = this.config.data.auditObject;
+      this.auditObjectInfo = this.config.data.auditObject;      
       this.update = true;
       this.newDiv = false;
     }
@@ -72,18 +75,26 @@ export class NewAuditObjectComponent {
       });
   }
 
-  updateAuditObjects(updateDivForm: NgForm): void {
-    const auditObject: AuditObjectDTO = updateDivForm.value;
+  updateAuditObjects(addDivForm: NgForm): void {
+    const auditObject: AuditObjectDTO = addDivForm.value;
     auditObject.id = this.auditObjectInfo.id;
-    this.auditObjectService
-      .updateAuditObject(auditObject)
-      .subscribe((response: any) => {
-        this.messageService.clear();
-        this.ref.close(response);
-      });
+    this.subscriptions.push(
+      this.auditObjectService
+        .updateAuditObject(auditObject)
+        .subscribe((response: any) => {
+          this.messageService.clear();
+          this.ref.close(response);
+        })
+    );
   }
 
   closeDialog(): void {
     this.ref.close();
+  }
+
+  ngOnDestroy() {
+    for (const subscription of this.subscriptions) {
+      subscription.unsubscribe();
+    }
   }
 }

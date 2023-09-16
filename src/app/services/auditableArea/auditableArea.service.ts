@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AuditableAreasDTO } from '../../views/models/auditableAreas';
+import { AuditObjectDTO } from 'src/app/views/models/auditObject';
 @Injectable({
   providedIn: 'root',
 })
@@ -25,6 +26,14 @@ export class AuditableAreasService {
     this.init();
     return this.http.get<any>(
       `${this.apiServiceUrl}/ams/auditableArea/listAll`,
+      this.httpOptions
+    );
+  }
+
+  public getAuditableAreasById(auditObject?: AuditObjectDTO): Observable<any> {
+    this.init();
+    return this.http.post<any>(
+      `${this.apiServiceUrl}/ams/auditableArea/findByObj`, auditObject,
       this.httpOptions
     );
   }

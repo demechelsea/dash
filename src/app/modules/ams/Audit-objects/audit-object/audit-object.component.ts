@@ -140,24 +140,15 @@ export class AuditObjectComponent {
     });
   }
 
-  detailAuditObject(id: number) {
-    this.router.navigate(['/audit-object-detail', id]);
+  detailAuditObject(auditObject: AuditObjectDTO) {
+    if (auditObject && auditObject.id !== undefined) {
+      this.router.navigate(['ams/audit-object-detail'], { state: { data: auditObject } });
+    } else {
+      console.error('Audit object or id is undefined:', auditObject);
+    }
   }
-
-  public getAuditObjectInfo(id: number): AuditObjectDTO[] {
-    let auditObj = new AuditObjectDTO();
-    auditObj.id = id;
-    this.subscriptions.push(
-      this.auditObjectService
-        .getAuditObjectInfo(auditObj)
-        .subscribe((response: any) => {
-          this.auditObjectR = [response.result];
-          this.auditObjectInfo = response.result;
-          this.selectedAuditObjectInfo = this.auditObjectInfo;
-        })
-    );
-    return this.auditObjectR;
-  }
+  
+  
 
   ngOnDestroy() {
     for (const subscription of this.subscriptions) {

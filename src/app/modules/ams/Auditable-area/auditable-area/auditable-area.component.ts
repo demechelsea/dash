@@ -138,25 +138,6 @@ export class AuditableAreaComponent implements OnDestroy {
     });
   }
 
-  public getAuditableAreaInfo(id: number): AuditableAreasDTO[] {
-    let auditObj = new AuditableAreasDTO();
-    auditObj.id = id;
-    this.subscriptions.push(
-      this.auditableAreaService.getAuditableAreaInfo(auditObj).subscribe(
-        (response: any) => {
-          this.auditableAreaR = [response.result];
-          this.auditableAreaInfo = response.result;
-          this.selectedAuditableAreaInfo = this.auditableAreaInfo;
-        },
-        (error: HttpErrorResponse) => {
-          console.log(error);
-          setTimeout(() => {}, 1000);
-        }
-      )
-    );
-    return this.auditableAreaR;
-  }
-
   ngOnDestroy() {
     for (const subscription of this.subscriptions) {
       subscription.unsubscribe();

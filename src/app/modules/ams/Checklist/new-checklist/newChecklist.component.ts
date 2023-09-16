@@ -92,21 +92,6 @@ export class NewCheckListComponent implements OnDestroy {
     );
   }
 
-  public getChecklistInfo(id: number): CkeckListItemDTO[] {
-    let sendAcc = new CkeckListItemDTO();
-    sendAcc.id = id;
-    this.subscriptions.push(
-      this.checkListService
-        .getCheckListInfo(sendAcc)
-        .subscribe((response: any) => {
-          this.checklistR = [response.result];
-          this.checklistInfo = response.result;
-          this.selectedChecklist = this.checklistInfo;
-        })
-    );
-    return this.checklistR;
-  }
-
   ngOnDestroy() {
     for (const subscription of this.subscriptions) {
       subscription.unsubscribe();

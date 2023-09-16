@@ -37,12 +37,6 @@ export class AuditUniverseService {
     );
   }
 
-  public getAuditUniverseInfo(auditUniverse: AuditUniverseDTO): Observable<any>{
-    this.init();
-    return this.http.post<any>(`${this.apiServiceUrl}/ams/auditUniverse/findById`,auditUniverse, this.httpOptions)
-  }
-
-
 
   public addAuditUniverse(auditUniverse: AuditUniverseDTO): Observable<any> {
     this.init();
@@ -58,14 +52,8 @@ export class AuditUniverseService {
     return this.http.post(`${this.apiServiceUrl}/ams/auditUniverse/update`, auditUniverse, this.httpOptions)
   }
 
-  // public deleteAccount(accountId: number): Observable<any>{
-  //   this.init();
-  //   return this.http.delete<void>(`${this.apiServiceUrl}/ams/auditUniverse/dele`, this.httpOptions)
-  // }
+  public approveAuditUniverse(auditUniverse: AuditUniverseDTO): Observable<any>{
+    this.init();
+    return this.http.post(`${this.apiServiceUrl}/ams/auditUniverse/approve`, auditUniverse, this.httpOptions)
+  }
 }
-
-// private static final String APPLICATION_CONTEXT = "ams";
-// private static final String REGISTER = "register";
-// private static final String LIST_ALL = "listAll";
-// private static final String FIND_BY_ID = "findById/{id}";
-// private static final String UPDATE = "update";
