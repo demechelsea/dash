@@ -17,7 +17,7 @@ export class AuditableAreasService {
         Authorization: `Bearer ${localStorage.getItem('access_token')}`,
       }),
     };
-    this.apiServiceUrl = 'http://10.1.11.143:8095';
+    this.apiServiceUrl = 'http://10.1.11.143:8091';
   }
 
   constructor(private http: HttpClient) {}
