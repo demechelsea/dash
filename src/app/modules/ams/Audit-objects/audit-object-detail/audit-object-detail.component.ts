@@ -12,6 +12,7 @@ import { NewCheckListComponent } from '../../Checklist/new-checklist/newChecklis
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuditObjectDTO } from 'src/app/views/models/auditObject';
 import { TableRowSelectEvent } from 'primeng/table';
+import { AuditObjectService } from 'src/app/services/auditObject/auditObject.service';
 
 @Component({
   selector: 'audit-object-detail',
@@ -29,22 +30,22 @@ export class AuditObjectDetailComponent {
   constructor(
     private auditableAreaService: AuditableAreasService,
     private checkListService: CheckListService,
+    private auditObjectService: AuditObjectService,
     private dialogService: DialogService,
     private messageService: MessageService,
     private router: Router
   ) {}
 
   ngOnInit() {
-    const navigation = this.router.getCurrentNavigation();
-    if (navigation && navigation.extras.state) {
-      this.auditObject = navigation.extras.state['data'];
-      console.log("jjjj", this.auditObject);
-      
-      const id = this.auditObject.id;
-      this.getAuditableAreas(id);
-    }
-    //this.getCheckLists(1);
+    this.auditObjectService.currentAuditObject.subscribe(auditObject => {
+      if (auditObject) {
+        this.auditObject = auditObject;
+        const id = this.auditObject.id;
+        this.getAuditableAreas(id);
+      }
+    });
   }
+  
   
   
 
@@ -94,7 +95,7 @@ export class AuditObjectDetailComponent {
       baseZIndex: 10000,
     });
     ref.onClose.subscribe((response: any) => {
-      this.getAuditableAreas(1);
+      this.getAuditableAreas(this.auditObject.id);
       if (response.status) {
         this.messageService.add({
           severity: 'success',

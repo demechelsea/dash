@@ -142,12 +142,12 @@ export class AuditObjectComponent {
 
   detailAuditObject(auditObject: AuditObjectDTO) {
     if (auditObject && auditObject.id !== undefined) {
-      this.router.navigate(['ams/audit-object-detail'], { state: { data: auditObject } });
+      this.auditObjectService.changeAuditObject(auditObject);
+      this.router.navigate(['ams/audit-object-detail']);
     } else {
       console.error('Audit object or id is undefined:', auditObject);
     }
   }
-  
   
 
   ngOnDestroy() {

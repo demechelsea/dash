@@ -10,36 +10,18 @@ export const navItems: INavData[] = [
         name: 'Audit universe',
         url: '/ams/audit-universe',
       },
-
       {
         name: 'Audit Object',
         url: '/ams/audit-object',
       },
       {
-        name: 'Audit Object detail',
-        url: '/ams/audit-object-detail',
-      },
-    
-      {
         name: 'Annual Plan',
         url: '/ams/annual-plan',
       },
-
-      {
-        name: 'Auditable Area',
-        url: '/ams/auditable-area',
-      },
-
-      {
-        name: 'Checklist',
-        url: '/ams/checklist',
-      },
-
       {
         name: 'Schedule',
         url: '/ams/audit-schedule',
       },
-
       {
         name: 'Dash',
         url: '/ams/dash',

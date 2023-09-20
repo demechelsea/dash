@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { AuditObjectDTO } from '../../views/models/auditObject';
 @Injectable({
   providedIn: 'root',
@@ -8,6 +8,9 @@ import { AuditObjectDTO } from '../../views/models/auditObject';
 export class AuditObjectService {
   private httpOptions: any;
   private apiServiceUrl: any;
+
+  private auditObjectSource = new BehaviorSubject<AuditObjectDTO | null>(null);
+  currentAuditObject = this.auditObjectSource.asObservable();
 
   private init() {
     this.httpOptions = {
@@ -20,6 +23,10 @@ export class AuditObjectService {
   }
 
   constructor(private http: HttpClient) {}
+
+  public changeAuditObject(auditObject: AuditObjectDTO) {
+    this.auditObjectSource.next(auditObject);
+  }
 
   public getAuditObjects(): Observable<any> {
     this.init();

@@ -13,28 +13,6 @@
           [style]="{'width':'300px','height':'45px'}" required minlength="3" />
       </div>
     </div>
-    <div class="row">
-      <div class="col mb-4">
-        <label for="hex" class="block mb-2"> Auditable area: </label>
-        <p-dropdown [required]="true" [options]="auditableAreas" name="auditableArea" optionLabel="name" [filter]="true"
-          [ngModel]="checklistInfo.auditableArea" filterBy="name" [showClear]="true"
-          placeholder="Choose auditable area" styleClass="p-password" [style]="{'width':'300px','height':'45px'}"
-          [disabled]="update">
-          <ng-template pTemplate="selectedItem">
-            <div *ngIf="checklistInfo?.auditableArea">
-              <div>{{checklistInfo.auditableArea.name}}</div>
-            </div>
-          </ng-template>
-          <ng-template let-auditableArea pTemplate="item">
-            <div>
-              <div>{{auditableArea.name}}</div>
-            </div>
-          </ng-template>
-        </p-dropdown>
-      </div>
-      <div class="col mb-4">
-      </div>
-    </div>
     <div style="margin-top: 10em;"></div>
     <div class="buttonDiv">
       <p-button label="Cancel" (click)="closeDialog()"></p-button>
