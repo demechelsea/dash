@@ -16,7 +16,7 @@ export class AuditScheduleService {
         Authorization: `Bearer ${localStorage.getItem('access_token')}`,
       }),
     };
-    this.apiServiceUrl = 'http://10.1.11.143:8091';
+    this.apiServiceUrl = 'http://localhost:8099';
   }
 
   constructor(private http: HttpClient) {}
