@@ -84,7 +84,7 @@ export class NewAnnualPlanComponent implements OnDestroy, AfterContentChecked {
   show() {
     this.riskScoreDialogRef = this.dialogService.open(RiskScoreComponent, {
       header: 'Risk score',
-      width: '50%',
+      width: '60%',
       data: { savedRiskScores: this.savedRiskScores },
     });
     this.riskScoreDialogRef.onClose.subscribe((savedRiskScores) => {

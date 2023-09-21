@@ -44,7 +44,7 @@ export class AuditObjectComponent {
     private dialogService: DialogService,
     private messageService: MessageService,
     private router: Router
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.getAuditObjects();
@@ -148,7 +148,6 @@ export class AuditObjectComponent {
       console.error('Audit object or id is undefined:', auditObject);
     }
   }
-  
 
   ngOnDestroy() {
     for (const subscription of this.subscriptions) {

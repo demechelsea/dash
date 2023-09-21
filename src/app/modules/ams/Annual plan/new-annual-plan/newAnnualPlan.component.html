@@ -22,7 +22,7 @@
       <div class="col mb-4">
         <label for="hex" class="block mb-2"> Audit universe: </label>
         <p-dropdown [required]="true" [options]="auditUniverses" name="auditUniverse" optionLabel="name" [filter]="true"
-          [ngModel]="annualPlanInfo.auditUniverse" filterBy="name" [showClear]="true"
+          [(ngModel)]="annualPlanInfo.auditUniverse" filterBy="name" [showClear]="true"
           placeholder="Choose audit universe" styleClass="p-password" [style]="{'width':'300px','height':'45px'}"
           [disabled]="update">
           <ng-template pTemplate="selectedItem">

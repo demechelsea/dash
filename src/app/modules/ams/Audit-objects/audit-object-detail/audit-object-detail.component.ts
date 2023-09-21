@@ -9,7 +9,6 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { MessageService } from 'primeng/api';
 import { NewAuditableAreaComponent } from '../../Auditable-area/new-auditable-area/newAuditableArea.component';
 import { NewCheckListComponent } from '../../Checklist/new-checklist/newChecklist.component';
-import { ActivatedRoute, Router } from '@angular/router';
 import { AuditObjectDTO } from 'src/app/views/models/auditObject';
 import { TableRowSelectEvent } from 'primeng/table';
 import { AuditObjectService } from 'src/app/services/auditObject/auditObject.service';
@@ -24,6 +23,7 @@ export class AuditObjectDetailComponent {
   public checklist: CkeckListItemDTO[] = [];
 
   public auditObject: AuditObjectDTO;
+  selectedArea: AuditableAreasDTO;
 
   private subscriptions: Subscription[] = [];
 
@@ -33,8 +33,7 @@ export class AuditObjectDetailComponent {
     private auditObjectService: AuditObjectService,
     private dialogService: DialogService,
     private messageService: MessageService,
-    private router: Router
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.auditObjectService.currentAuditObject.subscribe(auditObject => {
@@ -45,9 +44,6 @@ export class AuditObjectDetailComponent {
       }
     });
   }
-  
-  
-  
 
   getAuditableAreas(id?: number): void {
     let auditObject = new AuditObjectDTO();
@@ -68,6 +64,7 @@ export class AuditObjectDetailComponent {
     if ($event.data) {
       const auditableArea: AuditableAreasDTO =
         $event.data as unknown as AuditableAreasDTO;
+        this.selectedArea = auditableArea;
       this.getCheckLists(auditableArea.id);
     }
   }
@@ -91,6 +88,7 @@ export class AuditObjectDetailComponent {
     const ref = this.dialogService.open(NewAuditableAreaComponent, {
       header: 'Create a new auditable area',
       width: '40%',
+      data: { auditObject: this.auditObject },
       contentStyle: { 'min-height': 'auto', overflow: 'auto' },
       baseZIndex: 10000,
     });
@@ -116,13 +114,14 @@ export class AuditObjectDetailComponent {
     const ref = this.dialogService.open(NewCheckListComponent, {
       header: 'Create a new checklist',
       width: '40%',
+      data: { auditableArea: this.selectedArea },
       contentStyle: { 'min-height': 'auto', overflow: 'auto' },
       baseZIndex: 10000,
     });
-
+    
     ref.onClose.subscribe((response: any) => {
       if (response.status) {
-        this.getCheckLists(1);
+        this.getCheckLists(this.selectedArea.id);
         this.messageService.add({
           severity: 'success',
           summary: 'Success',

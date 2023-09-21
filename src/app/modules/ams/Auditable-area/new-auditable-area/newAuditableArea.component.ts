@@ -1,8 +1,6 @@
-import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnDestroy } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { ConfirmationService, Message, MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { AuditableAreasService } from 'src/app/services/auditableArea/auditableArea.service';
 import { AuditableAreasDTO } from 'src/app/views/models/auditableAreas';
@@ -17,7 +15,7 @@ import { AuditObjectService } from 'src/app/services/auditObject/auditObject.ser
   providers: [MessageService, ConfirmationService],
 })
 export class NewAuditableAreaComponent implements OnDestroy {
-  public auditObjects: AuditObjectDTO[] = [];
+  public auditObject: AuditObjectDTO;
 
   public auditObjectR: AuditableAreasDTO[] = [];
   public auditAreaInfo: AuditableAreasDTO = new AuditableAreasDTO();
@@ -37,11 +35,13 @@ export class NewAuditableAreaComponent implements OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.getAuditObjects();
     if (this.config.data?.auditableArea) {
       this.auditAreaInfo = this.config.data.auditableArea;
       this.update = true;
       this.newDiv = false;
+    }
+    if (this.config.data?.auditObject) {
+      this.auditObject = this.config.data.auditObject;  
     }
   }
 
@@ -53,27 +53,20 @@ export class NewAuditableAreaComponent implements OnDestroy {
     }
   }
 
-  public getAuditObjects(): void {
-    this.auditObjectService.getAuditObjects().subscribe(
-      (response: any) => {
-        this.auditObjects = response.result;
-      },
-      (error: HttpErrorResponse) => {
-        console.log(error);
-      }
-    );
-  }
-
   addAuditableArea(addDivForm: NgForm): void {
+    const auditableArea: AuditableAreasDTO = addDivForm.value;
+    auditableArea.auditObject = new AuditObjectDTO();
+    auditableArea.auditObject.id = this.auditObject.id;
     this.subscriptions.push(
       this.auditableAreaService
-        .addAuditableArea(addDivForm.value)
+        .addAuditableArea(auditableArea) // Pass the updated auditableArea object
         .subscribe((response: any) => {
           this.messageService.clear();
           this.ref.close(response);
         })
     );
   }
+  
 
   updateAuditableArea(updateDivForm: NgForm): void {
     const auditableArea: AuditableAreasDTO = updateDivForm.value;

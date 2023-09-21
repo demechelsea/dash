@@ -16,7 +16,7 @@ import { CkeckListItemDTO } from 'src/app/views/models/checkListItem';
   providers: [MessageService, ConfirmationService],
 })
 export class NewCheckListComponent implements OnDestroy {
-  public auditableAreas: AuditableAreasDTO[] = [];
+  public auditableArea: AuditableAreasDTO;
 
   public checklistR: CkeckListItemDTO[] = [];
   public checklistInfo: CkeckListItemDTO = new CkeckListItemDTO();
@@ -31,21 +31,19 @@ export class NewCheckListComponent implements OnDestroy {
 
   constructor(
     private messageService: MessageService,
-    private auditableAreaService: AuditableAreasService,
     private checkListService: CheckListService,
     private ref: DynamicDialogRef,
     private config: DynamicDialogConfig
   ) {}
 
   ngOnInit() {
-    this.getAuditableAreas();
     if (this.config.data?.checklist) {
       this.checklistInfo = this.config.data.checklist;
       this.update = true;
       this.newDiv = false;
     }
-    if (this.config.data?.checklist) {
-      this.checklistInfo = this.config.data.checklist;
+    if (this.config.data?.auditableArea) {
+      this.auditableArea = this.config.data.auditableArea;      
     }
   }
 
@@ -57,27 +55,22 @@ export class NewCheckListComponent implements OnDestroy {
     }
   }
 
-  public getAuditableAreas(): void {
-    this.auditableAreaService.getAuditableAreas().subscribe(
-      (response: any) => {
-        this.auditableAreas = response.result;
-      },
-      (error: HttpErrorResponse) => {
-        console.log(error);
-      }
-    );
-  }
-
   public addChecklist(addDivForm: NgForm): void {
+    let checkList: CkeckListItemDTO = addDivForm.value;
+    checkList.auditableArea = new AuditableAreasDTO();
+    checkList.auditableArea.id = this.auditableArea.id;
     this.subscriptions.push(
       this.checkListService
-        .addCheckList(addDivForm.value)
+        .addCheckList(checkList)
         .subscribe((response: any) => {
+          console.log(response);
+          
           this.messageService.clear();
           this.ref.close(response);
         })
     );
   }
+  
 
   public updateChecklist(updateDivForm: NgForm): void {
     const checkList: CkeckListItemDTO = updateDivForm.value;

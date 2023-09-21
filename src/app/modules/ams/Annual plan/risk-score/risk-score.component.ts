@@ -12,7 +12,7 @@ import { HttpErrorResponse } from '@angular/common/http';
   styleUrls: ['./risk-score.component.scss'],
 })
 export class RiskScoreComponent {
-  riskScores: (RiskItemDTO & { selectedLikelihood: number | null; selectedImpact: number | null })[];
+  riskScores: (RiskItemDTO & { name: string |null; selectedLikelihood: number | null; selectedImpact: number | null })[];
   savedRiskScores: { riskItem: any | null; frequency: number | null; impact: number | null }[] = [];
 
   newDiv: boolean = true;
@@ -21,23 +21,11 @@ export class RiskScoreComponent {
 
   constructor(
     public ref: DynamicDialogRef,
-    private riskItemService: RiskItemService,
     public config: DynamicDialogConfig
   ) {}
 
   ngOnInit() {
-     this.getRiskItems();
-    if (this.savedRiskScores && this.riskScores) {
-      this.riskScores.forEach((riskScore) => {
-        const savedRiskScore = this.savedRiskScores.find(
-          (item) => item.riskItem === riskScore.id
-        );
-        if (savedRiskScore) {
-          riskScore.selectedLikelihood = savedRiskScore.frequency;
-          riskScore.selectedImpact = savedRiskScore.impact;
-        }
-      });
-    }
+    this.riskScores = [];
   }
   
   options: SelectItem[] = [
@@ -45,20 +33,25 @@ export class RiskScoreComponent {
     { label: '2', value: 2 },
     { label: '3', value: 3 },
   ];
+  addRiskScore() {
+    this.riskScores.push({
+      id: 0, // replace with appropriate value
+      encryptedId: '', // replace with appropriate value
+      encryptedAssociationId: '', // replace with appropriate value
+      createdUser: '', // replace with appropriate value
+      modifiedUser: '', // replace with appropriate value
+      createdTimestamp: '', // replace with appropriate value
+      modifiedTimestamp: '', // replace with appropriate value
+      name: '',
+      strategicObjectiveLink: 0, // replace with appropriate value
+      riskType: '', // replace with appropriate value
+      selectedLikelihood: null,
+      selectedImpact: null,
+    });
+  }
 
-  getRiskItems() {
-    this.riskItemService.getRiskItems().subscribe(
-      (response: any) => {
-        this.riskScores = response.result.map((riskScore: RiskItemDTO) => ({
-          ...riskScore,
-          selectedLikelihood: null,
-          selectedImpact: null,
-        }));
-      },
-      (error: HttpErrorResponse) => {
-        console.log(error);
-      }
-    );
+  deleteRiskScore(index: number) {
+    this.riskScores.splice(index, 1);
   }
   
 

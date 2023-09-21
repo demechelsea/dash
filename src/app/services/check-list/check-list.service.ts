@@ -34,7 +34,7 @@ export class CheckListService {
   public getChecklistsById(auditableArea: AuditableAreasDTO): Observable<any> {
     this.init();
     return this.http.post<any>(
-      `${this.apiServiceUrl}/ams/checkListItem/listAll`,auditableArea,
+      `${this.apiServiceUrl}/ams/checkListItem/byAArea`,auditableArea,
       this.httpOptions
     );
   }
@@ -47,7 +47,7 @@ export class CheckListService {
   public addCheckList(checkList: CkeckListItemDTO): Observable<any> {
     this.init();
     return this.http.post(
-      `${this.apiServiceUrl}/ams/checkListItem/register`,
+      `${this.apiServiceUrl}/ams/checkListItem/byAArea`,
       checkList,
       this.httpOptions
     );

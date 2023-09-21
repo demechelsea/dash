@@ -1,6 +1,7 @@
 <div>
   <form #addDivForm="ngForm" (ngSubmit)="submitChecklist(addDivForm)">
     <div style="margin-top: 2em;"></div>
+    <h5 class="mb-4 text-xl text-blue-600">Auditable area: <span class="text-black text-base">{{auditableArea?.name}}</span></h5>
     <div class="row">
       <div class="col mb-4">
         <label for="integer" class="block mb-2"> Name: </label>
