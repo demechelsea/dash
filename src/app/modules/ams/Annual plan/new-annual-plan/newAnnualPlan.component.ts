@@ -21,7 +21,6 @@ import { Subscription } from 'rxjs';
   providers: [MessageService, ConfirmationService, DialogService],
 })
 export class NewAnnualPlanComponent implements OnDestroy, AfterContentChecked {
-  public auditUniverses: AuditUniverseDTO[] = [];
   public annualPlanR: AnnualPlanDTO[] = [];
   public annualPlanInfo: AnnualPlanDTO = new AnnualPlanDTO();
   selectedAnnualPlanInfo: AnnualPlanDTO;
@@ -43,7 +42,6 @@ export class NewAnnualPlanComponent implements OnDestroy, AfterContentChecked {
   constructor(
     private messageService: MessageService,
     private annualPlanService: AnnualPlanService,
-    private auditUniverseService: AuditUniverseService,
     private ref: DynamicDialogRef,
     private config: DynamicDialogConfig,
     public dialogService: DialogService,
@@ -52,14 +50,10 @@ export class NewAnnualPlanComponent implements OnDestroy, AfterContentChecked {
 
   ngOnInit() {
     this.generateYears();
-    this.getAuditUniverses();
     if (this.config.data?.annualPlan) {
       this.annualPlanInfo = this.config.data.annualPlan;
       this.update = true;
       this.newDiv = false;
-    }
-    if (this.config.data?.annualPlan) {
-      this.annualPlanInfo = this.config.data.annualPlan;
     }
   }
 
@@ -106,21 +100,8 @@ export class NewAnnualPlanComponent implements OnDestroy, AfterContentChecked {
     this.ref?.close();
   }
 
-  getAuditUniverses(): void {
-    this.subscriptions.push(
-      this.auditUniverseService.getAuditUniverse().subscribe(
-        (response: any) => {
-          this.auditUniverses = response.result;
-        },
-        (error: HttpErrorResponse) => {
-          console.log(error);
-        }
-      )
-    );
-  }
-
-  addAuditPlan(addDivForm: NgForm): void {
-    const annualPlanData: AnnualPlanDTO = {
+  addAuditPlan(addDivForm: NgForm): void {    
+    this.annualPlanInfo = {
       ...addDivForm.value,
       riskScores: this.savedRiskScores.map((riskScore) => ({
         riskItem: { id: riskScore.riskItem },
@@ -131,7 +112,7 @@ export class NewAnnualPlanComponent implements OnDestroy, AfterContentChecked {
     };
     this.subscriptions.push(
       this.annualPlanService
-        .addAnnualPlan(annualPlanData)
+        .addAnnualPlan(this.annualPlanInfo)
         .subscribe((response: any) => {
           this.messageService.clear();
           this.ref.close(response);

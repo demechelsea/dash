@@ -47,7 +47,7 @@ export class CheckListService {
   public addCheckList(checkList: CkeckListItemDTO): Observable<any> {
     this.init();
     return this.http.post(
-      `${this.apiServiceUrl}/ams/checkListItem/byAArea`,
+      `${this.apiServiceUrl}/ams/checkListItem/register`,
       checkList,
       this.httpOptions
     );

@@ -95,8 +95,7 @@ export class AnnualPlanComponent {
       this.annualPlanService.getAnnualPlans().subscribe(
         (response: any) => {
           this.annualPlans = response.result;
-          console.log(response);
-          console.log(this.annualPlans);
+          console.log(" aaaaaaaa" ,response);
           this.annualPlanDisplay = this.annualPlans.map((obj: any) => ({
             ...obj,
             auditaUniverseName: obj.auditUniverse

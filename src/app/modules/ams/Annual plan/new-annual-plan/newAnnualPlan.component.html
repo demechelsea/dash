@@ -19,24 +19,6 @@
     </div>
 
     <div class="row">
-      <div class="col mb-4">
-        <label for="hex" class="block mb-2"> Audit universe: </label>
-        <p-dropdown [required]="true" [options]="auditUniverses" name="auditUniverse" optionLabel="name" [filter]="true"
-          [(ngModel)]="annualPlanInfo.auditUniverse" filterBy="name" [showClear]="true"
-          placeholder="Choose audit universe" styleClass="p-password" [style]="{'width':'300px','height':'45px'}"
-          [disabled]="update">
-          <ng-template pTemplate="selectedItem">
-            <div *ngIf="annualPlanInfo?.auditUniverse">
-              <div>{{annualPlanInfo.auditUniverse.name}}</div>
-            </div>
-          </ng-template>
-          <ng-template let-auditUniverse pTemplate="item">
-            <div>
-              <div>{{auditUniverse.name}}</div>
-            </div>
-          </ng-template>
-        </p-dropdown>
-      </div>
       <div class="col">
         <label for="integer" class="block mb-2">Risk Scores:</label>
         <p-button (click)="show()" class="m-12" icon="pi pi-info-circle" label="Choose"></p-button>
