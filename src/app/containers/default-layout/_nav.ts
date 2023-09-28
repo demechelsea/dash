@@ -26,6 +26,18 @@ export const navItems: INavData[] = [
         name: 'Dash',
         url: '/ams/dash',
       },
+      {
+        name: 'Signature',
+        url: '/sasv/signature-table',
+      },
+      {
+        name: 'Stamp',
+        url: '/sasv/stamp-table',
+      },
+      {
+        name: 'Authority',
+        url: '/sasv/authority-table',
+      },
     ],
   },
   {

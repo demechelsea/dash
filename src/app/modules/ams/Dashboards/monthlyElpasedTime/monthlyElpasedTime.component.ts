@@ -49,11 +49,13 @@ export class MonthlyElpasedTimeComponent implements OnInit {
   constructor(
     private dashboardService: DashboardService,
     private cdr: ChangeDetectorRef
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.subscriptions.add(
       this.dashboardService.getAllJTSummary().subscribe((data) => {
+        console.log("ttt", data);
+        
         this.dailyHistoryData = data.dailyHistoryList;
         const { averageCOBTime } = data;
         const [hours, minutes, seconds] = averageCOBTime.split(':').map(Number);

@@ -50,9 +50,9 @@ export class AnnualPlanService {
     return this.http.post(`${this.apiServiceUrl}/ams/annualPlan/addToSchedule`, annualPlan, this.httpOptions)
   }
 
-  public plannedList(annualPlan: AnnualPlanDTO): Observable<any> {
+  public plannedList(): Observable<any> {
     this.init();
-    return this.http.post(`${this.apiServiceUrl}/ams/annualPlan/planedList`, annualPlan, this.httpOptions)
+    return this.http.get(`${this.apiServiceUrl}/ams/annualPlan/planedList`, this.httpOptions)
   }
 
   public generateAnnualPlan(autogeneratePlan: AutoGenerateAnnualPlanDTO): Observable<any> {

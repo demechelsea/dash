@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { AnnualPlanService } from './audit-type.service';
+import { AuditPlanService } from './audit-type.service';
 
-describe('AnnualPlanService', () => {
-  let service: AnnualPlanService;
+describe('AuditPlanService', () => {
+  let service: AuditPlanService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(AnnualPlanService);
+    service = TestBed.inject(AuditPlanService);
   });
 
   it('should be created', () => {

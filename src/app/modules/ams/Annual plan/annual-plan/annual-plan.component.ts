@@ -95,7 +95,6 @@ export class AnnualPlanComponent {
       this.annualPlanService.getAnnualPlans().subscribe(
         (response: any) => {
           this.annualPlans = response.result;
-          console.log(" aaaaaaaa" ,response);
           this.annualPlanDisplay = this.annualPlans.map((obj: any) => ({
             ...obj,
             auditaUniverseName: obj.auditUniverse
@@ -110,6 +109,21 @@ export class AnnualPlanComponent {
     );
   }
 
+
+  addToAuditSchedule(id: number): void {
+    const annualPlan = new AnnualPlanDTO;
+    annualPlan.id = id;
+    this.subscriptions.push(
+      this.annualPlanService.addToSchedule(annualPlan).subscribe(
+        (response: any) => {
+          this.getAnnualPlans();
+        },
+        (error: HttpErrorResponse) => {
+          console.log(error);
+        }
+      )
+    );
+  }
   createNewAnnualPlan(): void {
     const ref = this.dialogService.open(NewAnnualPlanComponent, {
       header: 'Create a new audit plan',
@@ -138,7 +152,6 @@ export class AnnualPlanComponent {
 
   updateAnnualPlan(id: number): void {
     const annualPlan = this.annualPlans.find((plan) => plan.id === id);
-    console.log('annual', annualPlan);
     const ref = this.dialogService.open(NewAnnualPlanComponent, {
       header: 'Update annual plan',
       width: '40%',

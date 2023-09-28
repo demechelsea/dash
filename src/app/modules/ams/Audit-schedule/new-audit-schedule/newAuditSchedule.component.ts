@@ -36,7 +36,7 @@ export class NewAuditScheduleComponent implements OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.getAnnualPlans();
+    this.getPlannedList();
     if (this.config.data?.auditSchedule) {
       this.scheduleInfo = this.config.data.auditSchedule;
       this.update = true;
@@ -47,12 +47,12 @@ export class NewAuditScheduleComponent implements OnDestroy {
     }
   }
 
-  getAnnualPlans(): void {
+  getPlannedList(): void {
     this.subscriptions.push(
-      this.auditPlanService.getAnnualPlans().subscribe(
+      this.auditPlanService.plannedList().subscribe(
         (response: any) => {
           this.annualPlans = response.result;
-          console.log(this.annualPlans);
+          console.log("ooo ",this.annualPlans);
         },
         (error: HttpErrorResponse) => {
           console.log(error);

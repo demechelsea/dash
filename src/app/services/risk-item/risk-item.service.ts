@@ -29,24 +29,6 @@ export class RiskItemService {
     );
   }
 
-  public getAnnualPlanInfo(auditUniverse: AnnualPlanDTO): Observable<any>{
-    this.init();
-    return this.http.post<any>(`${this.apiServiceUrl}/ams/annualPlan/findById`,auditUniverse, this.httpOptions)
-  }
-
-  public addAnnualPlan(auditUniverse: AnnualPlanDTO): Observable<any> {
-    this.init();
-    return this.http.post(
-      `${this.apiServiceUrl}/ams/annualPlan/register`,
-      auditUniverse,
-      this.httpOptions
-    );
-  }
-
-  public updateAnnualPlan(auditUniverse: AnnualPlanDTO): Observable<any>{
-    this.init();
-    return this.http.post(`${this.apiServiceUrl}/ams/annualPlan/update`, auditUniverse, this.httpOptions)
-  }
 
   // public static final String AUDIT_RISK= APPLICATION_CONTEXT + "/risk/";
   // public static final String RISK_ITEM_LIST_ALL = AUDIT_RISK + "listRiskItem";

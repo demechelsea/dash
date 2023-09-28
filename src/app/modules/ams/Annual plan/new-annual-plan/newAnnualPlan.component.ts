@@ -1,4 +1,3 @@
-import { HttpErrorResponse } from '@angular/common/http';
 import { AfterContentChecked, AfterViewInit, ChangeDetectorRef, Component, OnDestroy } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
@@ -8,11 +7,10 @@ import {
   DynamicDialogRef,
 } from 'primeng/dynamicdialog';
 import { AnnualPlanService } from 'src/app/services/annual-plan/annual-plan.service';
-import { AuditUniverseDTO } from 'src/app/views/models/auditUniverse';
 import { RiskScoreComponent } from '../risk-score/risk-score.component';
 import { AnnualPlanDTO } from 'src/app/views/models/annualPlan';
-import { AuditUniverseService } from 'src/app/services/auidit-universe/audit-universe.service';
 import { Subscription } from 'rxjs';
+import { RistScoreDTO } from 'src/app/views/models/RiskScoreDTO';
 
 @Component({
   selector: 'new-audit-plan',
@@ -30,11 +28,7 @@ export class NewAnnualPlanComponent implements OnDestroy, AfterContentChecked {
   private subscriptions: Subscription[] = [];
   years: string[] = [];
 
-  savedRiskScores: {
-    riskItem: any | null;
-    frequency: number | null;
-    impact: number | null;
-  }[] = [];
+  savedRiskScores: RistScoreDTO[] = []
 
   update: boolean = false;
   newDiv: boolean = true;
@@ -79,7 +73,7 @@ export class NewAnnualPlanComponent implements OnDestroy, AfterContentChecked {
     this.riskScoreDialogRef = this.dialogService.open(RiskScoreComponent, {
       header: 'Risk score',
       width: '60%',
-      data: { savedRiskScores: this.savedRiskScores },
+      data: { annualPlanInfo: this.annualPlanInfo },
     });
     this.riskScoreDialogRef.onClose.subscribe((savedRiskScores) => {
       if (savedRiskScores) {
@@ -90,11 +84,7 @@ export class NewAnnualPlanComponent implements OnDestroy, AfterContentChecked {
   }
 
   onSave(
-    savedRiskScores: {
-      riskItem: any | null;
-      frequency: number | null;
-      impact: number | null;
-    }[]
+    savedRiskScores: RistScoreDTO[]
   ) {
     this.savedRiskScores = savedRiskScores;
     this.ref?.close();
@@ -105,7 +95,7 @@ export class NewAnnualPlanComponent implements OnDestroy, AfterContentChecked {
       ...addDivForm.value,
       riskScores: this.savedRiskScores.map((riskScore) => ({
         riskItem: { id: riskScore.riskItem },
-        frequency: riskScore.frequency,
+        likelihood: riskScore.likelihood,
         impact: riskScore.impact,
         total: null,
       })),
@@ -123,6 +113,10 @@ export class NewAnnualPlanComponent implements OnDestroy, AfterContentChecked {
   updateAnnualPlan(updateDivForm: NgForm): void {
     const annualPlan: AnnualPlanDTO = updateDivForm.value;
     annualPlan.id = this.annualPlanInfo.id;
+    annualPlan.year = this.annualPlanInfo.year;
+    annualPlan.riskScores = this.savedRiskScores;
+    console.log("rrrr", annualPlan);
+    
     this.subscriptions.push(
       this.annualPlanService
         .updateAnnualPlan(annualPlan)

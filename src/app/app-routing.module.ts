@@ -83,6 +83,11 @@ const routes: Routes = [
         loadChildren: () =>
           import('./modules/ams/ams.module').then((m) => m.AmsModule),
       },
+      {
+        path: 'sasv',
+        loadChildren: () =>
+          import('./modules/sasv/sasv.module').then((m) => m.SASVModule),
+      },
     ],
   },
   {
@@ -129,4 +134,4 @@ const routes: Routes = [
   ],
   exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

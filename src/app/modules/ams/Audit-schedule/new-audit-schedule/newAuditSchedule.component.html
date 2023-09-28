@@ -17,7 +17,7 @@
       <div class="col mb-4">
         <label for="hex" class="block mb-2"> Auditable engagement: </label>
         <p-dropdown [required]="true" [options]="annualPlans" name="auditEngagement" [filter]="true"
-          [ngModel]="scheduleInfo.annualPlan" filterBy="name" [showClear]="true" placeholder="Choose audit type"
+          [(ngModel)]="scheduleInfo.annualPlan" filterBy="name" [showClear]="true" placeholder="Choose audit type"
           styleClass="p-password" [style]="{ width: '300px', height: '45px' }" [disabled]="update">
           <ng-template pTemplate="selectedItem">
             <div *ngIf="scheduleInfo.annualPlan">
@@ -34,7 +34,7 @@
       <div class="col mb-4">
         <label for="hex" class="block mb-2"> Team members: </label>
         <p-dropdown [required]="true" [options]="annualPlans" name="teamMembers" [filter]="true"
-          [ngModel]="scheduleInfo.annualPlan" filterBy="name" [showClear]="true" placeholder="Choose audit type"
+          [(ngModel)]="scheduleInfo.annualPlan" filterBy="name" [showClear]="true" placeholder="Choose audit type"
           styleClass="p-password" [style]="{ width: '300px', height: '45px' }" [disabled]="update">
           <ng-template pTemplate="selectedItem">
             <div *ngIf="scheduleInfo.annualPlan">
@@ -52,7 +52,7 @@
     <div class="row">
       <div class="col mb-4">
         <label for="hex" class="block mb-2"> Annual plan: </label>
-        <p-dropdown [required]="true" [options]="annualPlans" name="auditType" [filter]="true" [ngModel]="scheduleInfo.annualPlan"
+        <p-dropdown [required]="true" [options]="annualPlans" name="auditType" [filter]="true" [(ngModel)]="scheduleInfo.annualPlan"
           filterBy="name" [showClear]="true" placeholder="Choose audit type" styleClass="p-password"
           [style]="{ width: '300px', height: '45px' }" [disabled]="update">
           <ng-template pTemplate="selectedItem">
@@ -69,7 +69,7 @@
       </div>
       <div *ngIf="update" class="col mb-4">
         <label for="integer" class="block mb-2">Status:</label>
-        <input pInputText id="integer" pKeyFilter="int" [ngModel]="scheduleInfo.status" name="status"
+        <input pInputText id="integer" pKeyFilter="int" [(ngModel)]="scheduleInfo.status" name="status"
           [style]="{ width: '300px', height: '45px' }" required minlength="3" />
       </div>
     </div>
