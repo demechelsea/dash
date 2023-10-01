@@ -22,7 +22,7 @@ export class RiskScoreComponent {
     public config: DynamicDialogConfig
   ) {
     this.annualPlanInfo = this.config.data?.annualPlanInfo;
-    this.riskScores = this.annualPlanInfo?.riskScores || [];
+    this.riskScores = this.annualPlanInfo?.riskScores || [];    
   }
   
   options: SelectItem[] = [
@@ -32,8 +32,12 @@ export class RiskScoreComponent {
   ];
   
   saveRiskScores() {
+    console.log("ooo",this.riskScores);
+    
     this.savedRiskScores = this.riskScores.map((riskScore) => ({
       ...riskScore,
+      id: riskScore.id,
+      riskItem : riskScore.riskItem,
       likelihood: riskScore.likelihood || 1,
       impact: riskScore.impact || 1,
     }));

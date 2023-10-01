@@ -1,0 +1,11 @@
+.hover-img {
+  opacity: 0;
+}
+
+.group:hover .hover-img {
+  opacity: 1;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(8);
+}

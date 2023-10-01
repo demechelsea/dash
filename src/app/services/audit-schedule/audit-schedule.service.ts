@@ -40,6 +40,13 @@ export class AuditScheduleService {
     );
   }
 
+  public getAuditSchedulesByQuarter(auditSchedule: AuditScheduleDTO): Observable<any> {
+    this.init();
+    return this.http.get<any>(
+      `${this.apiServiceUrl}/ams/auditSchedule/findByQuarter/${auditSchedule.quarter}`,
+      this.httpOptions
+    );
+  }
   public addAuditSchedule(auditSchedule: AuditScheduleDTO): Observable<any> {
     this.init();
     return this.http.post(

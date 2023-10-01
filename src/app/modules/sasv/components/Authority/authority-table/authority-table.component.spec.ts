@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SignatureTableComponent } from './authority-table.component';
+import { AuthorityTableComponent } from './authority-table.component';
 
-describe('SignatureTableComponent', () => {
-  let component: SignatureTableComponent;
-  let fixture: ComponentFixture<SignatureTableComponent>;
+describe('AuthorityTableComponent', () => {
+  let component: AuthorityTableComponent;
+  let fixture: ComponentFixture<AuthorityTableComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [SignatureTableComponent]
+      declarations: [AuthorityTableComponent]
     });
-    fixture = TestBed.createComponent(SignatureTableComponent);
+    fixture = TestBed.createComponent(AuthorityTableComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

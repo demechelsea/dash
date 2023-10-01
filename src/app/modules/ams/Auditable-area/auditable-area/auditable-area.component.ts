@@ -64,8 +64,6 @@ export class AuditableAreaComponent implements OnDestroy {
       this.auditableAreaService.getAuditableAreas().subscribe(
         (response: any) => {
           this.auditableArea = response.result;
-          console.log(response);
-          console.log(this.auditableArea);
           this.auditableAreaDisplay = this.auditableArea.map((obj: any) => ({
             ...obj,
             auditaObjectName: obj.auditObject ? obj.auditObject.name : null,
@@ -82,7 +80,7 @@ export class AuditableAreaComponent implements OnDestroy {
   createNewAuditableArea(): void {
     const ref = this.dialogService.open(NewAuditableAreaComponent, {
       header: 'Create a new auditable area',
-      width: '40%',
+      width: '50%',
       contentStyle: { 'min-height': 'auto', overflow: 'auto' },
       baseZIndex: 10000,
     });
@@ -110,7 +108,7 @@ export class AuditableAreaComponent implements OnDestroy {
     console.log("vvvvvvvvv", auditableArea);
     const ref = this.dialogService.open(NewAuditableAreaComponent, {
       header: 'Update auditable area',
-      width: '40%',
+      width: '50%',
       data: { auditableArea },
       contentStyle: { 'min-height': 'auto', overflow: 'auto' },
       baseZIndex: 10000,

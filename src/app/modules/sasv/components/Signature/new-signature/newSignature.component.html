@@ -2,7 +2,7 @@
   <form #addDivForm="ngForm" (ngSubmit)="addSignature(addDivForm)">
     <div style="margin-top: 2em"></div>
     <div class="flex justify-between">
-      <div class="m-8">
+      <div class="m-4">
         <label for="hex" class="block mb-2"> Employee: </label>
         <p-dropdown
           [options]="employeeslist"
@@ -15,38 +15,49 @@
           placeholder="Choose employee"
           styleClass="p-password"
           [required]="true"
-          [style]="{ width: '250px', height: '45px' }"
+          class="w-60 h-11 overflow-hidden overflow-ellipsis whitespace-nowrap"
         >
-          <!-- <ng-template pTemplate="selectedItem">
-            <div *ngIf="employee?.fullName">
-              <div>{{ employee.fullName }}</div>
-            </div>
-          </ng-template> -->
           <ng-template let-employee pTemplate="item">
-            <div>
+            <div
+              class="dropdown-item w-60 overflow-hidden overflow-ellipsis whitespace-nowrap"
+              pTooltip="{{ employee.fullName }}"
+              tooltipPosition="right"
+            >
               <div>{{ employee.fullName }}</div>
             </div>
           </ng-template>
         </p-dropdown>
       </div>
 
-      <div class="m-8">
-        <label for="image"> Signature image: </label>
-        <input
-          type="file"
-          id="image"
-          name="signature"
-          accept="image/*"
-          [style]="{ width: '250px', height: '45px' }"
-          required
-        />
+      <div class="photo-container w-full md:w-1/1 m-4">
+        <div class="photo-preview">
+          <img
+            *ngIf="imageURL; else noImage"
+            [src]="imageURL"
+            alt="Photo to display to public"
+          />
+          <ng-template #noImage>
+            <p>Photo</p>
+          </ng-template>
+        </div>
+        <div class="form-group">
+          <input
+            type="file"
+            class="form-control"
+            id="signature"
+            name="signature"
+            accept="image/*"
+            (change)="onFileSelected($event)"
+            [required]="true"
+          />
+        </div>
       </div>
     </div>
 
     <div style="margin-top: 10em"></div>
     <div class="buttonDiv">
       <p-button label="Cancel" (click)="closeDialog()"></p-button>
-      <p-button label="Create signature"></p-button>
+      <p-button type="submit" [disabled]="!addDivForm.valid || !imageURL" label="Create signature"></p-button>
     </div>
   </form>
 </div>

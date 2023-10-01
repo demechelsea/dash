@@ -81,7 +81,7 @@ export class CheckListComponent implements OnDestroy {
   createNewChecklist(): void {
     const ref = this.dialogService.open(NewCheckListComponent, {
       header: 'Create a new checklist',
-      width: '40%',
+      width: '50%',
       contentStyle: { 'min-height': 'auto', overflow: 'auto' },
       baseZIndex: 10000,
     });
@@ -109,7 +109,7 @@ export class CheckListComponent implements OnDestroy {
     console.log("check", checklist);
     const ref = this.dialogService.open(NewCheckListComponent, {
       header: 'Update auditable area',
-      width: '40%',
+      width: '50%',
       data: { checklist },
       contentStyle: { 'min-height': 'auto', overflow: 'auto' },
       baseZIndex: 10000,

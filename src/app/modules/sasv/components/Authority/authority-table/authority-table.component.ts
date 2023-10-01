@@ -3,21 +3,10 @@ import { Component, OnDestroy } from '@angular/core';
 import { DialogService } from 'primeng/dynamicdialog';
 import { MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
-import * as FileSaver from 'file-saver';
 import { AuthorityDTO } from '../../../models/authority';
 import { NewAuthorityComponent } from '../new-authority/newAuthority.component';
 import { AuthorityService } from '../../../services/authority-service/authority.service';
-
-interface ExportColumn {
-  title: string;
-  dataKey: string;
-}
-
-interface Column {
-  field: string;
-  header: string;
-  customExportHeader?: string;
-}
+import { ShowComponent } from '../../show/show.component';
 
 @Component({
   selector: 'authority-table',
@@ -30,31 +19,16 @@ export class AuthorityTableComponent implements OnDestroy {
   public signatureInfo: AuthorityDTO;
   selectedSignatureInfo: AuthorityDTO;
 
-  exportColumns!: ExportColumn[];
-  cols!: Column[];
-
   private subscriptions: Subscription[] = [];
 
   constructor(
     private authorityService: AuthorityService,
     private dialogService: DialogService,
     private messageService: MessageService
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.getSignatures();
-    this.cols = [
-      { field: 'id', header: 'ID' },
-      { field: 'name', header: 'Name' },
-      { field: 'description', header: 'Description' },
-      { field: 'auditType', header: 'Auditable Type' },
-      { field: 'status', header: 'Status' },
-    ];
-
-    this.exportColumns = this.cols.map((col) => ({
-      title: col.header,
-      dataKey: col.field,
-    }));
   }
 
   getSignatures(): void {
@@ -74,7 +48,7 @@ export class AuthorityTableComponent implements OnDestroy {
     const ref = this.dialogService.open(NewAuthorityComponent, {
       header: 'Create a new authority',
       draggable: true,
-      width: '45%',
+      width: '50%',
       contentStyle: { 'min-height': 'auto', overflow: 'auto' },
       baseZIndex: 10000,
     });
@@ -97,44 +71,59 @@ export class AuthorityTableComponent implements OnDestroy {
     });
   }
 
+  updateAuthority(id: number): void {
+    const authority = this.authorityList.find(
+      (authority) => authority.id === id
+    );
+    const ref = this.dialogService.open(NewAuthorityComponent, {
+      header: 'Update authority',
+      draggable: true,
+      width: '50%',
+      data: { authority },
+      contentStyle: { 'min-height': 'auto', overflow: 'auto' },
+      baseZIndex: 10000,
+    });
+
+    ref.onClose.subscribe((response: any) => {
+      if (response) {
+        this.authorityList = this.authorityList.map((authority) =>
+          authority.id === response.id ? response : authority
+        );
+        if (response.status) {
+          this.getSignatures();
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: response.message,
+          });
+        } else {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Failed',
+            detail: response.message,
+          });
+        }
+      }
+    });
+  }
+
+  show(id: number) {
+    const data = this.authorityList.find((authority) => authority.id === id);
+    const title = 'authority';
+
+    const ref = this.dialogService.open(ShowComponent, {
+      header: 'Signature and Stamp Image',
+      draggable: true,
+      width: '50%',
+      data: { data, title },
+      contentStyle: { 'min-height': 'auto', overflow: 'auto' },
+      baseZIndex: 10000,
+    });
+  }
+
   ngOnDestroy() {
     for (const subscription of this.subscriptions) {
       subscription.unsubscribe();
     }
-  }
-
-  exportPdf() {
-    import('jspdf').then((jsPDF) => {
-      import('jspdf-autotable').then((x) => {
-        const doc = new jsPDF.default('p', 'px', 'a4');
-        (doc as any).autoTable(this.exportColumns, this.authorityList);
-        doc.save('audit-universe.pdf');
-      });
-    });
-  }
-
-  exportExcel() {
-    import('xlsx').then((xlsx) => {
-      const worksheet = xlsx.utils.json_to_sheet(this.authorityList);
-      const workbook = { Sheets: { data: worksheet }, SheetNames: ['data'] };
-      const excelBuffer: any = xlsx.write(workbook, {
-        bookType: 'xlsx',
-        type: 'array',
-      });
-      this.saveAsExcelFile(excelBuffer, 'products');
-    });
-  }
-
-  saveAsExcelFile(buffer: any, fileName: string): void {
-    let EXCEL_TYPE =
-      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
-    let EXCEL_EXTENSION = '.xlsx';
-    const data: Blob = new Blob([buffer], {
-      type: EXCEL_TYPE,
-    });
-    FileSaver.saveAs(
-      data,
-      fileName + '_export_' + new Date().getTime() + EXCEL_EXTENSION
-    );
   }
 }

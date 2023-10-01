@@ -1,101 +1,172 @@
 <div>
-  <form #addDivForm="ngForm" (ngSubmit)="addSignature(addDivForm)">
+  <form #addDivForm="ngForm" (ngSubmit)="addStamp(addDivForm)">
     <div style="margin-top: 2em"></div>
     <div class="flex justify-between">
-      <div class="m-8">
-        <label for="hex" class="block mb-2"> Organization: </label>
+      <div class="m-4">
+        <label for="dropdown" class="block mb-2"> Select level: </label>
         <p-dropdown
-          [options]="employeeslist"
-          name="employeeId"
-          optionLabel="fullName"
-          [filter]="true"
-          [(ngModel)]="signatureInfo.employeeId"
-          filterBy="fullName"
+          [options]="dropdownOptions"
+          name="selectedDropdown"
+          [(ngModel)]="selectedDropdown"
           [showClear]="true"
-          placeholder="Choose employee"
+          placeholder="Choose level"
           styleClass="p-password"
           [required]="true"
           [style]="{ width: '250px', height: '45px' }"
         >
-          <!-- <ng-template pTemplate="selectedItem">
-            <div *ngIf="employee?.fullName">
-              <div>{{ employee.fullName }}</div>
-            </div>
-          </ng-template> -->
-          <ng-template let-employee pTemplate="item">
-            <div>
-              <div>{{ employee.fullName }}</div>
+        </p-dropdown>
+      </div>
+      <div class="m-4" *ngIf="selectedDropdown === 'Organization unit'">
+        <label for="hex" class="block mb-2"> Organization unit: </label>
+        <p-dropdown
+          [options]="organizationUnitList"
+          name="organizationUnitId"
+          optionLabel="name"
+          [filter]="true"
+          [(ngModel)]="stampInfo.organizationUnitId"
+          filterBy="name"
+          [showClear]="true"
+          placeholder="Choose organization unit"
+          styleClass="p-password"
+          [required]="true"
+          class="w-60 h-11 overflow-hidden overflow-ellipsis whitespace-nowrap"
+        >
+          <ng-template let-organization pTemplate="item">
+            <div
+              class="dropdown-item w-60 overflow-hidden overflow-ellipsis whitespace-nowrap"
+              pTooltip="{{ organization.name }}"
+              tooltipPosition="right"
+            >
+              <div>{{ organization.name }}</div>
             </div>
           </ng-template>
         </p-dropdown>
       </div>
 
-      <div class="m-8">
+      <div class="m-4" *ngIf="selectedDropdown === 'Sub Process'">
         <label for="hex" class="block mb-2"> Sub process: </label>
         <p-dropdown
-          [options]="employeeslist"
-          name="employeeId"
-          optionLabel="fullName"
+          [options]="subProcessList"
+          name="subProcessId"
+          optionLabel="name"
           [filter]="true"
-          [(ngModel)]="signatureInfo.employeeId"
-          filterBy="fullName"
+          [(ngModel)]="stampInfo.subProcessId"
+          filterBy="name"
           [showClear]="true"
-          placeholder="Choose employee"
+          placeholder="Choose sub process"
           styleClass="p-password"
           [required]="true"
-          [style]="{ width: '250px', height: '45px' }"
+          class="w-60 h-11 overflow-hidden overflow-ellipsis whitespace-nowrap"
         >
-          <!-- <ng-template pTemplate="selectedItem">
-            <div *ngIf="employee?.fullName">
-              <div>{{ employee.fullName }}</div>
+          <ng-template let-subProcess pTemplate="item">
+            <div
+              class="dropdown-item w-60 overflow-hidden overflow-ellipsis whitespace-nowrap"
+              pTooltip="{{ subProcess.name }}"
+              tooltipPosition="right"
+            >
+              <div>{{ subProcess.name }}</div>
             </div>
-          </ng-template> -->
-          <ng-template let-employee pTemplate="item">
-            <div>
-              <div>{{ employee.fullName }}</div>
+          </ng-template>
+        </p-dropdown>
+      </div>
+      <div class="m-4" *ngIf="selectedDropdown === 'Process'">
+        <label for="hex" class="block mb-2"> Process: </label>
+        <p-dropdown
+          [options]="processList"
+          name="processId"
+          optionLabel="name"
+          [filter]="true"
+          [(ngModel)]="stampInfo.processId"
+          filterBy="name"
+          [showClear]="true"
+          placeholder="Choose process"
+          styleClass="p-password"
+          [required]="true"
+          class="w-60 h-11 overflow-hidden overflow-ellipsis whitespace-nowrap"
+        >
+          <ng-template let-process pTemplate="item">
+            <div
+              class="dropdown-item w-60 overflow-hidden overflow-ellipsis whitespace-nowrap"
+              pTooltip="{{ process.name }}"
+              tooltipPosition="right"
+            >
+              <div>{{ process.name }}</div>
+            </div>
+          </ng-template>
+        </p-dropdown>
+      </div>
+      <div class="m-4" *ngIf="selectedDropdown === 'District'">
+        <label for="hex" class="block mb-2"> District: </label>
+        <p-dropdown
+          [options]="districtList"
+          name="districtId"
+          optionLabel="name"
+          [filter]="true"
+          [(ngModel)]="stampInfo.districtId"
+          filterBy="name"
+          [showClear]="true"
+          placeholder="Choose district"
+          styleClass="p-password"
+          [required]="true"
+          class="w-60 h-11 overflow-hidden overflow-ellipsis whitespace-nowrap"
+        >
+          <ng-template let-district pTemplate="item">
+            <div
+              class="dropdown-item w-60 overflow-hidden overflow-ellipsis whitespace-nowrap"
+              pTooltip="{{ district.name }}"
+              tooltipPosition="right"
+            >
+              <div>{{ district.name }}</div>
+            </div>
+          </ng-template>
+        </p-dropdown>
+      </div>
+      <div class="m-4" *ngIf="selectedDropdown === 'Branch'">
+        <label for="hex" class="block mb-2"> Branch: </label>
+        <p-dropdown
+          [options]="branchList"
+          name="branchId"
+          optionLabel="name"
+          [filter]="true"
+          [(ngModel)]="stampInfo.branchId"
+          filterBy="name"
+          [showClear]="true"
+          placeholder="Choose branch"
+          styleClass="p-password"
+          [required]="true"
+          class="w-60 h-11 overflow-hidden overflow-ellipsis whitespace-nowrap"
+        >
+          <ng-template let-branch pTemplate="item">
+            <div
+              class="dropdown-item w-60 overflow-hidden overflow-ellipsis whitespace-nowrap"
+              pTooltip="{{ branch.name }}"
+              tooltipPosition="right"
+            >
+              <div>{{ branch.name }}</div>
             </div>
           </ng-template>
         </p-dropdown>
       </div>
     </div>
-    <div class="flex justify-between">
-      <div class="m-8">
-        <label for="hex" class="block mb-2"> Process: </label>
-        <p-dropdown
-          [options]="employeeslist"
-          name="employeeId"
-          optionLabel="fullName"
-          [filter]="true"
-          [(ngModel)]="signatureInfo.employeeId"
-          filterBy="fullName"
-          [showClear]="true"
-          placeholder="Choose employee"
-          styleClass="p-password"
-          [required]="true"
-          [style]="{ width: '250px', height: '45px' }"
-        >
-          <!-- <ng-template pTemplate="selectedItem">
-            <div *ngIf="employee?.fullName">
-              <div>{{ employee.fullName }}</div>
-            </div>
-          </ng-template> -->
-          <ng-template let-employee pTemplate="item">
-            <div>
-              <div>{{ employee.fullName }}</div>
-            </div>
-          </ng-template>
-        </p-dropdown>
+    <div class="photo-container m-4 md:w-1/2">
+      <div class="photo-preview">
+        <img
+          *ngIf="imageURL; else noImage"
+          [src]="imageURL"
+          alt="Photo to display to public"
+        />
+        <ng-template #noImage>
+          <p>Photo</p>
+        </ng-template>
       </div>
-
-      <div class="m-8">
-        <label for="image"> Stamp image: </label>
+      <div class="form-group">
         <input
           type="file"
-          id="image"
-          name="signature"
+          class="form-control"
+          id="stamp"
+          name="stamp"
           accept="image/*"
-          [style]="{ width: '250px', height: '45px' }"
-          required
+          (change)="onFileSelected($event)"
         />
       </div>
     </div>
@@ -103,7 +174,7 @@
     <div style="margin-top: 10em"></div>
     <div class="buttonDiv">
       <p-button label="Cancel" (click)="closeDialog()"></p-button>
-      <p-button label="Create signature"></p-button>
+      <p-button type="submit" [disabled]="!addDivForm.valid || !imageURL" label="Create stamp"></p-button>
     </div>
   </form>
 </div>

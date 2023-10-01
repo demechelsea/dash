@@ -2,7 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
-import { Subscription } from 'rxjs';
+import { Subscription, audit } from 'rxjs';
 import { AuditObjectService } from 'src/app/services/auditObject/auditObject.service';
 import { AuditObjectDTO } from 'src/app/views/models/auditObject';
 import { NewAuditObjectComponent } from '../new-audit-object/newAuditObject.component';
@@ -85,7 +85,7 @@ export class AuditObjectComponent {
     const ref = this.dialogService.open(NewAuditObjectComponent, {
       header: 'Create a new audit object',
       draggable: true,
-      width: '40%',
+      width: '50%',
       contentStyle: { 'min-height': 'auto', overflow: 'auto' },
       baseZIndex: 10000,
     });
@@ -112,7 +112,7 @@ export class AuditObjectComponent {
     const auditObject = this.auditObject.find((auditObj) => auditObj.id === id);
     const ref = this.dialogService.open(NewAuditObjectComponent, {
       header: 'Update audit object',
-      width: '40%',
+      width: '50%',
       data: { auditObject },
       contentStyle: { 'min-height': 'auto', overflow: 'auto' },
       baseZIndex: 10000,

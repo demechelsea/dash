@@ -24,7 +24,7 @@
 .date-picker-container input[type="date"] {
   padding: 0.25rem;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 1px;
 }
 
 .date-picker-container .apply-button {
@@ -32,7 +32,7 @@
   background-color: #007bff;
   color: #fff;
   border: none;
-  border-radius: 4px;
+  border-radius: 1px;
   cursor: pointer;
 }
 
@@ -58,10 +58,7 @@ p-button {
   margin-top: 10px;
 }
 
-.but {
-  display: flex;
-  justify-content: flex-end;
-}
+
 
 .table-title {
   font-size: 20px;

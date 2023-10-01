@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AnnualPlanDTO } from '../../views/models/annualPlan';
 import { AutoGenerateAnnualPlanDTO } from '../../views/models/autoGenerateAnnualPlan';
+import { AuditScheduleDTO } from 'src/app/views/models/auditSchedule';
 
 @Injectable({
   providedIn: 'root',
@@ -45,9 +46,9 @@ export class AnnualPlanService {
     return this.http.post(`${this.apiServiceUrl}/ams/annualPlan/update`, annualPlan, this.httpOptions)
   }
 
-  public addToSchedule(annualPlan: AnnualPlanDTO): Observable<any> {
+  public addToSchedule(auditSchedule: AuditScheduleDTO): Observable<any> {
     this.init();
-    return this.http.post(`${this.apiServiceUrl}/ams/annualPlan/addToSchedule`, annualPlan, this.httpOptions)
+    return this.http.post(`${this.apiServiceUrl}/ams/annualPlan/addToSchedule`, auditSchedule, this.httpOptions)
   }
 
   public plannedList(): Observable<any> {

@@ -10,6 +10,8 @@ import { AuditScheduleService } from 'src/app/services/audit-schedule/audit-sche
 import { AnnualPlanService } from 'src/app/services/annual-plan/annual-plan.service';
 import { AnnualPlanDTO } from 'src/app/views/models/annualPlan';
 import { AuditScheduleDTO } from 'src/app/views/models/auditSchedule';
+import { DatePipe } from '@angular/common';
+import { NgForm } from '@angular/forms';
 
 interface ExportColumn {
   title: string;
@@ -36,13 +38,17 @@ export class AuditScheduleComponent implements OnDestroy {
   exportColumns!: ExportColumn[];
   cols!: Column[];
 
+  public dropdownOptions = ['1', '2', '3', '4'];
+  public selectedDropdown: string;
+
   private subscriptions: Subscription[] = [];
 
   constructor(
     private auditPlanService: AnnualPlanService,
     private auditScheduleService: AuditScheduleService,
     private dialogService: DialogService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private datePipe: DatePipe
   ) {}
 
   ngOnInit() {
@@ -62,13 +68,18 @@ export class AuditScheduleComponent implements OnDestroy {
       dataKey: col.field,
     }));
   }
-  
 
   getAuditSchedules(): void {
     this.subscriptions.push(
       this.auditScheduleService.getAuditSchedules().subscribe(
         (response: any) => {
-          this.auditSchedules = response.result;
+          this.auditSchedules = response.result.map(
+            (schedule: AuditScheduleDTO) => ({
+              ...schedule,
+              startOn: this.datePipe.transform(schedule.startOn, 'MMMM d, y'),
+              endOn: this.datePipe.transform(schedule.endOn, 'MMMM d, y'),
+            })
+          );
         },
         (error: HttpErrorResponse) => {
           console.log(error);
@@ -90,40 +101,13 @@ export class AuditScheduleComponent implements OnDestroy {
     );
   }
 
-  createNewAuditSchedule(): void {
-    const ref = this.dialogService.open(NewAuditScheduleComponent, {
-      header: 'Create a new audit schedule',
-      draggable: true,
-      width: '40%',
-      contentStyle: { 'min-height': 'auto', overflow: 'auto' },
-      baseZIndex: 10000,
-    });
-
-    ref.onClose.subscribe((response: any) => {
-      if (response.status) {
-        this.getAuditSchedules();
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Success',
-          detail: response.message,
-        });
-      } else {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Failed',
-          detail: response.message,
-        });
-      }
-    });
-  }
-
   updateAuditSchedule(id: number): void {
     const auditSchedule = this.auditSchedules.find(
       (schedule) => schedule.id === id
     );
     const ref = this.dialogService.open(NewAuditScheduleComponent, {
       header: 'Update audit schedule',
-      width: '40%',
+      width: '50%',
       data: { auditSchedule },
       contentStyle: { 'min-height': 'auto', overflow: 'auto' },
       baseZIndex: 10000,
@@ -150,6 +134,31 @@ export class AuditScheduleComponent implements OnDestroy {
         }
       }
     });
+  }
+
+  submitAuditScheduleQuarter(addDivForm: NgForm): void {
+    const auditSchedule = new AuditScheduleDTO();
+    auditSchedule.quarter = addDivForm.value.selectedDropdown;
+    this.subscriptions.push(
+      this.auditScheduleService
+        .getAuditSchedulesByQuarter(auditSchedule)
+        .subscribe(
+          (response: any) => {
+            console.log(response);
+            
+            this.auditSchedules = response.result.map(
+              (schedule: AuditScheduleDTO) => ({
+                ...schedule,
+                startOn: this.datePipe.transform(schedule.startOn, 'MMMM d, y'),
+                endOn: this.datePipe.transform(schedule.endOn, 'MMMM d, y'),
+              })
+            );
+          },
+          (error: HttpErrorResponse) => {
+            console.log(error);
+          }
+        )
+    );
   }
 
   ngOnDestroy() {

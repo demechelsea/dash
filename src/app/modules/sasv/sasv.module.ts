@@ -21,7 +21,6 @@ import {
   SpinnerModule,
   TabsModule,
   NavModule,
-  TooltipModule,
   CarouselModule,
   FormModule,
   PaginationModule,
@@ -33,6 +32,7 @@ import { MessagesModule } from 'primeng/messages';
 import { DropdownModule } from 'primeng/dropdown';
 import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog';
 import { ToastModule } from 'primeng/toast';
+import { TooltipModule } from 'primeng/tooltip';
 
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { ConfirmationService, MessageService } from 'primeng/api';
@@ -42,6 +42,7 @@ import { NewStampComponent } from './components/Stamp/new-stamp/newStamp.compone
 import { StampTableComponent } from './components/Stamp/stamp-table/stamp-table.component';
 import { AuthorityTableComponent } from './components/Authority/authority-table/authority-table.component';
 import { NewAuthorityComponent } from './components/Authority/new-authority/newAuthority.component';
+import { ShowComponent } from './components/show/show.component';
 
 @NgModule({
   declarations: [
@@ -50,7 +51,8 @@ import { NewAuthorityComponent } from './components/Authority/new-authority/newA
     NewStampComponent,
     StampTableComponent,
     AuthorityTableComponent,
-    NewAuthorityComponent
+    NewAuthorityComponent,
+    ShowComponent,
   ],
   imports: [
     NgApexchartsModule,
@@ -92,6 +94,12 @@ import { NewAuthorityComponent } from './components/Authority/new-authority/newA
     ToastModule,
     CalendarModule,
   ],
-  providers: [ConfirmationService, MessageService, DialogService, DatePipe],
+  providers: [
+    ConfirmationService, 
+    MessageService, 
+    DialogService, 
+    DatePipe,
+  ]
+    
 })
 export class SASVModule {}

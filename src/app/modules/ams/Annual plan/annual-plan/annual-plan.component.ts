@@ -8,6 +8,7 @@ import { NewAnnualPlanComponent } from '../new-annual-plan/newAnnualPlan.compone
 import { Subscription } from 'rxjs';
 import * as FileSaver from 'file-saver';
 import { AutoGenerateAnnualPlanComponent } from 'src/app/modules/ams/Annual plan/auto-geneerate-annualPlan/auto-generate-annualPlan.component';
+import { NewAuditScheduleComponent } from '../../Audit-schedule/new-audit-schedule/newAuditSchedule.component';
 
 interface Column {
   field: string;
@@ -67,11 +68,11 @@ export class AnnualPlanComponent {
   generateAnnualPlan(): void {
     const ref = this.dialogService.open(AutoGenerateAnnualPlanComponent, {
       header: 'Generate Annual Plan',
-      width: '40%',
+      width: '50%',
       contentStyle: { 'min-height': 'auto', overflow: 'auto' },
       baseZIndex: 10000,
     });
-  
+
     ref.onClose.subscribe((response: any) => {
       if (response.status) {
         this.messageService.add({
@@ -89,7 +90,7 @@ export class AnnualPlanComponent {
       }
     });
   }
-  
+
   getAnnualPlans(): void {
     this.subscriptions.push(
       this.annualPlanService.getAnnualPlans().subscribe(
@@ -109,25 +110,37 @@ export class AnnualPlanComponent {
     );
   }
 
-
-  addToAuditSchedule(id: number): void {
-    const annualPlan = new AnnualPlanDTO;
-    annualPlan.id = id;
-    this.subscriptions.push(
-      this.annualPlanService.addToSchedule(annualPlan).subscribe(
-        (response: any) => {
-          this.getAnnualPlans();
-        },
-        (error: HttpErrorResponse) => {
-          console.log(error);
-        }
-      )
-    );
+  addToAuditSchedule(annualPlan: AnnualPlanDTO): void {
+    const ref = this.dialogService.open(NewAuditScheduleComponent, {
+      header: 'Create a new audit schedule',
+      draggable: true,
+      width: '50%',
+      data: { annualPlan },
+      contentStyle: { 'min-height': 'auto', overflow: 'auto' },
+      baseZIndex: 10000,
+    });
+    ref.onClose.subscribe((response: any) => {
+      if (response.status) {
+        this.getAnnualPlans();
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: response.message,
+        });
+      } else {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Failed',
+          detail: response.message,
+        });
+      }
+    });
   }
+
   createNewAnnualPlan(): void {
     const ref = this.dialogService.open(NewAnnualPlanComponent, {
       header: 'Create a new audit plan',
-      width: '40%',
+      width: '50%',
       contentStyle: { 'min-height': 'auto', overflow: 'auto' },
       baseZIndex: 10000,
     });
@@ -154,7 +167,7 @@ export class AnnualPlanComponent {
     const annualPlan = this.annualPlans.find((plan) => plan.id === id);
     const ref = this.dialogService.open(NewAnnualPlanComponent, {
       header: 'Update annual plan',
-      width: '40%',
+      width: '50%',
       data: { annualPlan },
       contentStyle: { 'min-height': 'auto', overflow: 'auto' },
       baseZIndex: 10000,

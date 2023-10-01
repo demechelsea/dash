@@ -21,12 +21,15 @@ export class NewSignatureComponent implements OnDestroy {
   public signatureInfo: SignatureDTO = new SignatureDTO();
   selectedUniverseInfo: SignatureDTO;
 
+  selectedFile: any;
+  imageURL: string;
+
   private subscriptions: Subscription[] = [];
 
   constructor(
     private messageService: MessageService,
     private signatureService: SignatureService,
-    private emploteeService: EmployeeService,
+    private employeeService: EmployeeService,
     private ref: DynamicDialogRef,
     private config: DynamicDialogConfig
   ) {}
@@ -39,11 +42,9 @@ export class NewSignatureComponent implements OnDestroy {
   }
 
   getEmployeeslist(): void {
-    this.emploteeService.getEmployeesList().subscribe(
+    this.employeeService.getEmployeesList().subscribe(
       (response: any) => {
         this.employeeslist = response.result;
-        console.log(response);
-        
       },
       (error: HttpErrorResponse) => {
         console.log(error);
@@ -52,14 +53,32 @@ export class NewSignatureComponent implements OnDestroy {
   }
 
   addSignature(addDivForm: NgForm): void {
+    const formData = new FormData();
+    formData.append('employeeId', addDivForm?.value.employeeId.id);
+    if (this.selectedFile) {
+      formData.append('signature', this.selectedFile);
+    }
+  
     this.subscriptions.push(
       this.signatureService
-        .createSignature(addDivForm.value)
+        .createSignature(formData)
         .subscribe((response: any) => {
           this.messageService.clear();
           this.ref.close(response);
         })
     );
+  }
+  
+
+  onFileSelected(event: any) {
+    if (event.target.files && event.target.files[0]) {
+      const file = event.target.files[0];
+      this.selectedFile = file;
+      const reader = new FileReader();
+      reader.onload = (e) => (this.imageURL = reader.result as string);
+
+      reader.readAsDataURL(file);
+    }
   }
 
   ngOnDestroy() {

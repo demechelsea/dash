@@ -115,7 +115,7 @@ export class NewAnnualPlanComponent implements OnDestroy, AfterContentChecked {
     annualPlan.id = this.annualPlanInfo.id;
     annualPlan.year = this.annualPlanInfo.year;
     annualPlan.riskScores = this.savedRiskScores;
-    console.log("rrrr", annualPlan);
+    console.log(annualPlan);
     
     this.subscriptions.push(
       this.annualPlanService

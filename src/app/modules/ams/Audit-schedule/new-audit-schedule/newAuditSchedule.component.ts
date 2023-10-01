@@ -23,42 +23,29 @@ export class NewAuditScheduleComponent implements OnDestroy {
   public scheduleInfo: AuditScheduleDTO = new AuditScheduleDTO();
 
   private subscriptions: Subscription[] = [];
+  public dropdownOptions = ['1', '2', '3', '4'];
+  public selectedDropdown: string;
 
   update: boolean = false;
   newDiv: boolean = true;
+
+  annualPlan: AnnualPlanDTO;
 
   constructor(
     private messageService: MessageService,
     private auditScheduleService: AuditScheduleService,
     private auditPlanService: AnnualPlanService,
+    private annualPlanService: AnnualPlanService,
     private ref: DynamicDialogRef,
     private config: DynamicDialogConfig
   ) {}
 
   ngOnInit() {
-    this.getPlannedList();
-    if (this.config.data?.auditSchedule) {
-      this.scheduleInfo = this.config.data.auditSchedule;
-      this.update = true;
+    if (this.config.data?.annualPlan) {
+      this.annualPlan = this.config.data.annualPlan;      
+      //this.update = true;
       this.newDiv = false;
     }
-    if (this.config.data?.auditSchedule) {
-      this.scheduleInfo = this.config.data.auditSchedule;
-    }
-  }
-
-  getPlannedList(): void {
-    this.subscriptions.push(
-      this.auditPlanService.plannedList().subscribe(
-        (response: any) => {
-          this.annualPlans = response.result;
-          console.log("ooo ",this.annualPlans);
-        },
-        (error: HttpErrorResponse) => {
-          console.log(error);
-        }
-      )
-    );
   }
 
   submitAuditSchedule(auditableAreaForm: NgForm): void {
@@ -70,14 +57,18 @@ export class NewAuditScheduleComponent implements OnDestroy {
   }
 
   addAuditSchedule(addDivForm: NgForm): void {
+    const auditSchedule: AuditScheduleDTO = addDivForm.value;
+    auditSchedule.annualPlan = this.annualPlan;
     this.subscriptions.push(
-      this.auditScheduleService
-        .addAuditSchedule(addDivForm.value)
-        .subscribe((response: any) => {
-          this.messageService.clear();
-          this.ref.close(response);
-        })
+      this.annualPlanService.addToSchedule(auditSchedule).subscribe(
+        (response: any) => {
+        },
+        (error: HttpErrorResponse) => {
+          console.log(error);
+        }
+      )
     );
+    this.ref.close();
   }
 
   updateAuditSchedule(updateDivForm: NgForm): void {

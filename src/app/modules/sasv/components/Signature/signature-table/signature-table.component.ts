@@ -1,37 +1,22 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DialogService } from 'primeng/dynamicdialog';
 import { MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
-import * as FileSaver from 'file-saver';
 import { NewSignatureComponent } from '../new-signature/newSignature.component';
 import { SignatureService } from '../../../services/signature-service/signature.service';
 import { SignatureDTO } from '../../../models/signature';
-
-interface ExportColumn {
-  title: string;
-  dataKey: string;
-}
-
-interface Column {
-  field: string;
-  header: string;
-  customExportHeader?: string;
-}
+import { ShowComponent } from '../../show/show.component';
 
 @Component({
   selector: 'signature-table',
   templateUrl: './signature-table.component.html',
   styleUrls: ['./signature-table.component.scss'],
 })
-export class SignatureTableComponent implements OnDestroy {
+export class SignatureTableComponent implements OnInit, OnDestroy {
   public signatureList: SignatureDTO[] = [];
-
   public signatureInfo: SignatureDTO;
   selectedSignatureInfo: SignatureDTO;
-
-  exportColumns!: ExportColumn[];
-  cols!: Column[];
 
   private subscriptions: Subscription[] = [];
 
@@ -39,28 +24,17 @@ export class SignatureTableComponent implements OnDestroy {
     private signatureService: SignatureService,
     private dialogService: DialogService,
     private messageService: MessageService
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.getSignatures();
-    this.cols = [
-      { field: 'id', header: 'ID' },
-      { field: 'name', header: 'Name' },
-      { field: 'description', header: 'Description' },
-      { field: 'auditType', header: 'Auditable Type' },
-      { field: 'status', header: 'Status' },
-    ];
-
-    this.exportColumns = this.cols.map((col) => ({
-      title: col.header,
-      dataKey: col.field,
-    }));
   }
 
   getSignatures(): void {
     this.subscriptions.push(
       this.signatureService.getSignatureList().subscribe(
         (response: any) => {
+          console.log('www', response);
           this.signatureList = response.result;
         },
         (error: HttpErrorResponse) => {
@@ -74,7 +48,7 @@ export class SignatureTableComponent implements OnDestroy {
     const ref = this.dialogService.open(NewSignatureComponent, {
       header: 'Create a new signature',
       draggable: true,
-      width: '45%',
+      width: '50%',
       contentStyle: { 'min-height': 'auto', overflow: 'auto' },
       baseZIndex: 10000,
     });
@@ -97,44 +71,25 @@ export class SignatureTableComponent implements OnDestroy {
     });
   }
 
+  show(id: number) {
+    const data = this.signatureList.find(
+      (signature) => signature.id === id
+    );
+    const title = 'signature';
+
+    const ref = this.dialogService.open(ShowComponent, {
+      header: 'Signature image',
+      draggable: true,
+      width: '50%',
+      data: { data, title },
+      contentStyle: { 'min-height': 'auto', overflow: 'auto' },
+      baseZIndex: 10000,
+    });
+  }
+
   ngOnDestroy() {
     for (const subscription of this.subscriptions) {
       subscription.unsubscribe();
     }
-  }
-
-  exportPdf() {
-    import('jspdf').then((jsPDF) => {
-      import('jspdf-autotable').then((x) => {
-        const doc = new jsPDF.default('p', 'px', 'a4');
-        (doc as any).autoTable(this.exportColumns, this.signatureList);
-        doc.save('audit-universe.pdf');
-      });
-    });
-  }
-
-  exportExcel() {
-    import('xlsx').then((xlsx) => {
-      const worksheet = xlsx.utils.json_to_sheet(this.signatureList);
-      const workbook = { Sheets: { data: worksheet }, SheetNames: ['data'] };
-      const excelBuffer: any = xlsx.write(workbook, {
-        bookType: 'xlsx',
-        type: 'array',
-      });
-      this.saveAsExcelFile(excelBuffer, 'products');
-    });
-  }
-
-  saveAsExcelFile(buffer: any, fileName: string): void {
-    let EXCEL_TYPE =
-      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
-    let EXCEL_EXTENSION = '.xlsx';
-    const data: Blob = new Blob([buffer], {
-      type: EXCEL_TYPE,
-    });
-    FileSaver.saveAs(
-      data,
-      fileName + '_export_' + new Date().getTime() + EXCEL_EXTENSION
-    );
   }
 }

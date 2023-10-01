@@ -1,5 +1,5 @@
 <p-toast position="top-right"></p-toast>
-<div class="but"><p-button label="Create a new audit object" (click)="createAuditObject()"></p-button></div>
+<div class="flex justify-end"><p-button label="Create a new audit object" (click)="createAuditObject()"></p-button></div>
 <div class="card">
     <h5 class="table-title">Audit Object</h5>
     <p-table #dt1 [value]="auditObject" [exportHeader]="'customExportHeader'" selectionMode="single" dataKey="id"

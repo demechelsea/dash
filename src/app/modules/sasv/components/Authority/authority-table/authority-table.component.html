@@ -1,61 +1,40 @@
 <p-toast position="top-right"></p-toast>
-<div class="but">
-  <p-button label="Create signature" (click)="createSignature()"></p-button>
+<div class="flex justify-end">
+  <p-button label="Create authority" (click)="createSignature()"></p-button>
 </div>
 <div class="card">
-  <h5 class="table-title">Authority table</h5>
+  <h5 class="text-2xl font-bold text-blue-600 p-3">Authority table</h5>
   <p-table
     #dt1
     [value]="authorityList"
-    [exportHeader]="'customExportHeader'"
     selectionMode="single"
     dataKey="id"
-    [tableStyle]="{ 'min-width': '50rem' }"
     [rows]="5"
     [rowsPerPageOptions]="[5, 10, 15, 20]"
     [paginator]="true"
-    stateStorage="session"
-    stateKey="statedemo-session"
   >
-    <ng-template pTemplate="caption">
-      <div class="flex">
-        <button
-          type="button"
-          pButton
-          pRipple
-          icon="pi pi-file"
-          (click)="dt1.exportCSV()"
-          class="m-2"
-          pTooltip="CSV"
-          tooltipPosition="bottom"
-        ></button>
-        <button
-          type="button"
-          pButton
-          pRipple
-          icon="pi pi-file-excel"
-          (click)="exportExcel()"
-          class="p-button-success m-2"
-          pTooltip="XLS"
-          tooltipPosition="bottom"
-        ></button>
-        <button
-          type="button"
-          pButton
-          pRipple
-          icon="pi pi-file-pdf"
-          (click)="exportPdf()"
-          class="p-button-warning m-2"
-          pTooltip="PDF"
-          tooltipPosition="bottom"
-        ></button>
-      </div>
-    </ng-template>
     <ng-template pTemplate="header">
       <tr>
         <th pSortableColumn="id">ID</th>
-        <th pSortableColumn="name">
-          Name<p-sortIcon field="name"></p-sortIcon>
+        <th pSortableColumn="employee.name">
+          Employee name<p-sortIcon field="employee.name"></p-sortIcon>
+        </th>
+        <th pSortableColumn="organizationalUnit.name">
+          Organizational unit<p-sortIcon
+            field="organizationalUnit.name"
+          ></p-sortIcon>
+        </th>
+        <th pSortableColumn="subProcess.name">
+          Sub process<p-sortIcon field="subProcess.name"></p-sortIcon>
+        </th>
+        <th pSortableColumn="process.name">
+          Process<p-sortIcon field="process.name"></p-sortIcon>
+        </th>
+        <th pSortableColumn="district.name">
+          Disrict<p-sortIcon field="district.name"></p-sortIcon>
+        </th>
+        <th pSortableColumn="branch.name">
+          Branch<p-sortIcon field="branch.name"></p-sortIcon>
         </th>
         <th scope="col">Actions</th>
       </tr>
@@ -65,10 +44,104 @@
           <input
             pInputText
             type="text"
-            (input)="dt1.filter($any($event.target)?.value, 'name', 'contains')"
-            [value]="$any(dt1.filters['name'])?.value"
-            placeholder="Search by Name"
-            class="p-column-filter"
+            (input)="
+              dt1.filter(
+                $any($event.target)?.value,
+                'employee.fullName',
+                'contains'
+              )
+            "
+            [value]="$any(dt1.filters['employee?.fullName'])?.value"
+            placeholder="Search here"
+            pTooltip="Search by employee name"
+            class="text-center"
+            tooltipPosition="top"
+          />
+        </th>
+        <th scope="col">
+          <input
+            pInputText
+            type="text"
+            (input)="
+              dt1.filter(
+                $any($event.target)?.value,
+                'organizationalUnit.name',
+                'contains'
+              )
+            "
+            [value]="$any(dt1.filters['organizationalUnit.name'])?.value"
+            placeholder="Search here"
+            pTooltip="Search by organizational unit name"
+            class="text-center"
+            tooltipPosition="top"
+          />
+        </th>
+        <th scope="col">
+          <input
+            pInputText
+            type="text"
+            (input)="
+              dt1.filter(
+                $any($event.target)?.value,
+                'subProcess?.name',
+                'contains'
+              )
+            "
+            [value]="$any(dt1.filters['subProcess.name'])?.value"
+            placeholder="Search here"
+            pTooltip="Search by sub process name"
+            class="text-center"
+            tooltipPosition="top"
+          />
+        </th>
+        <th scope="col">
+          <input
+            pInputText
+            type="text"
+            (input)="
+              dt1.filter(
+                $any($event.target)?.value,
+                'process?.name',
+                'contains'
+              )
+            "
+            [value]="$any(dt1.filters['process.name'])?.value"
+            placeholder="Search here"
+            pTooltip="Search by process name"
+            class="text-center"
+            tooltipPosition="top"
+          />
+        </th>
+        <th scope="col">
+          <input
+            pInputText
+            type="text"
+            (input)="
+              dt1.filter(
+                $any($event.target)?.value,
+                'district.name',
+                'contains'
+              )
+            "
+            [value]="$any(dt1.filters['district.name'])?.value"
+            placeholder="Search here"
+            pTooltip="Search by district name"
+            class="text-center"
+            tooltipPosition="top"
+          />
+        </th>
+        <th scope="col">
+          <input
+            pInputText
+            type="text"
+            (input)="
+              dt1.filter($any($event.target)?.value, 'branch.name', 'contains')
+            "
+            [value]="$any(dt1.filters['branch.name'])?.value"
+            placeholder="Search here"
+            pTooltip="Search by branch name"
+            class="text-center"
+            tooltipPosition="top"
           />
         </th>
         <th scope="col"></th>
@@ -77,7 +150,59 @@
     <ng-template pTemplate="body" let-authorityList let-rowIndex="rowIndex">
       <tr [pSelectableRow]="authorityList">
         <td>{{ rowIndex + 1 }}</td>
-        <td>{{ authorityList?.name }}</td>
+        <td 
+          pTooltip="{{ authorityList?.employee?.fullName }}"
+          tooltipPosition="bottom"
+        >
+          {{ authorityList?.employee?.fullName }}
+        </td>
+        <td
+          pTooltip="{{ authorityList?.organizationalUnit?.name }}"
+          tooltipPosition="bottom"
+        >
+          {{ authorityList?.organizationalUnit?.name }}
+        </td>
+        <td
+          pTooltip="{{ authorityList?.subProcess?.name }}"
+          tooltipPosition="bottom"
+        >
+          {{ authorityList?.subProcess?.name }}
+        </td>
+        <td
+          pTooltip="{{ authorityList?.process?.name }}"
+          tooltipPosition="bottom"
+        >
+          {{ authorityList?.process?.name }}
+        </td>
+        <td
+          pTooltip="{{ authorityList?.district?.name }}"
+          tooltipPosition="bottom"
+        >
+          {{ authorityList?.district?.name }}
+        </td>
+        <td
+          pTooltip="{{ authorityList?.branch?.name }}"
+          tooltipPosition="bottom"
+        >
+          {{ authorityList?.branch?.name }}
+        </td>
+        <td>
+          <div class="flex gap-2">
+            <button
+              pButton
+              (click)="updateAuthority(authorityList.id)"
+              [ngClass]="{ updateBlue: true }"
+              class="p-button-sm w-20 h-10"
+              label="Update"
+            ></button>
+            <button
+              pButton
+              (click)="show(authorityList.id)"
+              class="p-button-sm w-20 h-10 p-2"
+              label="Show"
+            ></button>
+          </div>
+        </td>
       </tr>
     </ng-template>
     <ng-template pTemplate="emptymessage">

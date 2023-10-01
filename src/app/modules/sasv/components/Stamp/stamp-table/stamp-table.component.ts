@@ -3,23 +3,11 @@ import { Component, OnDestroy } from '@angular/core';
 import { DialogService } from 'primeng/dynamicdialog';
 import { MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
-import * as FileSaver from 'file-saver';
-import { SignatureService } from '../../../services/signature-service/signature.service';
 import { SignatureDTO } from '../../../models/signature';
 import { NewStampComponent } from '../new-stamp/newStamp.component';
 import { StampService } from '../../../services/stamp-service/stamp.service';
 import { StampDTO } from '../../../models/stamp';
-
-interface ExportColumn {
-  title: string;
-  dataKey: string;
-}
-
-interface Column {
-  field: string;
-  header: string;
-  customExportHeader?: string;
-}
+import { ShowComponent } from '../../show/show.component';
 
 @Component({
   selector: 'stamp-table',
@@ -32,31 +20,16 @@ export class StampTableComponent implements OnDestroy {
   public signatureInfo: SignatureDTO;
   selectedSignatureInfo: SignatureDTO;
 
-  exportColumns!: ExportColumn[];
-  cols!: Column[];
-
   private subscriptions: Subscription[] = [];
 
   constructor(
     private stampService: StampService,
     private dialogService: DialogService,
     private messageService: MessageService
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.getStamps();
-    this.cols = [
-      { field: 'id', header: 'ID' },
-      { field: 'name', header: 'Name' },
-      { field: 'description', header: 'Description' },
-      { field: 'auditType', header: 'Auditable Type' },
-      { field: 'status', header: 'Status' },
-    ];
-
-    this.exportColumns = this.cols.map((col) => ({
-      title: col.header,
-      dataKey: col.field,
-    }));
   }
 
   getStamps(): void {
@@ -64,6 +37,8 @@ export class StampTableComponent implements OnDestroy {
       this.stampService.getStampList().subscribe(
         (response: any) => {
           this.stampList = response.result;
+          console.log(response);
+          
         },
         (error: HttpErrorResponse) => {
           console.log(error);
@@ -72,11 +47,24 @@ export class StampTableComponent implements OnDestroy {
     );
   }
 
+  show(id: number) {
+    const data = this.stampList.find((stamp) => stamp.id === id);
+    const title = 'stamp';
+    const ref = this.dialogService.open(ShowComponent, {
+      header: 'Stamp image',
+      draggable: true,
+      width: '50%',
+      data: { data, title },
+      contentStyle: { 'min-height': 'auto', overflow: 'auto' },
+      baseZIndex: 10000,
+    });
+  }
+
   createSignature(): void {
     const ref = this.dialogService.open(NewStampComponent, {
       header: 'Create a new stamp',
       draggable: true,
-      width: '45%',
+      width: '50%',
       contentStyle: { 'min-height': 'auto', overflow: 'auto' },
       baseZIndex: 10000,
     });
@@ -103,40 +91,5 @@ export class StampTableComponent implements OnDestroy {
     for (const subscription of this.subscriptions) {
       subscription.unsubscribe();
     }
-  }
-
-  exportPdf() {
-    import('jspdf').then((jsPDF) => {
-      import('jspdf-autotable').then((x) => {
-        const doc = new jsPDF.default('p', 'px', 'a4');
-        (doc as any).autoTable(this.exportColumns, this.stampList);
-        doc.save('audit-universe.pdf');
-      });
-    });
-  }
-
-  exportExcel() {
-    import('xlsx').then((xlsx) => {
-      const worksheet = xlsx.utils.json_to_sheet(this.stampList);
-      const workbook = { Sheets: { data: worksheet }, SheetNames: ['data'] };
-      const excelBuffer: any = xlsx.write(workbook, {
-        bookType: 'xlsx',
-        type: 'array',
-      });
-      this.saveAsExcelFile(excelBuffer, 'products');
-    });
-  }
-
-  saveAsExcelFile(buffer: any, fileName: string): void {
-    let EXCEL_TYPE =
-      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
-    let EXCEL_EXTENSION = '.xlsx';
-    const data: Blob = new Blob([buffer], {
-      type: EXCEL_TYPE,
-    });
-    FileSaver.saveAs(
-      data,
-      fileName + '_export_' + new Date().getTime() + EXCEL_EXTENSION
-    );
   }
 }

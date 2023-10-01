@@ -87,7 +87,7 @@ export class AuditObjectDetailComponent {
   createNewAuditableArea(): void {
     const ref = this.dialogService.open(NewAuditableAreaComponent, {
       header: 'Create a new auditable area',
-      width: '40%',
+      width: '50%',
       data: { auditObject: this.auditObject },
       contentStyle: { 'min-height': 'auto', overflow: 'auto' },
       baseZIndex: 10000,
@@ -113,7 +113,7 @@ export class AuditObjectDetailComponent {
   createNewChecklist(): void {
     const ref = this.dialogService.open(NewCheckListComponent, {
       header: 'Create a new checklist',
-      width: '40%',
+      width: '50%',
       data: { auditableArea: this.selectedArea },
       contentStyle: { 'min-height': 'auto', overflow: 'auto' },
       baseZIndex: 10000,

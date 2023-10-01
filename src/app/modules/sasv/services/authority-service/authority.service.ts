@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { AuthorityDTO } from '../../models/authority';
 @Injectable({
   providedIn: 'root',
 })
@@ -20,18 +21,18 @@ export class AuthorityService {
 
   constructor(private http: HttpClient) {}
 
-  public createAuthority(): Observable<any> {
+  public createAuthority(authority:AuthorityDTO): Observable<any> {
     this.init();
-    return this.http.get<any>(
-      `${this.apiServiceUrl}/sasv/authority/register`,
+    return this.http.post<any>(
+      `${this.apiServiceUrl}/sasv/authority/register`,authority,
       this.httpOptions
     );
   }
 
-  public updateAuthority(): Observable<any> {
+  public updateAuthority(authority:AuthorityDTO): Observable<any> {
     this.init();
-    return this.http.get<any>(
-      `${this.apiServiceUrl}/sasv/authority/update`,
+    return this.http.post<any>(
+      `${this.apiServiceUrl}/sasv/authority/update`,authority,
       this.httpOptions
     );
   }
@@ -52,10 +53,10 @@ export class AuthorityService {
     );
   }
 
-  public getAuthorityImage(): Observable<any> {
+  public getAuthorityImage(id : number): Observable<any> {
     this.init();
     return this.http.get<any>(
-      `${this.apiServiceUrl}/sasv/authority/images/{id}`,
+      `${this.apiServiceUrl}/sasv/authority/images/${id}`,
       this.httpOptions
     );
   }

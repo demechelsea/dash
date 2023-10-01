@@ -1,5 +1,5 @@
 <p-toast position="top-right"></p-toast>
-<div class="but">
+<div class="flex justify-end">
   <p-button
     label="Generate annual plan"
     (click)="generateAnnualPlan()"
@@ -157,15 +157,15 @@
               pButton
               (click)="updateAnnualPlan(annualPlan.id)"
               [ngClass]="{ updateBlue: true }"
-              class="p-button-sm w-20 h-12 p-2"
+              class="p-button-sm w-20 h-10 p-2"
               label="Update"
             ></button>
             <button
               pButton
               *ngIf="annualPlan?.status == 'Pending'"
-              (click)="addToAuditSchedule(annualPlan.id)"
+              (click)="addToAuditSchedule(annualPlan)"
               [ngClass]="{ updateBlue: true }"
-              class="p-button-sm w-20 h-12 p-2"
+              class="p-button-sm h-10 p-2 whitespace-nowrap"
               label="Add to schedule"
             ></button>
           </div>

@@ -1,6 +1,6 @@
 import { BaseModel } from "./base";
 
-export class Process extends BaseModel {
+export class District extends BaseModel {
     code: string;
     name : string;  
 }
