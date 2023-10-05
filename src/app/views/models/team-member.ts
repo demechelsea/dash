@@ -8,5 +8,7 @@ export class TeamMemberDTO extends BaseModel {
     user: UserDTO;
     teamMemberStatus: string;
     teamType: string;
+    auditStatus: string;
+    perdium: number;
 
 }

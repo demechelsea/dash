@@ -29,3 +29,10 @@
       }
 }
 
+::ng-deep .p-dropdown-items {
+  width: 250px;
+}
+
+::ng-deep .p-dropdown-clearable {
+  width: 250px;
+}

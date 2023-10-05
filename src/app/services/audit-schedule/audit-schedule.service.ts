@@ -21,6 +21,14 @@ export class AuditScheduleService {
 
   constructor(private http: HttpClient) {}
 
+  public getAuditUsers(): Observable<any> {
+    this.init();
+    return this.http.get<any>(
+      `${this.apiServiceUrl}/ams/users`,
+      this.httpOptions
+    );
+  }
+
   public getAuditSchedules(): Observable<any> {
     this.init();
     return this.http.get<any>(

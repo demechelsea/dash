@@ -37,7 +37,7 @@
             alt="Photo to display to public"
           />
           <ng-template #noImage>
-            <p>Photo</p>
+            <p>Signature image</p>
           </ng-template>
         </div>
         <div class="form-group">
@@ -55,7 +55,7 @@
     </div>
 
     <div style="margin-top: 10em"></div>
-    <div class="buttonDiv">
+    <div class="flex justify-between">
       <p-button label="Cancel" (click)="closeDialog()"></p-button>
       <p-button type="submit" [disabled]="!addDivForm.valid || !imageURL" label="Create signature"></p-button>
     </div>

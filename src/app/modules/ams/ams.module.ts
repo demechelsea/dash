@@ -58,6 +58,7 @@ import { MonthlyJobHistoryComponent } from './Dashboards/monthlyJobHisory/monthl
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { AutoGenerateAnnualPlanComponent } from './Annual plan/auto-geneerate-annualPlan/auto-generate-annualPlan.component';
+import { AssignMembersComponent } from './Audit-schedule/assign-members/assign-members.component';
 
 @NgModule({
   declarations: [
@@ -82,7 +83,8 @@ import { AutoGenerateAnnualPlanComponent } from './Annual plan/auto-geneerate-an
     JobMonthlyElpasedTimeComponent,
     MonthlyJobHistoryComponent,
     AutoGenerateAnnualPlanComponent,
-    AuditObjectDetailComponent
+    AuditObjectDetailComponent,
+    AssignMembersComponent
     
   ],
   imports: [

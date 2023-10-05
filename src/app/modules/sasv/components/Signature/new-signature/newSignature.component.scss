@@ -8,15 +8,9 @@
   display: block;
 }
 
-.buttonDiv {
-  display: flex;
-  justify-content: space-between;
-}
-
 .photo-container {
   width: 200px;
   height: 200px;
-  float: right;
 }
 
 .photo-preview {
@@ -32,17 +26,14 @@
   max-width: 100%;
   max-height: 100%;
 }
-::ng-deep .p-dropdown-items{
+::ng-deep .p-dropdown-items {
   width: 250px;
 }
 
-::ng-deep .p-dropdown-clearable{
+::ng-deep .p-dropdown-clearable {
   width: 250px;
 }
 
 ::ng-deep .p-tooltip {
   max-width: 800px !important;
 }
-
-
-

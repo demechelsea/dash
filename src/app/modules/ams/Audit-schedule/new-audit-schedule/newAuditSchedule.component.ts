@@ -1,17 +1,20 @@
+import { DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, OnDestroy } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { DialogService, DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Subscription } from 'rxjs';
 import { AnnualPlanService } from 'src/app/services/annual-plan/annual-plan.service';
 import { AuditScheduleService } from 'src/app/services/audit-schedule/audit-schedule.service';
+import { TeamMemberService } from 'src/app/services/team-member-service/team-memeber.service';
 import { AnnualPlanDTO } from 'src/app/views/models/annualPlan';
 import { AuditScheduleDTO } from 'src/app/views/models/auditSchedule';
-import { AuditUniverseDTO } from 'src/app/views/models/auditUniverse';
+import { TeamMemberDTO } from 'src/app/views/models/team-member';
+import { AssignMembersComponent } from './../assign-members/assign-members.component';
 
 @Component({
-  selector: 'newAuditUniverse',
+  selector: 'newAuditSchedule',
   templateUrl: './newAuditSchedule.component.html',
   styleUrls: ['./newAuditSchedule.component.scss'],
   providers: [MessageService, ConfirmationService],
@@ -19,7 +22,11 @@ import { AuditUniverseDTO } from 'src/app/views/models/auditUniverse';
 export class NewAuditScheduleComponent implements OnDestroy {
   public annualPlans: AnnualPlanDTO[] = [];
 
-  public auditUniverseR: AuditUniverseDTO[] = [];
+  assignMembersDialogRef: DynamicDialogRef;
+  teamMembers: TeamMemberDTO[] = [];
+  savedAssignmembers: TeamMemberDTO[] = [];
+
+
   public scheduleInfo: AuditScheduleDTO = new AuditScheduleDTO();
 
   private subscriptions: Subscription[] = [];
@@ -30,20 +37,33 @@ export class NewAuditScheduleComponent implements OnDestroy {
   newDiv: boolean = true;
 
   annualPlan: AnnualPlanDTO;
+  auditSchedule: AuditScheduleDTO;
 
   constructor(
     private messageService: MessageService,
     private auditScheduleService: AuditScheduleService,
-    private auditPlanService: AnnualPlanService,
     private annualPlanService: AnnualPlanService,
+    private teamMemeberService: TeamMemberService,
     private ref: DynamicDialogRef,
-    private config: DynamicDialogConfig
-  ) {}
+    private config: DynamicDialogConfig,
+    public dialogService: DialogService,
+    private datePipe: DatePipe,
+    private cdref: ChangeDetectorRef
+
+  ) { }
 
   ngOnInit() {
     if (this.config.data?.annualPlan) {
-      this.annualPlan = this.config.data.annualPlan;      
-      //this.update = true;
+      this.annualPlan = this.config.data.annualPlan;
+    }
+    if (this.config.data?.auditSchedule) {
+      this.scheduleInfo = {
+        ...this.config.data.auditSchedule,
+        startOn: this.datePipe.transform(this.config.data.auditSchedule.startOn, 'MM/dd/yyyy'),
+        endOn: this.datePipe.transform(this.config.data.auditSchedule.endOn, 'MM/dd/yyyy')
+      };
+      this.selectedDropdown = this.config.data.auditSchedule.quarter.toString();
+      this.update = true;
       this.newDiv = false;
     }
   }
@@ -73,15 +93,32 @@ export class NewAuditScheduleComponent implements OnDestroy {
 
   updateAuditSchedule(updateDivForm: NgForm): void {
     const auditSchedule: AuditScheduleDTO = updateDivForm.value;
+    auditSchedule.teamMembers =  this.savedAssignmembers;
     auditSchedule.id = this.scheduleInfo.id;
+    console.log("kkkk",auditSchedule);
+    
     this.subscriptions.push(
-      this.auditScheduleService
-        .updateAuditSchedule(auditSchedule)
+      this.teamMemeberService
+        .addTeamMember(auditSchedule)
         .subscribe((response: any) => {
           this.messageService.clear();
           this.ref.close(response);
         })
     );
+  }
+
+  AssignMembers() {
+    this.assignMembersDialogRef = this.dialogService.open(AssignMembersComponent, {
+      header: 'Assign members and their roles',
+      width: '60%',
+      data: { scheduleInfo: this.scheduleInfo, savedAssignmembers: this.savedAssignmembers },
+    });
+    this.assignMembersDialogRef.onClose.subscribe((teamMembers) => {
+      if (teamMembers) {
+        this.savedAssignmembers = teamMembers;
+        this.cdref.detectChanges();
+      }
+    });
   }
 
   ngOnDestroy() {

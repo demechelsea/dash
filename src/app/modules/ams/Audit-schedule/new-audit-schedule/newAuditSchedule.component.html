@@ -4,6 +4,9 @@
     <h5 class="mb-4 text-xl text-blue-600">
       Annual plan:
       <span class="text-black text-base">{{ annualPlan?.name }}</span>
+      <span class="text-black text-base">{{
+        scheduleInfo?.annualPlan?.name
+      }}</span>
     </h5>
 
     <div class="row">
@@ -34,7 +37,7 @@
         <p-dropdown
           [options]="dropdownOptions"
           name="quarter"
-          [(ngModel)]="scheduleInfo.quarter"
+          [(ngModel)]="selectedDropdown"
           [showClear]="true"
           placeholder="Choose level"
           styleClass="p-password"
@@ -43,21 +46,17 @@
         >
         </p-dropdown>
       </div>
-      <div *ngIf="update" class="col mb-4">
-        <label for="integer" class="block mb-2">Status:</label>
-        <input
-          pInputText
-          id="integer"
-          pKeyFilter="int"
-          [(ngModel)]="scheduleInfo.status"
-          name="status"
-          [style]="{ width: '300px', height: '45px' }"
-          required
-          minlength="3"
-        />
-      </div>
     </div>
-    <div style="margin-top: 10em"></div>
+    <div class="col">
+      <label for="integer" class="block mb-2">Assign members:</label>
+      <p-button
+        (click)="AssignMembers()"
+        class="m-12"
+        icon="pi pi-info-circle"
+        label="Assign members"
+      ></p-button>
+    </div>
+    <div style="margin-top: 12.5em"></div>
     <div class="buttonDiv">
       <p-button label="Cancel" (click)="closeDialog()"></p-button>
       <p-button

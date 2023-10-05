@@ -1,7 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnDestroy } from '@angular/core';
 import { DialogService } from 'primeng/dynamicdialog';
-import { AuditUniverseDTO } from 'src/app/views/models/auditUniverse';
 import { NewAuditScheduleComponent } from '../new-audit-schedule/newAuditSchedule.component';
 import { MessageService } from 'primeng/api';
 import { Subscription } from 'rxjs';
@@ -49,7 +48,7 @@ export class AuditScheduleComponent implements OnDestroy {
     private dialogService: DialogService,
     private messageService: MessageService,
     private datePipe: DatePipe
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.getAuditSchedules();
@@ -145,7 +144,7 @@ export class AuditScheduleComponent implements OnDestroy {
         .subscribe(
           (response: any) => {
             console.log(response);
-            
+
             this.auditSchedules = response.result.map(
               (schedule: AuditScheduleDTO) => ({
                 ...schedule,

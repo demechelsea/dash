@@ -1,5 +1,15 @@
 <p-toast position="top-right"></p-toast>
-<div class="flex justify-end">
+<div class="flex justify-between">
+  <div class="flex">
+    <span class="p-input-icon-left ml-auto">
+      <input
+        pInputText
+        type="text"
+        (input)="dt1.filterGlobal($any($event.target)?.value, 'contains')"
+        placeholder="Search here"
+      />
+    </span>
+  </div>
   <p-button label="Create authority" (click)="createSignature()"></p-button>
 </div>
 <div class="card">
@@ -10,6 +20,14 @@
     selectionMode="single"
     dataKey="id"
     [rows]="5"
+    [globalFilterFields]="[
+      'organizationalUnit.name',
+      'process.name',
+      'subProcess.name',
+      'district.name',
+      'branch.name',
+      'employee.name'
+    ]"
     [rowsPerPageOptions]="[5, 10, 15, 20]"
     [paginator]="true"
   >
@@ -38,119 +56,11 @@
         </th>
         <th scope="col">Actions</th>
       </tr>
-      <tr>
-        <th scope="col"></th>
-        <th scope="col">
-          <input
-            pInputText
-            type="text"
-            (input)="
-              dt1.filter(
-                $any($event.target)?.value,
-                'employee.fullName',
-                'contains'
-              )
-            "
-            [value]="$any(dt1.filters['employee?.fullName'])?.value"
-            placeholder="Search here"
-            pTooltip="Search by employee name"
-            class="text-center"
-            tooltipPosition="top"
-          />
-        </th>
-        <th scope="col">
-          <input
-            pInputText
-            type="text"
-            (input)="
-              dt1.filter(
-                $any($event.target)?.value,
-                'organizationalUnit.name',
-                'contains'
-              )
-            "
-            [value]="$any(dt1.filters['organizationalUnit.name'])?.value"
-            placeholder="Search here"
-            pTooltip="Search by organizational unit name"
-            class="text-center"
-            tooltipPosition="top"
-          />
-        </th>
-        <th scope="col">
-          <input
-            pInputText
-            type="text"
-            (input)="
-              dt1.filter(
-                $any($event.target)?.value,
-                'subProcess?.name',
-                'contains'
-              )
-            "
-            [value]="$any(dt1.filters['subProcess.name'])?.value"
-            placeholder="Search here"
-            pTooltip="Search by sub process name"
-            class="text-center"
-            tooltipPosition="top"
-          />
-        </th>
-        <th scope="col">
-          <input
-            pInputText
-            type="text"
-            (input)="
-              dt1.filter(
-                $any($event.target)?.value,
-                'process?.name',
-                'contains'
-              )
-            "
-            [value]="$any(dt1.filters['process.name'])?.value"
-            placeholder="Search here"
-            pTooltip="Search by process name"
-            class="text-center"
-            tooltipPosition="top"
-          />
-        </th>
-        <th scope="col">
-          <input
-            pInputText
-            type="text"
-            (input)="
-              dt1.filter(
-                $any($event.target)?.value,
-                'district.name',
-                'contains'
-              )
-            "
-            [value]="$any(dt1.filters['district.name'])?.value"
-            placeholder="Search here"
-            pTooltip="Search by district name"
-            class="text-center"
-            tooltipPosition="top"
-          />
-        </th>
-        <th scope="col">
-          <input
-            pInputText
-            type="text"
-            (input)="
-              dt1.filter($any($event.target)?.value, 'branch.name', 'contains')
-            "
-            [value]="$any(dt1.filters['branch.name'])?.value"
-            placeholder="Search here"
-            pTooltip="Search by branch name"
-            class="text-center"
-            tooltipPosition="top"
-          />
-        </th>
-        <th scope="col"></th>
-      </tr>
     </ng-template>
     <ng-template pTemplate="body" let-authorityList let-rowIndex="rowIndex">
       <tr [pSelectableRow]="authorityList">
         <td>{{ rowIndex + 1 }}</td>
-        <td 
+        <td
           pTooltip="{{ authorityList?.employee?.fullName }}"
           tooltipPosition="bottom"
         >

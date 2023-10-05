@@ -1,7 +1,18 @@
 <p-toast position="top-right"></p-toast>
-<div class="flex justify-end">
+<div class="flex justify-between">
+  <div class="flex">
+    <span class="p-input-icon-left ml-auto">
+      <input
+        pInputText
+        type="text"
+        (input)="dt1.filterGlobal($any($event.target)?.value, 'contains')"
+        placeholder="Search here"
+      />
+    </span>
+  </div>
   <p-button label="Create stamp" (click)="createSignature()"></p-button>
 </div>
+
 <div class="card">
   <h5 class="text-2xl font-bold text-blue-600 p-3">Stamp table</h5>
   <p-table
@@ -9,15 +20,21 @@
     [value]="stampList"
     selectionMode="single"
     dataKey="id"
-    [tableStyle]="{ 'max-width': '50rem' }"
     [rows]="5"
+    [globalFilterFields]="[
+      'organizationalUnit.name',
+      'process.name',
+      'subProcess.name',
+      'district.name',
+      'branch.name'
+    ]"
     [rowsPerPageOptions]="[5, 10, 15, 20]"
     [paginator]="true"
   >
     <ng-template pTemplate="header">
       <tr>
         <th pSortableColumn="id">ID</th>
-        <th style="width: 10px;" pSortableColumn="organizationalUnit.name">
+        <th pSortableColumn="organizationalUnit.name">
           Organizational unit<p-sortIcon
             field="organizationalUnit.name"
           ></p-sortIcon>
@@ -36,129 +53,29 @@
         </th>
         <th scope="col">Actions</th>
       </tr>
-      <tr>
-        <th scope="col"></th>
-        <th scope="col">
-          <input
-            pInputText
-            type="text"
-            (input)="
-              dt1.filter(
-                $any($event.target)?.value,
-                'organizationalUnit.name',
-                'contains'
-              )
-            "
-            [value]="$any(dt1.filters['organizationalUnit.name'])?.value"
-            placeholder="Search here"
-            pTooltip="Search by organizational unit name"
-            class="text-center"
-            tooltipPosition="top"
-          />
-        </th>
-        <th scope="col">
-          <input
-            pInputText
-            type="text"
-            (input)="
-              dt1.filter(
-                $any($event.target)?.value,
-                'subProcess.name',
-                'contains'
-              )
-            "
-            [value]="$any(dt1.filters['subProcess.name'])?.value"
-            placeholder="Search here"
-            pTooltip="Search by sub process name"
-            class="text-center"
-            tooltipPosition="top"
-          />
-        </th>
-        <th scope="col">
-          <input
-            pInputText
-            type="text"
-            (input)="
-              dt1.filter($any($event.target)?.value, 'process.name', 'contains')
-            "
-            [value]="$any(dt1.filters['process.name'])?.value"
-            placeholder="Search here"
-            pTooltip="Search by process name"
-            class="text-center"
-            tooltipPosition="top"
-          />
-        </th>
-        <th scope="col">
-          <input
-            pInputText
-            type="text"
-            (input)="
-              dt1.filter(
-                $any($event.target)?.value,
-                'district.name',
-                'contains'
-              )
-            "
-            [value]="$any(dt1.filters['district.name'])?.value"
-            placeholder="Search here"
-            pTooltip="Search by district name"
-            class="text-center"
-            tooltipPosition="top"
-          />
-        </th>
-        <th scope="col">
-          <input
-            pInputText
-            type="text"
-            (input)="
-              dt1.filter($any($event.target)?.value, 'branch.name', 'contains')
-            "
-            [value]="$any(dt1.filters['branch.name'])?.value"
-            placeholder="Search here"
-            pTooltip="Search by branch name"
-            class="text-center"
-            tooltipPosition="top"
-          />
-        </th>
-        <th scope="col"></th>
-      </tr>
     </ng-template>
     <ng-template pTemplate="body" let-stampList let-rowIndex="rowIndex">
       <tr [pSelectableRow]="stampList">
         <td>{{ rowIndex + 1 }}</td>
         <td
-          class="w-60 overflow-hidden overflow-ellipsis whitespace-nowrap"
           pTooltip="{{ stampList?.organizationalUnit?.name }}"
           tooltipPosition="bottom"
         >
           {{ stampList?.organizationalUnit?.name }}
         </td>
         <td
-          class="w-60 overflow-hidden overflow-ellipsis whitespace-nowrap"
           pTooltip="{{ stampList?.subProcess?.name }}"
           tooltipPosition="bottom"
         >
           {{ stampList?.subProcess?.name }}
         </td>
-        <td
-          class="w-60 overflow-hidden overflow-ellipsis whitespace-nowrap"
-          pTooltip="{{ stampList?.process?.name }}"
-          tooltipPosition="bottom"
-        >
+        <td pTooltip="{{ stampList?.process?.name }}" tooltipPosition="bottom">
           {{ stampList?.process?.name }}
         </td>
-        <td
-          class="w-60 overflow-hidden overflow-ellipsis whitespace-nowrap"
-          pTooltip="{{ stampList?.district?.name }}"
-          tooltipPosition="bottom"
-        >
+        <td pTooltip="{{ stampList?.district?.name }}" tooltipPosition="bottom">
           {{ stampList?.district?.name }}
         </td>
-        <td
-          class="w-60 overflow-hidden overflow-ellipsis whitespace-nowrap"
-          pTooltip="{{ stampList?.branch?.name }}"
-          tooltipPosition="bottom"
-        >
+        <td pTooltip="{{ stampList?.branch?.name }}" tooltipPosition="bottom">
           {{ stampList?.branch?.name }}
         </td>
         <td>
