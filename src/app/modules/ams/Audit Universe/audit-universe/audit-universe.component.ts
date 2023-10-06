@@ -28,7 +28,6 @@ export class AuditUniverseComponent implements OnDestroy {
   public auditUniverse: AuditUniverseDTO[] = [];
   public auditUniverseDisplay: any[] = [];
 
-  public auditUniverseR: AuditUniverseDTO[] = [];
   public universeInfo: AuditUniverseDTO;
   selectedUniverseInfo: AuditUniverseDTO;
 
@@ -163,32 +162,37 @@ export class AuditUniverseComponent implements OnDestroy {
       import('jspdf-autotable').then((x) => {
         const doc = new jsPDF.default('p', 'px', 'a4');
         (doc as any).autoTable(this.exportColumns, this.auditUniverse);
-        doc.save('audit-universe.pdf');
+        doc.save('Audit universe.pdf');
       });
     });
   }
 
   exportExcel() {
     import('xlsx').then((xlsx) => {
-      const worksheet = xlsx.utils.json_to_sheet(this.auditUniverse);
+      const EXCEL_TYPE =
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+      const data = this.auditUniverse.map(universe => ({
+        id: universe.id,
+        name: universe.name,
+        description: universe.description,
+        auditType: universe.auditType,
+        status: universe.status
+      }));
+      const worksheet = xlsx.utils.json_to_sheet(data);
       const workbook = { Sheets: { data: worksheet }, SheetNames: ['data'] };
       const excelBuffer: any = xlsx.write(workbook, {
         bookType: 'xlsx',
         type: 'array',
       });
-      this.saveAsExcelFile(excelBuffer, 'products');
+      const dataBlob = new Blob([excelBuffer], { type: EXCEL_TYPE });
+      this.saveAsExcelFile(dataBlob, 'Audit universe');
     });
   }
 
   saveAsExcelFile(buffer: any, fileName: string): void {
-    let EXCEL_TYPE =
-      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
     let EXCEL_EXTENSION = '.xlsx';
-    const data: Blob = new Blob([buffer], {
-      type: EXCEL_TYPE,
-    });
     FileSaver.saveAs(
-      data,
+      buffer,
       fileName + '_export_' + new Date().getTime() + EXCEL_EXTENSION
     );
   }

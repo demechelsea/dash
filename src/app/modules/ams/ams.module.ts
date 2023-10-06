@@ -15,7 +15,7 @@ import { CheckListComponent } from './Checklist/checklist/checkList.component';
 import { NewAuditScheduleComponent } from './Audit-schedule/new-audit-schedule/newAuditSchedule.component';
 import { AuditScheduleComponent } from './Audit-schedule/audit-schedule/audit-schedule.component';
 import {CalendarModule} from 'primeng/calendar';
-
+import { TooltipModule } from 'primeng/tooltip';
 import { AmsRoutingModule } from './ams-routing.module';
 import { ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
@@ -35,7 +35,6 @@ import {
   SpinnerModule,
   TabsModule,
   NavModule,
-  TooltipModule,
   CarouselModule,
   FormModule,
   PaginationModule,

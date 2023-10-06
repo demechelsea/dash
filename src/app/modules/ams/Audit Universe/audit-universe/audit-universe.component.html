@@ -2,12 +2,12 @@
 <div class="flex justify-end"><p-button label="Create a new audit universe" (click)="createNewAuditUniverse()"></p-button></div>
 <div class="card">
     <h5 class="table-title">Audit Universe</h5>
-    <p-table #dt1 [value]="auditUniverse" [exportHeader]="'customExportHeader'" selectionMode="single" dataKey="id"
+    <p-table #dt [columns]="cols" [value]="auditUniverse" [exportHeader]="'customExportHeader'" selectionMode="single" dataKey="id"
         [tableStyle]="{'min-width': '50rem'}" [rows]="5" [rowsPerPageOptions]="[5,10,15,20]" [paginator]="true"
         stateStorage="session" stateKey="statedemo-session">
         <ng-template pTemplate="caption">
             <div class="flex">
-                <button type="button" pButton pRipple icon="pi pi-file" (click)="dt1.exportCSV()" class="m-2"
+                <button type="button" pButton pRipple icon="pi pi-file" (click)="dt.exportCSV()" class="m-2"
                     pTooltip="CSV" tooltipPosition="bottom"></button>
                 <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportExcel()"
                     class="p-button-success m-2" pTooltip="XLS" tooltipPosition="bottom"></button>
@@ -28,20 +28,20 @@
             <tr>
                 <th scope="col"></th>
                 <th scope="col"> <input pInputText type="text"
-                        (input)="dt1.filter($any($event.target)?.value, 'name', 'contains')"
-                        [value]="$any(dt1.filters['name'])?.value" placeholder="Search by Name" class="p-column-filter">
+                        (input)="dt.filter($any($event.target)?.value, 'name', 'contains')"
+                        [value]="$any(dt.filters['name'])?.value" placeholder="Search by Name" class="p-column-filter">
                 </th>
                 <th scope="col"> <input pInputText type="text"
-                        (input)="dt1.filter($any($event.target)?.value, 'description', 'contains')"
-                        [value]="$any(dt1.filters['description'])?.value" placeholder="Search by Description"
+                        (input)="dt.filter($any($event.target)?.value, 'description', 'contains')"
+                        [value]="$any(dt.filters['description'])?.value" placeholder="Search by Description"
                         class="p-column-filter"></th>
                 <th scope="col"> <input pInputText type="text"
-                        (input)="dt1.filter($any($event.target)?.value, 'auditObject.name', 'contains')"
-                        [value]="$any(dt1.filters['auditObject.name'])?.value" placeholder="Search by audit object"
+                        (input)="dt.filter($any($event.target)?.value, 'auditObject.name', 'contains')"
+                        [value]="$any(dt.filters['auditObject.name'])?.value" placeholder="Search by audit object"
                         class="p-column-filter"></th>
                 <th scope="col"> <input pInputText type="text"
-                        (input)="dt1.filter($any($event.target)?.value, 'auditType', 'contains')"
-                        [value]="$any(dt1.filters['auditType'])?.value" placeholder="Search by Audit Type"
+                        (input)="dt.filter($any($event.target)?.value, 'auditType', 'contains')"
+                        [value]="$any(dt.filters['auditType'])?.value" placeholder="Search by Audit Type"
                         class="p-column-filter">
                 </th>
                 <th scope="col"></th>

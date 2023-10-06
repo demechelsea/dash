@@ -2,7 +2,7 @@
 <div class="flex justify-end"><p-button label="Create a new audit object" (click)="createAuditObject()"></p-button></div>
 <div class="card">
     <h5 class="table-title">Audit Object</h5>
-    <p-table #dt1 [value]="auditObject" [exportHeader]="'customExportHeader'" selectionMode="single" dataKey="id"
+    <p-table #dt1 [columns]="cols" [value]="auditObject" [exportHeader]="'customExportHeader'" selectionMode="single" dataKey="id"
         [tableStyle]="{'min-width': '50rem'}" [rows]="5" [rowsPerPageOptions]="[5,10,15,20]" [paginator]="true"
         stateStorage="session" stateKey="statedemo-session">
         <ng-template pTemplate="caption">

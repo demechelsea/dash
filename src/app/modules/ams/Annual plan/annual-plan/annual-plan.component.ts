@@ -57,6 +57,7 @@ export class AnnualPlanComponent {
       { field: 'auditaUniverseName', header: 'Audit Universe' },
       { field: 'riskScore', header: 'Risk score' },
       { field: 'riskLevel', header: 'Risk Level' },
+      { field: 'status', header: 'Status' },
     ];
 
     this.exportColumns = this.cols.map((col) => ({
@@ -208,32 +209,40 @@ export class AnnualPlanComponent {
       import('jspdf-autotable').then((x) => {
         const doc = new jsPDF.default('p', 'px', 'a4');
         (doc as any).autoTable(this.exportColumns, this.annualPlanDisplay);
-        doc.save('annual-plan.pdf');
+        doc.save('Annual plan.pdf');
       });
     });
   }
 
   exportExcel() {
     import('xlsx').then((xlsx) => {
-      const worksheet = xlsx.utils.json_to_sheet(this.annualPlanDisplay);
+      const data = this.annualPlanDisplay.map(plan => ({
+        id: plan.id,
+        name: plan.name,
+        description: plan.description,
+        year: plan.year,
+        auditaUniverseName: plan.auditaUniverseName,
+        riskScore: plan.riskScore,
+        riskLevel: plan.riskLevel,
+        status: plan.status
+      }));
+      const worksheet = xlsx.utils.json_to_sheet(data);
       const workbook = { Sheets: { data: worksheet }, SheetNames: ['data'] };
       const excelBuffer: any = xlsx.write(workbook, {
         bookType: 'xlsx',
         type: 'array',
       });
-      this.saveAsExcelFile(excelBuffer, 'products');
+      const EXCEL_TYPE =
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+      const dataBlob = new Blob([excelBuffer], {type: EXCEL_TYPE});
+      this.saveAsExcelFile(dataBlob, 'Annual plan');
     });
   }
-
+  
   saveAsExcelFile(buffer: any, fileName: string): void {
-    let EXCEL_TYPE =
-      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
     let EXCEL_EXTENSION = '.xlsx';
-    const data: Blob = new Blob([buffer], {
-      type: EXCEL_TYPE,
-    });
     FileSaver.saveAs(
-      data,
+      buffer,
       fileName + '_export_' + new Date().getTime() + EXCEL_EXTENSION
     );
   }

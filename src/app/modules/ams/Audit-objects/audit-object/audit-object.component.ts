@@ -53,7 +53,6 @@ export class AuditObjectComponent {
       { field: 'name', header: 'Name' },
       { field: 'description', header: 'Description' },
       { field: 'auditType', header: 'Auditable Type' },
-      { field: 'auditaUniverseName', header: 'Audit Universe' },
     ];
 
     this.exportColumns = this.cols.map((col) => ({
@@ -160,32 +159,36 @@ export class AuditObjectComponent {
       import('jspdf-autotable').then((x) => {
         const doc = new jsPDF.default('p', 'px', 'a4');
         (doc as any).autoTable(this.exportColumns, this.auditObjectDisplay);
-        doc.save('audit-objects.pdf');
+        doc.save('Audit object.pdf');
       });
     });
   }
 
   exportExcel() {
     import('xlsx').then((xlsx) => {
-      const worksheet = xlsx.utils.json_to_sheet(this.auditObjectDisplay);
+      const data = this.auditObjectDisplay.map(object => ({
+        id: object.id,
+        name: object.name,
+        description: object.description,
+        auditType: object.auditType,
+      }));
+      const worksheet = xlsx.utils.json_to_sheet(data);
       const workbook = { Sheets: { data: worksheet }, SheetNames: ['data'] };
       const excelBuffer: any = xlsx.write(workbook, {
         bookType: 'xlsx',
         type: 'array',
       });
-      this.saveAsExcelFile(excelBuffer, 'products');
+      const EXCEL_TYPE =
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+      const dataBlob = new Blob([excelBuffer], { type: EXCEL_TYPE });
+      this.saveAsExcelFile(dataBlob, 'Audit object');
     });
   }
 
   saveAsExcelFile(buffer: any, fileName: string): void {
-    let EXCEL_TYPE =
-      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
     let EXCEL_EXTENSION = '.xlsx';
-    const data: Blob = new Blob([buffer], {
-      type: EXCEL_TYPE,
-    });
     FileSaver.saveAs(
-      data,
+      buffer,
       fileName + '_export_' + new Date().getTime() + EXCEL_EXTENSION
     );
   }

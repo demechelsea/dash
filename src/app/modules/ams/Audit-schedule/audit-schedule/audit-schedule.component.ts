@@ -143,15 +143,18 @@ export class AuditScheduleComponent implements OnDestroy {
         .getAuditSchedulesByQuarter(auditSchedule)
         .subscribe(
           (response: any) => {
-            console.log(response);
-
-            this.auditSchedules = response.result.map(
-              (schedule: AuditScheduleDTO) => ({
-                ...schedule,
-                startOn: this.datePipe.transform(schedule.startOn, 'MMMM d, y'),
-                endOn: this.datePipe.transform(schedule.endOn, 'MMMM d, y'),
-              })
-            );
+            if (response.result) {
+              this.auditSchedules = response.result.map(
+                (schedule: AuditScheduleDTO) => ({
+                  ...schedule,
+                  startOn: this.datePipe.transform(schedule.startOn, 'MMMM d, y'),
+                  endOn: this.datePipe.transform(schedule.endOn, 'MMMM d, y'),
+                })
+              );
+            }
+            else {
+              this.auditSchedules = [];
+            }
           },
           (error: HttpErrorResponse) => {
             console.log(error);
